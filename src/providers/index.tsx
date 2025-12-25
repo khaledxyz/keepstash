@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { ThemeProvider } from "./theme-provider";
+import { ThemeProvider } from "@providers/theme-provider";
 
 interface Props {
   children: ReactNode;
