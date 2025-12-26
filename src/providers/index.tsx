@@ -6,7 +6,7 @@ interface Props {
   children: ReactNode;
 }
 
-const themeStorageKey = `${import.meta.env.VITE_SOME_KEY || "vite"}-theme`;
+const themeStorageKey = `${import.meta.env.VITE_APP_NAME || "keepstash"}-theme`;
 
 export function Providers({ children }: Props) {
   return (
