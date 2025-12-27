@@ -20,16 +20,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { timeAgo } from "@/lib/utils";
 
-const bookmark = {
-  title: "This is a research about biological science",
-  url: "https://example.com/research/biological-science",
-  folder: "Research Papers",
-  tags: ["Biology", "Science", "Research"],
-  dateAdded: "2025-12-26",
-  favicon: "https://github.com/khaledxyz.png",
-};
+import type { Bookmark } from "@/data/bookmarks";
 
-export function BookmarkItem() {
+export function BookmarkItem({ bookmark }: { bookmark: Bookmark }) {
   return (
     <Item role="listitem" variant="outline">
       <ItemMedia variant="image">
@@ -78,13 +71,13 @@ export function BookmarkItemSkeleton() {
       </ItemMedia>
       <ItemContent>
         <ItemTitle>
-          <Skeleton className="h-5 w-sm" />
+          <Skeleton className="h-4 w-sm" />
         </ItemTitle>
         <ItemDescription className="flex items-center">
           <div className="flex items-center gap-1">
-            <Skeleton className="h-5 w-16" />
-            <Skeleton className="h-5 w-16" />
-            <Skeleton className="h-5 w-20" />
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-4 w-20" />
           </div>
         </ItemDescription>
       </ItemContent>

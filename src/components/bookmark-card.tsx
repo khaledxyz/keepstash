@@ -15,17 +15,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { timeAgo } from "@/lib/utils";
 
-const bookmark = {
-  title: "This is a research about biological science",
-  url: "https://example.com/research/biological-science",
-  folder: "Research Papers",
-  tags: ["Biology", "Science", "Research"],
-  dateAdded: "2025-12-26",
-  thumbnail:
-    "https://images.unsplash.com/photo-1766637837127-259227573559?q=80&w=690&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-};
+import type { Bookmark } from "@/data/bookmarks";
 
-export function BookmarkCard() {
+export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   return (
     <Card className="group overflow-hidden pt-0">
       <div className="relative aspect-video w-full overflow-hidden">

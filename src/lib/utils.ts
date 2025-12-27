@@ -45,3 +45,12 @@ export function timeAgo(date?: Date | string | number | null): string {
   // Older: show "Jan 15, 2023"
   return postDate.format("MMM D, YYYY");
 }
+
+export function sleep(ms?: number): Promise<void> {
+  if (import.meta.env.PROD) {
+    return Promise.resolve();
+  }
+
+  const delay = ms ?? Math.floor(Math.random() * 2001) + 1000;
+  return new Promise((resolve) => setTimeout(resolve, delay));
+}
