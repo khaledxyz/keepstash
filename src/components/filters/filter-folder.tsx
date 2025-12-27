@@ -1,4 +1,5 @@
 import { FolderIcon } from "@phosphor-icons/react";
+import { parseAsString, useQueryState } from "nuqs";
 
 import { Field } from "@/components/ui/field";
 import {
@@ -14,9 +15,14 @@ import {
 const folders = ["Tech", "Jobs", "Health", "Productivity"];
 
 export function FilterFolder() {
+  const [folder, setFolder] = useQueryState(
+    "folder",
+    parseAsString.withDefault("")
+  );
+
   return (
     <Field className="w-[150px]">
-      <Select>
+      <Select onValueChange={setFolder} value={folder}>
         <SelectTrigger>
           <div className="flex items-center gap-2">
             <FolderIcon />

@@ -1,4 +1,5 @@
 import { TagIcon } from "@phosphor-icons/react";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
 import { Badge } from "@/components/ui/badge";
 
@@ -14,6 +15,19 @@ const tags = [
 ];
 
 export function FilterTags() {
+  const [selectedTags, setSelectedTags] = useQueryState(
+    "tags",
+    parseAsArrayOf(parseAsString).withDefault([])
+  );
+
+  const toggleTag = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
   return (
     <div className="flex items-center gap-1">
       <div className="mr-1 flex items-center gap-1 text-muted-foreground text-xs uppercase">
@@ -21,7 +35,12 @@ export function FilterTags() {
         <span>Tags</span>
       </div>
       {tags.map((tag, i) => (
-        <Badge key={i} variant="outline">
+        <Badge
+          className="cursor-pointer"
+          key={i}
+          onClick={() => toggleTag(tag)}
+          variant={selectedTags.includes(tag) ? "default" : "outline"}
+        >
           {tag}
         </Badge>
       ))}

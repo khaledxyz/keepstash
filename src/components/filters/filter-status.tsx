@@ -1,4 +1,5 @@
 import { FileIcon } from "@phosphor-icons/react";
+import { parseAsString, useQueryState } from "nuqs";
 
 import { Field } from "@/components/ui/field";
 import {
@@ -14,9 +15,14 @@ import {
 const statuses = ["Unread", "Archived", "Favorite"];
 
 export function FilterStatus() {
+  const [status, setStatus] = useQueryState(
+    "status",
+    parseAsString.withDefault("")
+  );
+
   return (
     <Field className="w-full max-w-42">
-      <Select>
+      <Select onValueChange={setStatus} value={status}>
         <SelectTrigger>
           <div className="flex items-center gap-2">
             <FileIcon />

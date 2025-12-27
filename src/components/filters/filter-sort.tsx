@@ -1,4 +1,5 @@
 import { FunnelIcon } from "@phosphor-icons/react";
+import { parseAsString, useQueryState } from "nuqs";
 
 import { Field } from "@/components/ui/field";
 import {
@@ -14,9 +15,11 @@ import {
 const methods = ["Most Recent", "Oldest First", "Alphabetical", "Most Viewed"];
 
 export function FilterSort() {
+  const [sort, setSort] = useQueryState("sort", parseAsString.withDefault(""));
+
   return (
     <Field className="w-[150px]">
-      <Select>
+      <Select onValueChange={setSort} value={sort}>
         <SelectTrigger>
           <div className="flex items-center gap-2">
             <FunnelIcon />
