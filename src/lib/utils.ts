@@ -1,7 +1,47 @@
 import type { ClassValue } from "clsx";
 import { clsx } from "clsx";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+dayjs.extend(relativeTime);
+export function timeAgo(date?: Date | string | number | null): string {
+  if (!date) {
+    return "Unknown";
+  }
+
+  const postDate = dayjs(date);
+  if (!postDate.isValid()) {
+    return "Invalid date";
+  }
+
+  const now = dayjs();
+  const hoursAgo = now.diff(postDate, "hour");
+
+  // Future dates (edge case)
+  if (hoursAgo < 0) {
+    return postDate.format("MMM D, YYYY");
+  }
+
+  // Less than 24 hours: show relative time
+  if (hoursAgo < 24) {
+    return postDate.fromNow();
+  }
+
+  // Yesterday
+  if (hoursAgo < 48 && postDate.isSame(now.subtract(1, "day"), "day")) {
+    return "Yesterday";
+  }
+
+  // This year: show "Jan 15"
+  if (postDate.year() === now.year()) {
+    return postDate.format("MMM D");
+  }
+
+  // Older: show "Jan 15, 2023"
+  return postDate.format("MMM D, YYYY");
 }
