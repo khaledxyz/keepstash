@@ -102,6 +102,12 @@
   html {
     @apply font-sans;
   }
+
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
 }
 
 @layer utilities {
