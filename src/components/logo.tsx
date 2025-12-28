@@ -1,6 +1,7 @@
 import { AsteriskIcon } from "@phosphor-icons/react";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
+import { Link } from "react-router";
 
 import { cn } from "@/lib/utils";
 
@@ -18,14 +19,37 @@ const logoVariants = cva("inline-flex select-none items-center font-medium", {
 });
 
 interface LogoProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof logoVariants> {}
+  extends VariantProps<typeof logoVariants>,
+    Omit<React.HTMLAttributes<HTMLDivElement>, "children"> {
+  isLink?: boolean;
+  href?: string;
+}
 
-export function Logo({ size, className, ...props }: LogoProps) {
-  return (
-    <div className={cn(logoVariants({ size }), className)} {...props}>
+export function Logo({
+  size,
+  className,
+  isLink = false,
+  href = "/",
+  ...props
+}: LogoProps) {
+  const content = (
+    <>
       <AsteriskIcon weight="bold" />
       <span>{import.meta.env.VITE_APP_NAME || "keepstash"}</span>
+    </>
+  );
+
+  if (isLink) {
+    return (
+      <Link className={cn(logoVariants({ size }), className)} to={href}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div className={cn(logoVariants({ size }), className)} {...props}>
+      {content}
     </div>
   );
 }

@@ -10,7 +10,7 @@ export function Navbar() {
     <nav className="border-b">
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Logo />
+          <Logo href="/dashboard" isLink />
         </div>
 
         <div className="flex items-center">
