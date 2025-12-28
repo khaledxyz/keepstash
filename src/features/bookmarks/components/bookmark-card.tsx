@@ -1,7 +1,5 @@
-import { CalendarIcon, FolderIcon, LinkIcon } from "@phosphor-icons/react";
+import { LinkIcon } from "@phosphor-icons/react";
 
-import { BookmarkActionsDropdown } from "@/components/bookmark-actions-dropdown";
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -13,9 +11,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { timeAgo } from "@/lib/utils";
-
-import type { Bookmark } from "@/data/bookmarks";
+import type { Bookmark } from "../api";
+import { BookmarkActions } from "./bookmark-actions";
+import { BookmarkMetadata } from "./shared/bookmark-metadata";
+import { BookmarkTags } from "./shared/bookmark-tags";
 
 export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   return (
@@ -29,7 +28,7 @@ export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
           width={430}
         />
         <CardAction className="absolute top-4 right-4">
-          <BookmarkActionsDropdown />
+          <BookmarkActions bookmark={bookmark} />
         </CardAction>
       </div>
       <CardHeader>
@@ -40,25 +39,12 @@ export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
         </CardDescription>
       </CardHeader>
       <CardFooter className="flex-wrap gap-2">
-        <div className="flex items-center gap-1">
-          {bookmark.tags.map((tag, i) => (
-            <Badge key={i} variant="secondary">
-              {tag}
-            </Badge>
-          ))}
-        </div>
+        <BookmarkTags tags={bookmark.tags} />
         <Separator className="hidden sm:block" orientation="vertical" />
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex items-center gap-1">
-            <FolderIcon />
-            <span>{bookmark.folder}</span>
-          </div>
-          <Separator orientation="vertical" />
-          <div className="flex items-center gap-1">
-            <CalendarIcon />
-            <span>{timeAgo(bookmark.dateAdded)}</span>
-          </div>
-        </div>
+        <BookmarkMetadata
+          dateAdded={bookmark.dateAdded}
+          folder={bookmark.folder}
+        />
       </CardFooter>
     </Card>
   );

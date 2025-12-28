@@ -1,4 +1,4 @@
-import { XIcon } from "@phosphor-icons/react";
+import { FileIcon, FolderIcon, FunnelIcon } from "@phosphor-icons/react";
 import {
   parseAsArrayOf,
   parseAsIsoDateTime,
@@ -6,17 +6,15 @@ import {
   useQueryStates,
 } from "nuqs";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
+import { MOCK_FOLDERS, SORT_METHODS, STATUSES, TYPES } from "../constants";
+import { formatDateRange } from "../utils/date-utils";
+import { ActiveFilters } from "./active-filters";
 import { FilterDate } from "./filter-date";
-import { FilterFolder } from "./filter-folder";
 import { FilterSearch } from "./filter-search";
-import { FilterSort } from "./filter-sort";
-import { FilterStatus } from "./filter-status";
+import { FilterSelect } from "./filter-select";
 import { FilterTags } from "./filter-tags";
-import { FilterType } from "./filter-type";
 
 export function FiltersToolbar() {
   const [filters, setFilters] = useQueryStates({
@@ -29,6 +27,9 @@ export function FiltersToolbar() {
     dateFrom: parseAsIsoDateTime,
     dateTo: parseAsIsoDateTime,
   });
+
+  // TODO: Replace with API call for folders
+  const folders = MOCK_FOLDERS;
 
   const activeFilters = [
     ...(filters.search
@@ -99,96 +100,57 @@ export function FiltersToolbar() {
     });
   };
 
-  const hasActiveFilters = activeFilters.length > 0;
-
   return (
     <div className="space-y-2">
-      {/* first row */}
+      {/* First row */}
       <div className="flex items-center">
         <FilterSearch />
         <Separator className="mx-2" orientation="vertical" />
         <div className="flex items-center gap-1">
-          <FilterFolder />
-          <FilterType />
-          <FilterStatus />
-          <FilterSort />
+          <FilterSelect
+            icon={<FolderIcon />}
+            label="Folder"
+            options={folders}
+            placeholder="Folder"
+            queryKey="folder"
+          />
+          <FilterSelect
+            icon={<FileIcon />}
+            label="Type"
+            options={TYPES}
+            placeholder="Type"
+            queryKey="type"
+          />
+          <FilterSelect
+            className="w-full max-w-42"
+            icon={<FileIcon />}
+            label="Status"
+            options={STATUSES}
+            placeholder="Status"
+            queryKey="status"
+          />
+          <FilterSelect
+            icon={<FunnelIcon />}
+            label="Sort by"
+            options={SORT_METHODS}
+            placeholder="Sort by"
+            queryKey="sort"
+          />
           <FilterDate />
         </div>
       </div>
 
-      {/* second row */}
+      {/* Second row */}
       <div>
         <FilterTags />
       </div>
 
-      {/* active filters row */}
-      {hasActiveFilters && (
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="text-muted-foreground text-sm">Active filters:</span>
-          {activeFilters.map((filter, index) => (
-            <Badge
-              key={`${filter.key}-${filter.value}-${index}`}
-              variant="secondary"
-            >
-              <span>{filter.label}</span>
-              <button
-                className="ml-1 rounded-sm p-0.5 hover:bg-muted/50"
-                onClick={() => removeFilter(filter.key, filter.value)}
-                type="button"
-              >
-                <XIcon />
-              </button>
-            </Badge>
-          ))}
-          <Button
-            className="h-7 text-xs"
-            onClick={clearAllFilters}
-            size="sm"
-            variant="ghost"
-          >
-            Clear all
-          </Button>
-        </div>
-      )}
+      {/* Active filters */}
+      <ActiveFilters
+        filters={activeFilters}
+        onClearAll={clearAllFilters}
+        onRemove={removeFilter}
+      />
     </div>
   );
-}
-
-function formatDateRange(from: Date | null, to: Date | null) {
-  if (!(from || to)) {
-    return "";
-  }
-
-  const formatDate = (date: Date) => {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ];
-    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-  };
-
-  if (from && to) {
-    if (from.getTime() === to.getTime()) {
-      return formatDate(from);
-    }
-    return `${formatDate(from)} - ${formatDate(to)}`;
-  }
-
-  if (from) {
-    return formatDate(from);
-  }
-  if (to) {
-    return formatDate(to);
-  }
-  return "";
 }

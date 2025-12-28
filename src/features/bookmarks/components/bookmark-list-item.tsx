@@ -1,11 +1,5 @@
-import {
-  CalendarIcon,
-  DotsThreeVerticalIcon,
-  FolderIcon,
-} from "@phosphor-icons/react";
+import { DotsThreeVerticalIcon } from "@phosphor-icons/react";
 
-import { BookmarkActionsDropdown } from "@/components/bookmark-actions-dropdown";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Item,
@@ -18,11 +12,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { timeAgo } from "@/lib/utils";
+import type { Bookmark } from "../api";
+import { BookmarkActions } from "./bookmark-actions";
+import { BookmarkMetadata } from "./shared/bookmark-metadata";
+import { BookmarkTags } from "./shared/bookmark-tags";
 
-import type { Bookmark } from "@/data/bookmarks";
-
-export function BookmarkItem({ bookmark }: { bookmark: Bookmark }) {
+export function BookmarkListItem({ bookmark }: { bookmark: Bookmark }) {
   return (
     <Item role="listitem" variant="outline">
       <ItemMedia variant="image">
@@ -37,33 +32,23 @@ export function BookmarkItem({ bookmark }: { bookmark: Bookmark }) {
       <ItemContent>
         <ItemTitle className="line-clamp-1">{bookmark.title}</ItemTitle>
         <ItemDescription className="flex items-center">
-          <div className="flex items-center gap-1">
-            {bookmark.tags.map((tag, i) => (
-              <Badge key={i} variant="secondary">
-                {tag}
-              </Badge>
-            ))}
-          </div>
+          <BookmarkTags tags={bookmark.tags} />
           <Separator className="mx-2" orientation="vertical" />
-          <div className="flex items-center gap-1">
-            <FolderIcon />
-            <span>{bookmark.folder}</span>
-          </div>
-          <Separator className="mx-2" orientation="vertical" />
-          <div className="flex items-center gap-1">
-            <CalendarIcon />
-            <span>{timeAgo(bookmark.dateAdded)}</span>
-          </div>
+          <BookmarkMetadata
+            dateAdded={bookmark.dateAdded}
+            folder={bookmark.folder}
+            showSeparator={false}
+          />
         </ItemDescription>
       </ItemContent>
       <ItemActions>
-        <BookmarkActionsDropdown />
+        <BookmarkActions bookmark={bookmark} />
       </ItemActions>
     </Item>
   );
 }
 
-export function BookmarkItemSkeleton() {
+export function BookmarkListItemSkeleton() {
   return (
     <Item role="listitem" variant="outline">
       <ItemMedia variant="image">

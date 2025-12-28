@@ -3,22 +3,16 @@ import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
 import { Badge } from "@/components/ui/badge";
 
-const tags = [
-  "Design",
-  "Development",
-  "Marketing",
-  "Productivity",
-  "Tutorial",
-  "Article",
-  "Video",
-  "Tool",
-];
+import { MOCK_TAGS } from "../constants";
 
 export function FilterTags() {
   const [selectedTags, setSelectedTags] = useQueryState(
     "tags",
     parseAsArrayOf(parseAsString).withDefault([])
   );
+
+  // TODO: Replace with API call
+  const tags = MOCK_TAGS;
 
   const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
