@@ -8,6 +8,7 @@ import DashboardPage from "./routes/dashboard";
 import HomePage from "./routes/home";
 import { LoginPage } from "./routes/login";
 import { RegisterPage } from "./routes/register";
+import { SettingsPage } from "./routes/settings";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
 
           <Route element={<MainLayout />}>
             <Route element={<DashboardPage />} path="dashboard" />
+            <Route element={<SettingsPage />} path="dashboard/settings" />
           </Route>
 
           <Route element={<EmptyLayout />}>
