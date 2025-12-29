@@ -1,5 +1,9 @@
+import { FolderIcon } from "@phosphor-icons/react";
+import { Link } from "react-router";
+
 import { Logo } from "@/components/logo";
 import { ThemePicker } from "@/components/theme-picker";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { UserDropdown } from "@/components/user-dropdown";
 
@@ -11,6 +15,17 @@ export function Navbar() {
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Logo href="/dashboard" isLink />
+          <Separator orientation="vertical" />
+          <ul>
+            <li>
+              <Button asChild variant="ghost">
+                <Link to="dashboard/folders">
+                  <FolderIcon />
+                  <span>Folders</span>
+                </Link>
+              </Button>
+            </li>
+          </ul>
         </div>
 
         <div className="flex items-center">
