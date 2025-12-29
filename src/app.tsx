@@ -10,6 +10,7 @@ import HomePage from "./routes/home";
 import { LoginPage } from "./routes/login";
 import { RegisterPage } from "./routes/register";
 import { SettingsPage } from "./routes/settings";
+import { TagsPage } from "./routes/tags";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
             <Route element={<DashboardPage />} path="dashboard" />
             <Route element={<SettingsPage />} path="dashboard/settings" />
             <Route element={<FoldersPage />} path="dashboard/folders" />
+            <Route element={<TagsPage />} path="dashboard/tags" />
           </Route>
 
           <Route element={<EmptyLayout />}>

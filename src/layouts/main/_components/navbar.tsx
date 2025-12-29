@@ -1,4 +1,4 @@
-import { FolderIcon } from "@phosphor-icons/react";
+import { FolderIcon, TagIcon } from "@phosphor-icons/react";
 import { Link } from "react-router";
 
 import { Logo } from "@/components/logo";
@@ -22,6 +22,12 @@ export function Navbar() {
                 <Link to="dashboard/folders">
                   <FolderIcon />
                   <span>Folders</span>
+                </Link>
+              </Button>
+              <Button asChild variant="ghost">
+                <Link to="dashboard/tags">
+                  <TagIcon />
+                  <span>Tags</span>
                 </Link>
               </Button>
             </li>
