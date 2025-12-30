@@ -5,7 +5,10 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
+import { writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 import helmet from "helmet";
 
 import { AppModule } from "./app.module";
@@ -51,6 +54,21 @@ async function bootstrap() {
           : undefined,
     })
   );
+
+  // API documentation - disabled in prod
+  const config = new DocumentBuilder().addBearerAuth().build();
+  const document = SwaggerModule.createDocument(app, config, {
+    ignoreGlobalPrefix: true,
+  });
+
+  SwaggerModule.setup("docs", app, document);
+
+  const openapiPath = resolve(
+    __dirname,
+    configService.get("OPENAPI_FILE_PATH") || "../openapi.json"
+  );
+
+  writeFileSync(openapiPath, JSON.stringify(document, null, 2));
 
   // Start server
   await app.listen(configService.getOrThrow("APP_PORT"));
