@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
-import { ThemeProvider } from "@/providers/theme-provider";
-
 import { PromptProvider } from "@/hooks/use-prompt";
+
+import { ThemeProvider } from "@/providers/theme-provider";
 
 interface Props {
   children: ReactNode;

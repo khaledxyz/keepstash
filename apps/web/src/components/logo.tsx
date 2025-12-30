@@ -1,7 +1,9 @@
-import { AsteriskIcon } from "@phosphor-icons/react";
 import type { VariantProps } from "class-variance-authority";
-import { cva } from "class-variance-authority";
+
 import { Link } from "react-router";
+
+import { AsteriskIcon } from "@phosphor-icons/react";
+import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 

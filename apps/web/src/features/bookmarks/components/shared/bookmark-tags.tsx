@@ -4,6 +4,7 @@ export function BookmarkTags({ tags }: { tags: string[] }) {
   return (
     <div className="flex items-center gap-1">
       {tags.map((tag, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: <will update later>
         <Badge key={i} variant="secondary">
           {tag}
         </Badge>

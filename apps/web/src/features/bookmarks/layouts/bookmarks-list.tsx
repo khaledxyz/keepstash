@@ -1,4 +1,5 @@
 import type { Bookmark } from "../api";
+
 import {
   BookmarkListItem,
   BookmarkListItemSkeleton,
@@ -18,6 +19,7 @@ export function BookmarksListSkeleton() {
   return (
     <ul className="space-y-2">
       {Array.from({ length: 6 }).map((_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: <not needed>
         <BookmarkListItemSkeleton key={i} />
       ))}
     </ul>

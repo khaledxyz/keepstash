@@ -1,5 +1,6 @@
-import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 import { Route, Routes } from "react-router";
+
+import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 
 import { EmptyLayout } from "./layouts/empty";
 import { MainLayout } from "./layouts/main";

@@ -1,3 +1,5 @@
+import type { Tag } from "@/features/tags/api";
+
 import { Suspense, use } from "react";
 
 import { TagIcon } from "@phosphor-icons/react";
@@ -11,8 +13,6 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { ItemGroup } from "@/components/ui/item";
-
-import type { Tag } from "@/features/tags/api";
 
 import { TagItem, TagsSkeleton } from "./tag-item";
 

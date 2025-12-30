@@ -1,13 +1,14 @@
-import { FolderIcon, TagIcon } from "@phosphor-icons/react";
 import { Link } from "react-router";
+
+import { FolderIcon, TagIcon } from "@phosphor-icons/react";
+
+import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
 
 import { Logo } from "@/components/logo";
 import { ThemePicker } from "@/components/theme-picker";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { UserDropdown } from "@/components/user-dropdown";
-
-import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
 
 export function Navbar() {
   return (

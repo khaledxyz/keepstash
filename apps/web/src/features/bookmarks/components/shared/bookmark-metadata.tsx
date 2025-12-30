@@ -1,8 +1,8 @@
 import { CalendarIcon, FolderIcon } from "@phosphor-icons/react";
 
-import { Separator } from "@/components/ui/separator";
-
 import { timeAgo } from "@/lib/utils";
+
+import { Separator } from "@/components/ui/separator";
 
 interface Props {
   folder: string;
@@ -10,11 +10,7 @@ interface Props {
   showSeparator?: boolean;
 }
 
-export function BookmarkMetadata({
-  folder,
-  dateAdded,
-  showSeparator = true,
-}: Props) {
+export function BookmarkMetadata({ folder, dateAdded }: Props) {
   return (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-1">

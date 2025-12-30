@@ -1,3 +1,5 @@
+import type { Folder } from "../api";
+
 import { PencilIcon, TrashIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
@@ -9,8 +11,6 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
-
-import type { Folder } from "../api";
 
 export function FolderItem({ folder }: { folder: Folder }) {
   return (
@@ -37,6 +37,7 @@ export function FoldersSkeleton() {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 3 }).map((_, i) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: <not needed>
         <Item key={i} variant="outline">
           <ItemContent>
             <Skeleton className="mb-2 h-4 w-2/3" />

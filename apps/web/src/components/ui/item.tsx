@@ -1,22 +1,21 @@
+import type { VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
-import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { Slot } from "radix-ui";
 
-import { Separator } from "@/components/ui/separator";
-
 import { cn } from "@/lib/utils";
 
-function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
+import { Separator } from "@/components/ui/separator";
+
+function ItemGroup({ className, ...props }: React.ComponentProps<"ul">) {
   return (
-    <div
+    <ul
       className={cn(
         "group/item-group flex w-full flex-col gap-4 has-[[data-size=sm]]:gap-2.5 has-[[data-size=xs]]:gap-2",
         className
       )}
       data-slot="item-group"
-      role="list"
       {...props}
     />
   );
@@ -187,13 +186,13 @@ function ItemFooter({ className, ...props }: React.ComponentProps<"div">) {
 
 export {
   Item,
-  ItemMedia,
-  ItemContent,
   ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
   ItemGroup,
+  ItemHeader,
+  ItemMedia,
   ItemSeparator,
   ItemTitle,
-  ItemDescription,
-  ItemHeader,
-  ItemFooter,
 };

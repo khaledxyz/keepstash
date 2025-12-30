@@ -1,0 +1,76 @@
+{
+  "root": false,
+  "extends": ["ultracite/core", "ultracite/react"],
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              { "type": true },
+              ":BLANK_LINE:",
+              ["react", "react/**", "react-*", "react-*/**"],
+              ":BLANK_LINE:",
+              [":BUN:", ":NODE:"],
+              ":BLANK_LINE:",
+              ":PACKAGE:",
+              ":BLANK_LINE:",
+              ["@keepstash/*", "@keepstash/**"],
+              ":BLANK_LINE:",
+              ["@/lib", "@/lib/**"],
+              ":BLANK_LINE:",
+              ["@/hooks", "@/hooks/**"],
+              ":BLANK_LINE:",
+              ["@/providers", "@/providers/**"],
+              ":BLANK_LINE:",
+              ["@/features", "@/features/**"],
+              ":BLANK_LINE:",
+              ["@/components", "@/components/**"],
+              ":BLANK_LINE:",
+              ":PATH:"
+            ],
+            "identifierOrder": "natural"
+          }
+        }
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "nursery": {
+        "noShadow": "off",
+        "useSortedClasses": {
+          "level": "info",
+          "options": {
+            "attributes": ["classList"],
+            "functions": ["clsx", "cva"]
+          }
+        }
+      },
+      "style": {
+        "useImportType": {
+          "level": "error",
+          "options": {
+            "style": "separatedType"
+          }
+        },
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "options": {
+            "style": "interface"
+          }
+        }
+      }
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    },
+    "formatter": {
+      "enabled": true
+    }
+  }
+}

@@ -1,6 +1,6 @@
-import { create } from "zustand";
-
 import type { Bookmark } from "../api";
+
+import { create } from "zustand";
 
 interface BookmarkSheetStore {
   bookmark: Bookmark | null;

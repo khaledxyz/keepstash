@@ -1,6 +1,6 @@
+import type { VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
-import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { Tabs as TabsPrimitive } from "radix-ui";
 

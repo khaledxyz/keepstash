@@ -31,6 +31,7 @@ export function FilterTags() {
       {tags.map((tag, i) => (
         <Badge
           className="cursor-pointer"
+          // biome-ignore lint/suspicious/noArrayIndexKey: <will update later>
           key={i}
           onClick={() => toggleTag(tag)}
           variant={selectedTags.includes(tag) ? "default" : "outline"}

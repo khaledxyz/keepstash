@@ -1,17 +1,9 @@
+import type { Bookmark } from "@/features/bookmarks/api";
+
 import { Suspense, use } from "react";
 
 import { EmptyIcon } from "@phosphor-icons/react";
 
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
-
-import type { Bookmark } from "@/features/bookmarks/api";
 import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
 import {
   BookmarksGrid,
@@ -21,6 +13,15 @@ import {
   BookmarksList,
   BookmarksListSkeleton,
 } from "@/features/bookmarks/layouts/bookmarks-list";
+
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 interface Props {
   bookmarksPromise: Promise<Bookmark[]>;

@@ -1,9 +1,15 @@
+import type { Bookmark } from "../api";
+
 import {
   DotsThreeVerticalIcon,
   InfoIcon,
   PencilIcon,
   TrashIcon,
 } from "@phosphor-icons/react";
+
+import { sleep } from "@/lib/utils";
+
+import { usePrompt } from "@/hooks/use-prompt";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +20,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { usePrompt } from "@/hooks/use-prompt";
-
-import { sleep } from "@/lib/utils";
-
-import type { Bookmark } from "../api";
 import { useBookmarkSheet } from "../store/bookmark-sheet-store";
 
 export function BookmarkActions({ bookmark }: { bookmark: Bookmark }) {

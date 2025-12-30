@@ -1,3 +1,5 @@
+import type { Folder } from "@/features/folders/api";
+
 import { Suspense, use } from "react";
 
 import { FolderIcon } from "@phosphor-icons/react";
@@ -11,8 +13,6 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { ItemGroup } from "@/components/ui/item";
-
-import type { Folder } from "@/features/folders/api";
 
 // import { FolderDialog } from "@/features/folders/components/folder-dialog";
 

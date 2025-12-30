@@ -1,3 +1,5 @@
+import type { FilterOption } from "../types";
+
 import { parseAsString, useQueryState } from "nuqs";
 
 import { Field } from "@/components/ui/field";
@@ -10,8 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-import type { FilterOption } from "../types";
 
 interface FilterSelectProps {
   queryKey: string;

@@ -1,6 +1,7 @@
+import type { DateRange } from "react-day-picker";
+
 import { CalendarIcon } from "@phosphor-icons/react";
 import { parseAsIsoDateTime, useQueryState } from "nuqs";
-import type { DateRange } from "react-day-picker";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";

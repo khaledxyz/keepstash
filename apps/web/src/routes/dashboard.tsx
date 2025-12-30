@@ -2,12 +2,12 @@ import { useState } from "react";
 
 import { GridFourIcon, ListIcon } from "@phosphor-icons/react";
 
-import { Button } from "@/components/ui/button";
-
 import { fetchBookmarks } from "@/features/bookmarks/api";
 import { BookmarkSheet } from "@/features/bookmarks/components/bookmark-sheet";
 import { BookmarksView } from "@/features/bookmarks/components/bookmarks-view";
 import { FiltersToolbar } from "@/features/filters/components/filters-toolbar";
+
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const bookmarksPromise = fetchBookmarks();

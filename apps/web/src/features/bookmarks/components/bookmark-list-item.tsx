@@ -1,3 +1,5 @@
+import type { Bookmark } from "../api";
+
 import { DotsThreeVerticalIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
@@ -12,7 +14,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import type { Bookmark } from "../api";
 import { BookmarkActions } from "./bookmark-actions";
 import { BookmarkMetadata } from "./shared/bookmark-metadata";
 import { BookmarkTags } from "./shared/bookmark-tags";
