@@ -3,10 +3,12 @@ import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard } from "@nestjs/throttler";
 
-import { DatabaseModule } from "@/infra/database/database.module";
-import { HealthModule } from "@/infra/health/health.module";
-import { MetricsModule } from "@/infra/metrics/metrics.module";
-import { RateLimiterModule } from "@/infra/rate-limiter/rate-limiter.module";
+import { DatabaseModule } from "@infra/database/database.module";
+import { HealthModule } from "@infra/health/health.module";
+import { MetricsModule } from "@infra/metrics/metrics.module";
+import { RateLimiterModule } from "@infra/rate-limiter/rate-limiter.module";
+
+import { AuthModule } from "@modules/auth/auth.module";
 
 @Module({
   imports: [
@@ -16,6 +18,9 @@ import { RateLimiterModule } from "@/infra/rate-limiter/rate-limiter.module";
     RateLimiterModule,
     HealthModule,
     DatabaseModule,
+
+    // MODULES
+    AuthModule,
   ],
   controllers: [],
   providers: [
