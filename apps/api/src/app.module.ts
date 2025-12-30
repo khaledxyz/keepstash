@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard } from "@nestjs/throttler";
 
@@ -9,6 +10,7 @@ import { RateLimiterModule } from "infra/rate-limiter/rate-limiter.module";
 @Module({
   imports: [
     // INFRA
+    ConfigModule.forRoot({ isGlobal: true }),
     MetricsModule,
     RateLimiterModule,
     HealthModule,
