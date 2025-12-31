@@ -8,6 +8,9 @@
   },
   "linter": {
     "rules": {
+      "performance": {
+        "noNamespaceImport": "off"
+      },
       "style": {
         "noParameterProperties": "off",
         "useImportType": "off",
