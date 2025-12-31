@@ -10,6 +10,10 @@ import { RateLimiterModule } from "@infra/rate-limiter/rate-limiter.module";
 
 import { AuthModule } from "@modules/auth/auth.module";
 
+import { BookmarksModule } from "./modules/bookmarks/bookmarks.module";
+import { FoldersModule } from "./modules/folders/folders.module";
+import { TagsModule } from "./modules/tags/tags.module";
+
 @Module({
   imports: [
     // INFRA
@@ -21,6 +25,9 @@ import { AuthModule } from "@modules/auth/auth.module";
 
     // MODULES
     AuthModule,
+    BookmarksModule,
+    FoldersModule,
+    TagsModule,
   ],
   controllers: [],
   providers: [

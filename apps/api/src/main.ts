@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  RequestMethod,
-  ValidationPipe,
-} from "@nestjs/common";
+import { BadRequestException, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
@@ -39,9 +35,7 @@ async function bootstrap() {
   });
 
   // Global configuration
-  app.setGlobalPrefix(configService.get<string>("APP_PREFIX"), {
-    exclude: [{ path: ":code", method: RequestMethod.GET }],
-  });
+  app.setGlobalPrefix(configService.get<string>("APP_PREFIX"));
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -56,10 +50,8 @@ async function bootstrap() {
   );
 
   // API documentation - disabled in prod
-  const config = new DocumentBuilder().addBearerAuth().build();
-  const document = SwaggerModule.createDocument(app, config, {
-    ignoreGlobalPrefix: true,
-  });
+  const config = new DocumentBuilder().build();
+  const document = SwaggerModule.createDocument(app, config, {});
 
   SwaggerModule.setup("docs", app, document);
 

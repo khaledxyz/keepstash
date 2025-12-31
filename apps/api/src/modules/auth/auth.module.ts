@@ -42,6 +42,10 @@ import * as schema from "./auth.schema";
             disableOriginCheck:
               configService.getOrThrow("NODE_ENV") === "development",
           },
+
+          emailAndPassword: {
+            enabled: true,
+          },
         }),
       }),
       inject: [DATABASE_CONNECTION, ConfigService],
