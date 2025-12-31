@@ -14,13 +14,15 @@ import {
   Session,
   UseInterceptors,
 } from "@nestjs/common";
+
 import { UserSession } from "@thallesp/nestjs-better-auth";
 import { PaginatedResponse } from "@/common/pagination/pagination.types";
-import { CreateBookmarkDto } from "./dto/create-bookmark.dto";
+
+import { BookmarksService } from "./bookmarks.service";
 import { BookmarkDto } from "./dto/bookmark.dto";
+import { CreateBookmarkDto } from "./dto/create-bookmark.dto";
 import { QueryBookmarkDto } from "./dto/query-bookmark.dto";
 import { UpdateBookmarkDto } from "./dto/update-bookmark.dto";
-import { BookmarksService } from "./bookmarks.service";
 
 @Controller("bookmarks")
 @UseInterceptors(ClassSerializerInterceptor)
@@ -34,7 +36,10 @@ export class BookmarksController {
     @Body() createBookmarkDto: CreateBookmarkDto,
     @Session() session: UserSession
   ): Promise<BookmarkDto> {
-    return await this.service.createBookmark(createBookmarkDto, session.user.id);
+    return await this.service.createBookmark(
+      createBookmarkDto,
+      session.user.id
+    );
   }
 
   @Get()
