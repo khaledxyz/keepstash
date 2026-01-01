@@ -2,13 +2,13 @@
 pre-commit:
   commands:
     biome-check:
-      run: npx ultracite fix
+      run: pnpm ultracite fix
       include: "**/*.{ts,tsx,js,jsx,json,css,scss,md}"
       parallel: true
 
 pre-push:
   commands:
     biome-check:
-      run: npx ultracite fix
+      run: pnpm ultracite fix
       include: "**/*.{ts,tsx,js,jsx,json,css,scss,md}"
       parallel: true
