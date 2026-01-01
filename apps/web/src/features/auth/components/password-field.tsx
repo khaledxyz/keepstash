@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/input-group";
 
 interface PasswordFieldProps {
+  // biome-ignore lint/suspicious/noExplicitAny: <TODO: Check later>
   field: ControllerRenderProps<any, "password">;
   fieldState: ControllerFieldState;
   id?: string;
