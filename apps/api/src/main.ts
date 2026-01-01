@@ -51,7 +51,9 @@ async function bootstrap() {
 
   // API documentation - disabled in prod
   const config = new DocumentBuilder().build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    ignoreGlobalPrefix: true,
+  });
   SwaggerModule.setup("docs", app, document);
   const openapiPath = resolve(__dirname, "../../openapi.json");
   writeFileSync(openapiPath, JSON.stringify(document, null, 2));

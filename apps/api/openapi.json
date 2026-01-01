@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/metrics": {
+    "/metrics": {
       "get": {
         "operationId": "PrometheusController_index",
         "parameters": [],
@@ -13,7 +13,7 @@
         "tags": ["Prometheus"]
       }
     },
-    "/api/bookmarks": {
+    "/bookmarks": {
       "post": {
         "operationId": "BookmarksController_createBookmark",
         "parameters": [],
@@ -76,13 +76,30 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/BookmarkDto"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": ["Bookmarks"]
       }
     },
-    "/api/bookmarks/{id}": {
+    "/bookmarks/{id}": {
       "get": {
         "operationId": "BookmarksController_findOneBookmark",
         "parameters": [
@@ -172,7 +189,7 @@
         "tags": ["Bookmarks"]
       }
     },
-    "/api/bookmarks/{id}/restore": {
+    "/bookmarks/{id}/restore": {
       "patch": {
         "operationId": "BookmarksController_restoreBookmark",
         "parameters": [
@@ -200,7 +217,7 @@
         "tags": ["Bookmarks"]
       }
     },
-    "/api/folders": {
+    "/folders": {
       "post": {
         "operationId": "FoldersController_createFolder",
         "parameters": [],
@@ -263,13 +280,30 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FolderDto"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": ["Folders"]
       }
     },
-    "/api/folders/{id}": {
+    "/folders/{id}": {
       "get": {
         "operationId": "FoldersController_findOneFolder",
         "parameters": [
@@ -359,7 +393,7 @@
         "tags": ["Folders"]
       }
     },
-    "/api/folders/{id}/restore": {
+    "/folders/{id}/restore": {
       "patch": {
         "operationId": "FoldersController_restoreFolder",
         "parameters": [
@@ -387,7 +421,7 @@
         "tags": ["Folders"]
       }
     },
-    "/api/tags": {
+    "/tags": {
       "post": {
         "operationId": "TagsController_createTag",
         "parameters": [],
@@ -450,13 +484,30 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TagDto"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/PaginationMeta"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "tags": ["Tags"]
       }
     },
-    "/api/tags/{id}": {
+    "/tags/{id}": {
       "get": {
         "operationId": "TagsController_findOneTag",
         "parameters": [
@@ -546,7 +597,7 @@
         "tags": ["Tags"]
       }
     },
-    "/api/tags/{id}/restore": {
+    "/tags/{id}/restore": {
       "patch": {
         "operationId": "TagsController_restoreTag",
         "parameters": [
@@ -638,6 +689,10 @@
         },
         "required": ["id", "title", "url", "userId", "createdAt", "updatedAt"]
       },
+      "PaginationMeta": {
+        "type": "object",
+        "properties": {}
+      },
       "UpdateBookmarkDto": {
         "type": "object",
         "properties": {
@@ -675,6 +730,9 @@
       "FolderDto": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string"
+          },
           "name": {
             "type": "string"
           },
@@ -682,7 +740,7 @@
             "type": "string"
           }
         },
-        "required": ["name"]
+        "required": ["id", "name"]
       },
       "UpdateFolderDto": {
         "type": "object",
