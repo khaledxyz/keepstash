@@ -55,3 +55,24 @@ export function sleep(ms?: number): Promise<void> {
   const delay = ms ?? Math.floor(Math.random() * 2001) + 1000;
   return new Promise((resolve) => setTimeout(resolve, delay));
 }
+
+const WHITESPACE_REGEX = /\s+/;
+export function getInitials(name: string, maxInitials = 2): string {
+  if (!name || typeof name !== "string") {
+    return "";
+  }
+
+  const words = name
+    .trim()
+    .split(WHITESPACE_REGEX)
+    .filter((word) => word.length > 0);
+
+  if (words.length === 0) {
+    return "";
+  }
+
+  return words
+    .slice(0, maxInitials)
+    .map((word) => word[0].toUpperCase())
+    .join("");
+}

@@ -5,9 +5,13 @@ import {
   KeyboardIcon,
   LifebuoyIcon,
   SignOutIcon,
+  UserIcon,
 } from "@phosphor-icons/react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { authClient } from "@/lib/auth-client";
+import { getInitials } from "@/lib/utils";
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,24 +23,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function UserDropdown() {
+interface Props {
+  email?: string;
+  name?: string;
+}
+
+export function UserDropdown({ email = "", name = "" }: Props) {
+  async function handleSignOut() {
+    await authClient.signOut();
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="cursor-pointer">
-        <Button size="icon" variant="ghost">
+        <Button className="rounded-full" size="icon" variant="ghost">
           <Avatar>
-            <AvatarImage
-              alt="@khaledxyz"
-              src="https://github.com/khaledxyz.png"
-            />
-            <AvatarFallback>KH</AvatarFallback>
+            {/* TODO: add gravatar */}
+            <AvatarFallback>
+              {name ? getInitials(name) : <UserIcon />}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-40">
-        <DropdownMenuLabel className="flex flex-col">
-          me@khaledxyz.com
-        </DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-fit">
+        <DropdownMenuLabel className="flex flex-col">{email}</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <CreditCardIcon />
@@ -63,7 +73,7 @@ export function UserDropdown() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">
+        <DropdownMenuItem onClick={handleSignOut} variant="destructive">
           <SignOutIcon />
           Log out
         </DropdownMenuItem>

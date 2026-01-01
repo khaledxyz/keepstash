@@ -1,8 +1,13 @@
+import type {
+  ControllerFieldState,
+  ControllerRenderProps,
+} from "react-hook-form";
+
 import { useState } from "react";
 
 import { EyeIcon, EyeSlashIcon } from "@phosphor-icons/react";
 
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
@@ -10,20 +15,30 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 
+interface PasswordFieldProps {
+  field: ControllerRenderProps<any, "password">;
+  fieldState: ControllerFieldState;
+  id?: string;
+  label?: string;
+}
+
 export function PasswordField({
+  field,
+  fieldState,
   id = "password",
-  name = "password",
   label = "Password",
-}) {
+}: PasswordFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <Field>
+    <Field data-invalid={fieldState.invalid}>
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       <InputGroup>
         <InputGroupInput
+          {...field}
+          aria-invalid={fieldState.invalid}
+          autoComplete={id === "password" ? "current-password" : "new-password"}
           id={id}
-          name={name}
           placeholder="••••••••"
           type={showPassword ? "text" : "password"}
         />
@@ -36,6 +51,7 @@ export function PasswordField({
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
+      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
     </Field>
   );
 }

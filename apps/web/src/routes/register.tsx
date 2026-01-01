@@ -1,4 +1,12 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import z from "zod";
+
+import { authClient } from "@/lib/auth-client";
 
 import { AuthCard } from "@/features/auth/components/auth-card";
 import { EmailField } from "@/features/auth/components/email-field";
@@ -8,23 +16,85 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { Field, FieldGroup } from "@/components/ui/field";
 
+const registerSchema = z.object({
+  email: z.email("Please enter a valid email address."),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters.")
+    .max(100, "Password must be at most 100 characters."),
+});
+
+type RegisterFormData = z.infer<typeof registerSchema>;
+
 export function RegisterPage() {
-  function handleRegister() {
-    console.log("Register submitted");
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const form = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  async function onSubmit(data: RegisterFormData) {
+    setIsLoading(true);
+    try {
+      const result = await authClient.signUp.email({
+        name: data.email,
+        email: data.email,
+        password: data.password,
+      });
+
+      if (result.error) {
+        form.setError("email", {
+          message: result.error.message,
+        });
+        return;
+      }
+
+      toast.success("Account created!", {
+        description:
+          "Welcome to Keepstash. You've been automatically logged in.",
+      });
+
+      navigate("/dashboard");
+    } catch {
+      form.setError("email", {
+        message: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <AuthCard title="Create your account">
       <CardContent>
-        <FieldGroup>
-          <EmailField />
-          <PasswordField />
-          <Field>
-            <Button onClick={handleRegister} type="submit">
-              Register
-            </Button>
-          </Field>
-        </FieldGroup>
+        <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              control={form.control}
+              name="email"
+              render={({ field, fieldState }) => (
+                <EmailField field={field} fieldState={fieldState} />
+              )}
+            />
+            <Controller
+              control={form.control}
+              name="password"
+              render={({ field, fieldState }) => (
+                <PasswordField field={field} fieldState={fieldState} />
+              )}
+            />
+            <Field>
+              <Button disabled={isLoading} form="register-form" type="submit">
+                {isLoading ? "Creating account..." : "Register"}
+              </Button>
+            </Field>
+          </FieldGroup>
+        </form>
       </CardContent>
 
       <CardFooter className="inline-flex justify-center">

@@ -2,6 +2,8 @@ import { Link } from "react-router";
 
 import { FolderIcon, TagIcon } from "@phosphor-icons/react";
 
+import { authClient } from "@/lib/auth-client";
+
 import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
 
 import { Logo } from "@/components/logo";
@@ -11,6 +13,8 @@ import { Separator } from "@/components/ui/separator";
 import { UserDropdown } from "@/components/user-dropdown";
 
 export function Navbar() {
+  const { data: session } = authClient.useSession();
+
   return (
     <nav className="border-b">
       <div className="container flex items-center justify-between">
@@ -41,7 +45,7 @@ export function Navbar() {
             <BookmarkDialog />
           </div>
           <Separator className="mx-2" orientation="vertical" />
-          <UserDropdown />
+          <UserDropdown email={session?.user.email} name={session?.user.name} />
         </div>
       </div>
     </nav>

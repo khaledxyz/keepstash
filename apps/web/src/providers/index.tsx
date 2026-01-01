@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
+import { Toaster } from "@/components/ui/sonner";
 import { PromptProvider } from "@/hooks/use-prompt";
-
 import { ThemeProvider } from "@/providers/theme-provider";
 
 interface Props {
@@ -13,6 +13,7 @@ const themeStorageKey = `${import.meta.env.VITE_APP_NAME || "keepstash"}-theme`;
 export function Providers({ children }: Props) {
   return (
     <ThemeProvider defaultTheme="system" storageKey={themeStorageKey}>
+      <Toaster />
       <PromptProvider>{children}</PromptProvider>
     </ThemeProvider>
   );
