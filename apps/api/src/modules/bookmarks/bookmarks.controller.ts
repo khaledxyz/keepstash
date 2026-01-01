@@ -53,38 +53,42 @@ export class BookmarksController {
 
   @Get(":id")
   @HttpCode(HttpStatus.OK)
-  async findOne(
+  async findOneBookmark(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<BookmarkDto> {
-    return await this.service.findOne(id, session.user.id);
+    return await this.service.findOneBookmark(id, session.user.id);
   }
 
   @Patch(":id")
   @HttpCode(HttpStatus.OK)
-  async update(
+  async updateBookmark(
     @Param("id") id: string,
     @Body() updateBookmarkDto: UpdateBookmarkDto,
     @Session() session: UserSession
   ): Promise<BookmarkDto> {
-    return await this.service.update(id, updateBookmarkDto, session.user.id);
+    return await this.service.updateBookmark(
+      id,
+      updateBookmarkDto,
+      session.user.id
+    );
   }
 
   @Delete(":id")
   @HttpCode(HttpStatus.OK)
-  async delete(
+  async deleteBookmark(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<BookmarkDto> {
-    return await this.service.delete(id, session.user.id);
+    return await this.service.deleteBookmark(id, session.user.id);
   }
 
   @Patch(":id/restore")
   @HttpCode(HttpStatus.OK)
-  async restore(
+  async restoreBookmark(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<BookmarkDto> {
-    return await this.service.restore(id, session.user.id);
+    return await this.service.restoreBookmark(id, session.user.id);
   }
 }

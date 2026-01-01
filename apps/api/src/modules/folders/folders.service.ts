@@ -76,7 +76,7 @@ export class FoldersService {
     };
   }
 
-  async findOne(id: string, userId: string): Promise<FolderDto> {
+  async findOneFolder(id: string, userId: string): Promise<FolderDto> {
     const [folder] = await this.db
       .select()
       .from(schema.folder)
@@ -96,13 +96,13 @@ export class FoldersService {
     return folder;
   }
 
-  async update(
+  async updateFolder(
     id: string,
     updateFolderDto: UpdateFolderDto,
     userId: string
   ): Promise<FolderDto> {
     // Verify folder exists and belongs to user
-    await this.findOne(id, userId);
+    await this.findOneFolder(id, userId);
 
     const [updatedFolder] = await this.db
       .update(schema.folder)
@@ -122,9 +122,9 @@ export class FoldersService {
     return updatedFolder;
   }
 
-  async delete(id: string, userId: string): Promise<FolderDto> {
+  async deleteFolder(id: string, userId: string): Promise<FolderDto> {
     // Verify folder exists and belongs to user
-    await this.findOne(id, userId);
+    await this.findOneFolder(id, userId);
 
     const [deletedFolder] = await this.db
       .update(schema.folder)
@@ -143,7 +143,7 @@ export class FoldersService {
     return deletedFolder;
   }
 
-  async restore(id: string, userId: string): Promise<FolderDto> {
+  async restoreFolder(id: string, userId: string): Promise<FolderDto> {
     // Check if folder exists and belongs to user (including soft-deleted ones)
     const [folder] = await this.db
       .select()

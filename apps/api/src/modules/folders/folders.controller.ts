@@ -50,38 +50,42 @@ export class FoldersController {
 
   @Get(":id")
   @HttpCode(HttpStatus.OK)
-  async findOne(
+  async findOneFolder(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<FolderDto> {
-    return await this.service.findOne(id, session.user.id);
+    return await this.service.findOneFolder(id, session.user.id);
   }
 
   @Patch(":id")
   @HttpCode(HttpStatus.OK)
-  async update(
+  async updateFolder(
     @Param("id") id: string,
     @Body() updateFolderDto: UpdateFolderDto,
     @Session() session: UserSession
   ): Promise<FolderDto> {
-    return await this.service.update(id, updateFolderDto, session.user.id);
+    return await this.service.updateFolder(
+      id,
+      updateFolderDto,
+      session.user.id
+    );
   }
 
   @Delete(":id")
   @HttpCode(HttpStatus.OK)
-  async delete(
+  async deleteFolder(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<FolderDto> {
-    return await this.service.delete(id, session.user.id);
+    return await this.service.deleteFolder(id, session.user.id);
   }
 
   @Patch(":id/restore")
   @HttpCode(HttpStatus.OK)
-  async restore(
+  async restoreFolder(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<FolderDto> {
-    return await this.service.restore(id, session.user.id);
+    return await this.service.restoreFolder(id, session.user.id);
   }
 }

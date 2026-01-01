@@ -74,7 +74,7 @@ export class BookmarksService {
     };
   }
 
-  async findOne(id: string, userId: string): Promise<BookmarkDto> {
+  async findOneBookmark(id: string, userId: string): Promise<BookmarkDto> {
     const [bookmark] = await this.db
       .select()
       .from(schema.bookmark)
@@ -92,12 +92,12 @@ export class BookmarksService {
     return bookmark;
   }
 
-  async update(
+  async updateBookmark(
     id: string,
     updateBookmarkDto: UpdateBookmarkDto,
     userId: string
   ): Promise<BookmarkDto> {
-    await this.findOne(id, userId);
+    await this.findOneBookmark(id, userId);
     const [updatedBookmark] = await this.db
       .update(schema.bookmark)
       .set({
@@ -115,8 +115,8 @@ export class BookmarksService {
     return updatedBookmark;
   }
 
-  async delete(id: string, userId: string): Promise<BookmarkDto> {
-    await this.findOne(id, userId);
+  async deleteBookmark(id: string, userId: string): Promise<BookmarkDto> {
+    await this.findOneBookmark(id, userId);
     const [deletedBookmark] = await this.db
       .update(schema.bookmark)
       .set({
@@ -133,7 +133,7 @@ export class BookmarksService {
     return deletedBookmark;
   }
 
-  async restore(id: string, userId: string): Promise<BookmarkDto> {
+  async restoreBookmark(id: string, userId: string): Promise<BookmarkDto> {
     const [bookmark] = await this.db
       .select()
       .from(schema.bookmark)

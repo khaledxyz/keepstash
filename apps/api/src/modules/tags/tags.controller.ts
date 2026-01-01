@@ -50,38 +50,38 @@ export class TagsController {
 
   @Get(":id")
   @HttpCode(HttpStatus.OK)
-  async findOne(
+  async findOneTag(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<TagDto> {
-    return await this.service.findOne(id, session.user.id);
+    return await this.service.findOneTag(id, session.user.id);
   }
 
   @Patch(":id")
   @HttpCode(HttpStatus.OK)
-  async update(
+  async updateTag(
     @Param("id") id: string,
     @Body() updateTagDto: UpdateTagDto,
     @Session() session: UserSession
   ): Promise<TagDto> {
-    return await this.service.update(id, updateTagDto, session.user.id);
+    return await this.service.updateTag(id, updateTagDto, session.user.id);
   }
 
   @Delete(":id")
   @HttpCode(HttpStatus.OK)
-  async delete(
+  async deleteTag(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<TagDto> {
-    return await this.service.delete(id, session.user.id);
+    return await this.service.deleteTag(id, session.user.id);
   }
 
   @Patch(":id/restore")
   @HttpCode(HttpStatus.OK)
-  async restore(
+  async restoreTag(
     @Param("id") id: string,
     @Session() session: UserSession
   ): Promise<TagDto> {
-    return await this.service.restore(id, session.user.id);
+    return await this.service.restoreTag(id, session.user.id);
   }
 }

@@ -71,7 +71,7 @@ export class TagsService {
     };
   }
 
-  async findOne(id: string, userId: string): Promise<TagDto> {
+  async findOneTag(id: string, userId: string): Promise<TagDto> {
     const [tag] = await this.db
       .select()
       .from(schema.tag)
@@ -89,12 +89,12 @@ export class TagsService {
     return tag;
   }
 
-  async update(
+  async updateTag(
     id: string,
     updateTagDto: UpdateTagDto,
     userId: string
   ): Promise<TagDto> {
-    await this.findOne(id, userId);
+    await this.findOneTag(id, userId);
     const [updatedTag] = await this.db
       .update(schema.tag)
       .set({
@@ -112,8 +112,8 @@ export class TagsService {
     return updatedTag;
   }
 
-  async delete(id: string, userId: string): Promise<TagDto> {
-    await this.findOne(id, userId);
+  async deleteTag(id: string, userId: string): Promise<TagDto> {
+    await this.findOneTag(id, userId);
     const [deletedTag] = await this.db
       .update(schema.tag)
       .set({
@@ -130,7 +130,7 @@ export class TagsService {
     return deletedTag;
   }
 
-  async restore(id: string, userId: string): Promise<TagDto> {
+  async restoreTag(id: string, userId: string): Promise<TagDto> {
     const [tag] = await this.db
       .select()
       .from(schema.tag)
