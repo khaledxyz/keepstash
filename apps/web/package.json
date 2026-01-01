@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@keepstash/ts-sdk": "workspace:*",
     "@base-ui/react": "^1.0.0",
     "@faker-js/faker": "^10.1.0",
     "@fontsource-variable/manrope": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
     "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-query": "^5.90.16",
     "@types/date-fns": "^2.6.3",
     "better-auth": "^1.4.9",
     "class-variance-authority": "^0.7.1",
