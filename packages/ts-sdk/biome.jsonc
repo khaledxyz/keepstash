@@ -1,0 +1,17 @@
+{
+  "root": false,
+  "extends": "//",
+  "files": {
+    "includes": ["**", "!!src"]
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "useBlockStatements": "off"
+      },
+      "performance": {
+        "useTopLevelRegex": "off"
+      }
+    }
+  }
+}
