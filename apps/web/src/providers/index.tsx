@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 
+import { QueryClientProvider } from "@tanstack/react-query";
+
+import { queryClient } from "@/lib/query-client";
+
 import { PromptProvider } from "@/hooks/use-prompt";
 
 import { ThemeProvider } from "@/providers/theme-provider";
@@ -14,9 +18,11 @@ const themeStorageKey = `${import.meta.env.VITE_APP_NAME || "keepstash"}-theme`;
 
 export function Providers({ children }: Props) {
   return (
-    <ThemeProvider defaultTheme="system" storageKey={themeStorageKey}>
-      <Toaster />
-      <PromptProvider>{children}</PromptProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="system" storageKey={themeStorageKey}>
+        <Toaster position="bottom-center" richColors />
+        <PromptProvider>{children}</PromptProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
