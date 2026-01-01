@@ -1,8 +1,10 @@
 import type { ReactNode } from "react";
 
-import { Toaster } from "@/components/ui/sonner";
 import { PromptProvider } from "@/hooks/use-prompt";
+
 import { ThemeProvider } from "@/providers/theme-provider";
+
+import { Toaster } from "@/components/ui/sonner";
 
 interface Props {
   children: ReactNode;
