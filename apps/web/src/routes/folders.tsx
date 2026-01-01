@@ -1,10 +1,7 @@
-import { fetchFolders } from "@/features/folders/api";
 import { FolderDialog } from "@/features/folders/components/folder-dialog";
 import { FoldersView } from "@/features/folders/components/folder-view";
 
 export function FoldersPage() {
-  const foldersPromise = fetchFolders();
-
   return (
     <div className="container">
       <div className="mb-6 flex justify-between">
@@ -15,7 +12,7 @@ export function FoldersPage() {
         <FolderDialog />
       </div>
 
-      <FoldersView foldersPromise={foldersPromise} />
+      <FoldersView />
     </div>
   );
 }
