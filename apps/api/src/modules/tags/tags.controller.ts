@@ -16,7 +16,8 @@ import {
 } from "@nestjs/common";
 
 import { UserSession } from "@thallesp/nestjs-better-auth";
-import { PaginatedResponse } from "@/common/pagination/pagination.types";
+import { ApiPaginatedResponse } from "@/common/decorators/api-paginated-response.decorator";
+import { PaginatedResponse } from "@/common/types/paginated-response.type";
 
 import { CreateTagDto } from "./dto/create-tag.dto";
 import { QueryTagDto } from "./dto/query-tag.dto";
@@ -41,6 +42,7 @@ export class TagsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(TagDto)
   async findUserTags(
     @Query() query: QueryTagDto,
     @Session() session: UserSession

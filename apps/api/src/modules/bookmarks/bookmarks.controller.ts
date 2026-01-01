@@ -16,7 +16,8 @@ import {
 } from "@nestjs/common";
 
 import { UserSession } from "@thallesp/nestjs-better-auth";
-import { PaginatedResponse } from "@/common/pagination/pagination.types";
+import { ApiPaginatedResponse } from "@/common/decorators/api-paginated-response.decorator";
+import { PaginatedResponse } from "@/common/types/paginated-response.type";
 
 import { BookmarksService } from "./bookmarks.service";
 import { BookmarkDto } from "./dto/bookmark.dto";
@@ -44,6 +45,7 @@ export class BookmarksController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(BookmarkDto)
   async findUserBookmarks(
     @Query() query: QueryBookmarkDto,
     @Session() session: UserSession

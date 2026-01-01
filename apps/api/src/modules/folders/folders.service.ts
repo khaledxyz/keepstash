@@ -2,9 +2,9 @@ import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 import * as schema from "@infra/database/schema";
 
-import { and, count, eq, ilike, isNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, ilike, isNull } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { PaginatedResponse } from "@/common/pagination/pagination.types";
+import { PaginatedResponse } from "@/common/types/paginated-response.type";
 import { DATABASE_CONNECTION } from "@/infra/database/database-connection";
 
 import { CreateFolderDto } from "./dto/create-folder.dto";
@@ -57,7 +57,7 @@ export class FoldersService {
         .where(and(...conditions))
         .limit(limit)
         .offset(offset)
-        .orderBy(sql`${schema.folder.createdAt} DESC`),
+        .orderBy(desc(schema.folder.createdAt)),
 
       this.db
         .select({ total: count() })
@@ -66,7 +66,7 @@ export class FoldersService {
     ]);
 
     return {
-      data: folders,
+      items: folders,
       meta: {
         page,
         limit,

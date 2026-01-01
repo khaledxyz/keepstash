@@ -16,7 +16,8 @@ import {
 } from "@nestjs/common";
 
 import { UserSession } from "@thallesp/nestjs-better-auth";
-import { PaginatedResponse } from "@/common/pagination/pagination.types";
+import { ApiPaginatedResponse } from "@/common/decorators/api-paginated-response.decorator";
+import { PaginatedResponse } from "@/common/types/paginated-response.type";
 
 import { CreateFolderDto } from "./dto/create-folder.dto";
 import { FolderDto } from "./dto/folder.dto";
@@ -41,6 +42,7 @@ export class FoldersController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiPaginatedResponse(FolderDto)
   async findUserFolders(
     @Query() query: QueryFolderDto,
     @Session() session: UserSession

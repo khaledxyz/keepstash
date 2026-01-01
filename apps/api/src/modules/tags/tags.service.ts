@@ -4,7 +4,7 @@ import * as schema from "@infra/database/schema";
 
 import { and, count, eq, ilike, isNull, sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { PaginatedResponse } from "@/common/pagination/pagination.types";
+import { PaginatedResponse } from "@/common/types/paginated-response.type";
 import { DATABASE_CONNECTION } from "@/infra/database/database-connection";
 
 import { CreateTagDto } from "./dto/create-tag.dto";
@@ -61,7 +61,7 @@ export class TagsService {
     ]);
 
     return {
-      data: tags,
+      items: tags,
       meta: {
         page,
         limit,
