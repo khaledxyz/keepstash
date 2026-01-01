@@ -1,20 +1,85 @@
-import { faker } from "@faker-js/faker";
+import type {
+  CreateFolder,
+  CreateFolderResponse,
+  DeleteFolderResponse,
+  FindUserFoldersData,
+  FindUserFoldersResponse,
+} from "@keepstash/ts-sdk";
+import type {
+  UseMutationOptions,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 
-import { sleep } from "@/lib/utils";
+import { folders } from "@keepstash/ts-sdk";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-export function createFolder() {
-  return {
-    id: faker.string.uuid(),
-    title: faker.lorem.words({ min: 1, max: 3 }),
-    description: faker.lorem.sentence(),
-    linksCount: faker.number.int({ min: 0, max: 120 }),
-    dateCreated: faker.date.past({ years: 2 }),
-  };
-}
+import { invalidateByPrefix } from "@/lib/query-client";
+import { queryKeysFactory } from "@/lib/query-key-factory";
 
-export async function fetchFolders() {
-  await sleep(0);
-  return faker.helpers.multiple(createFolder, { count: 5 });
-}
+export const foldersQueryKeys = queryKeysFactory("folders");
 
-export type Folder = ReturnType<typeof createFolder>;
+type FindUserFoldersParams = NonNullable<FindUserFoldersData["query"]>;
+
+export const useFindUserFolders = (
+  params?: FindUserFoldersParams,
+  options?: Omit<
+    UseQueryOptions<FindUserFoldersResponse, Error>,
+    "queryKey" | "queryFn"
+  >
+) =>
+  useQuery({
+    queryKey: foldersQueryKeys.list(params ?? {}),
+    queryFn: async () => {
+      const result = await folders.findUserFolders({
+        query: params,
+      });
+      if (result.error) {
+        throw result.error;
+      }
+      if (result.data === undefined) {
+        throw new Error("No data returned from findUserFolders");
+      }
+      return result.data;
+    },
+    ...options,
+  });
+
+export const useCreateFolder = (
+  options?: UseMutationOptions<CreateFolderResponse, Error, CreateFolder>
+) =>
+  useMutation({
+    mutationFn: async (payload: CreateFolder) => {
+      const result = await folders.createFolder({ body: payload });
+      if (result.error) {
+        throw result.error;
+      }
+      if (!result.data) {
+        throw new Error("No data returned from createFolder");
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      invalidateByPrefix("folders");
+    },
+    ...options,
+  });
+
+export const useDeleteFolder = (
+  options?: UseMutationOptions<DeleteFolderResponse, Error, string>
+) =>
+  useMutation({
+    mutationFn: async (id: string) => {
+      const result = await folders.deleteFolder({ path: { id } });
+      if (result.error) {
+        throw result.error;
+      }
+      if (!result.data) {
+        throw new Error("No data returned from deleteFolder");
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      invalidateByPrefix("folders");
+    },
+    ...options,
+  });

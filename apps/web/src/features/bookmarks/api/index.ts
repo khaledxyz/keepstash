@@ -1,7 +1,71 @@
-import { faker } from "@faker-js/faker";
+import type {
+  CreateBookmark,
+  CreateBookmarkResponse,
+  FindUserBookmarksData,
+  FindUserBookmarksResponse,
+} from "@keepstash/ts-sdk";
+import type {
+  UseMutationOptions,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 
+import { faker } from "@faker-js/faker";
+import { bookmarks } from "@keepstash/ts-sdk";
+import { useMutation, useQuery } from "@tanstack/react-query";
+
+import { invalidateByPrefix } from "@/lib/query-client";
+import { queryKeysFactory } from "@/lib/query-key-factory";
 import { sleep } from "@/lib/utils";
 
+export const bookmarksQueryKeys = queryKeysFactory("bookmarks");
+
+type FindUserBookmarksParams = NonNullable<FindUserBookmarksData["query"]>;
+
+export const useFindUserBookmarks = (
+  params?: FindUserBookmarksParams,
+  options?: Omit<
+    UseQueryOptions<FindUserBookmarksResponse, Error>,
+    "queryKey" | "queryFn"
+  >
+) =>
+  useQuery({
+    queryKey: bookmarksQueryKeys.list(params ?? {}),
+    queryFn: async () => {
+      const result = await bookmarks.findUserBookmarks({
+        query: params,
+      });
+      if (result.error) {
+        throw result.error;
+      }
+      if (result.data === undefined) {
+        throw new Error("No data returned from findUserBookmarks");
+      }
+      return result.data;
+    },
+    ...options,
+  });
+
+export const useCreateBookmark = (
+  options?: UseMutationOptions<CreateBookmarkResponse, Error, CreateBookmark>
+) =>
+  useMutation({
+    mutationFn: async (payload: CreateBookmark) => {
+      const result = await bookmarks.createBookmark({ body: payload });
+      if (result.error) {
+        throw result.error;
+      }
+      if (!result.data) {
+        throw new Error("No data returned from createBookmark");
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      invalidateByPrefix("bookmarks");
+    },
+    ...options,
+  });
+
+// Legacy faker methods (deprecated - use hooks above)
 export function createBookmark() {
   return {
     id: faker.string.uuid(),
