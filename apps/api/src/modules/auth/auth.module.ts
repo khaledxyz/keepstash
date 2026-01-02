@@ -9,6 +9,7 @@ import { DATABASE_CONNECTION } from "@infra/database/database-connection";
 import { AuthModule as BetterAuthModule } from "@thallesp/nestjs-better-auth";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { emailOTP } from "better-auth/plugins";
 
 import * as schema from "./auth.schema";
 
@@ -42,7 +43,14 @@ import * as schema from "./auth.schema";
             disableOriginCheck:
               configService.getOrThrow("NODE_ENV") === "development",
           },
-
+          plugins: [
+            emailOTP({
+              // biome-ignore lint/suspicious/useAwait: <TODO: handle email submit>
+              async sendVerificationOTP({ email, otp, type }) {
+                console.log(email, type, otp);
+              },
+            }),
+          ],
           emailAndPassword: {
             enabled: true,
           },

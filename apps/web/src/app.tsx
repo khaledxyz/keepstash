@@ -10,6 +10,7 @@ import { PublicOnlyLayout } from "./layouts/public-only";
 import { Providers } from "./providers";
 import DashboardPage from "./routes/dashboard";
 import { FoldersPage } from "./routes/folders";
+import { ForgotPasswordPage } from "./routes/forgot-password";
 import HomePage from "./routes/home";
 import { LoginPage } from "./routes/login";
 import { NotFoundPage } from "./routes/not-found";
@@ -40,6 +41,10 @@ export default function App() {
               <Route element={<EmptyLayout />}>
                 <Route element={<RegisterPage />} path="register" />
                 <Route element={<LoginPage />} path="login" />
+                <Route
+                  element={<ForgotPasswordPage />}
+                  path="forgot-password"
+                />
               </Route>
             </Route>
 

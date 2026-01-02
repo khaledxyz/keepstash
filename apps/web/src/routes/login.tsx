@@ -78,6 +78,14 @@ export function LoginPage() {
                 <PasswordField field={field} fieldState={fieldState} />
               )}
             />
+            <div className="flex justify-end">
+              <Link
+                className="text-muted-foreground text-sm underline hover:text-foreground"
+                to="/forgot-password"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <Field>
               <Button disabled={isLoading} form="login-form" type="submit">
                 {isLoading ? <Spinner /> : null}

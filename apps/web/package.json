@@ -9,11 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@keepstash/ts-sdk": "workspace:*",
     "@base-ui/react": "^1.0.0",
     "@faker-js/faker": "^10.1.0",
     "@fontsource-variable/manrope": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
+    "@keepstash/ts-sdk": "workspace:*",
     "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-query": "^5.90.16",
@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.19",
+    "input-otp": "^1.4.2",
     "next-themes": "^0.4.6",
     "nuqs": "^2.8.6",
     "radix-ui": "^1.4.3",
