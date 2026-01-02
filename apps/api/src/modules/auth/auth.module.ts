@@ -46,6 +46,19 @@ import * as schema from "./auth.schema";
           emailAndPassword: {
             enabled: true,
           },
+
+          user: {
+            changeEmail: {
+              enabled: true,
+            },
+          },
+          emailVerification: {
+            // Required to send the verification email
+            // biome-ignore lint/suspicious/useAwait: <TODO: handle email submit>
+            sendVerificationEmail: async ({ user, url, token }) => {
+              console.log(user, url, token);
+            },
+          },
         }),
       }),
       inject: [DATABASE_CONNECTION, ConfigService],
