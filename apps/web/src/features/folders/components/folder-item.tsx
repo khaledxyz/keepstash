@@ -15,11 +15,27 @@ import {
 } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useDeleteFolder } from "../api";
+import { useDeleteFolder, useRestoreFolder } from "../api";
 
 export function FolderItem({ folder }: { folder: Folder }) {
   const prompt = usePrompt();
   const { mutateAsync: deleteFolder } = useDeleteFolder();
+  const { mutateAsync: restoreFolder } = useRestoreFolder();
+
+  async function handleRestoreFolder() {
+    try {
+      await restoreFolder(folder.id);
+      toast.success("Folder restored", {
+        description: `"${folder.name}" has been restored successfully.`,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      toast.error("Failed to restore folder", {
+        description: message,
+      });
+    }
+  }
 
   async function handleDeleteFolder() {
     await prompt({
@@ -33,6 +49,10 @@ export function FolderItem({ folder }: { folder: Folder }) {
         await deleteFolder(folder.id);
         toast.success("Folder deleted", {
           description: `"${folder.name}" has been deleted successfully.`,
+          action: {
+            label: "Undo",
+            onClick: handleRestoreFolder,
+          },
         });
       },
       onError: (error) => {

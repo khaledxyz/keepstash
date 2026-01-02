@@ -4,6 +4,7 @@ import type {
   DeleteFolderResponse,
   FindUserFoldersData,
   FindUserFoldersResponse,
+  RestoreFolderResponse,
 } from "@keepstash/ts-sdk";
 import type {
   UseMutationOptions,
@@ -75,6 +76,26 @@ export const useDeleteFolder = (
       }
       if (!result.data) {
         throw new Error("No data returned from deleteFolder");
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      invalidateByPrefix("folders");
+    },
+    ...options,
+  });
+
+export const useRestoreFolder = (
+  options?: UseMutationOptions<RestoreFolderResponse, Error, string>
+) =>
+  useMutation({
+    mutationFn: async (id: string) => {
+      const result = await folders.restoreFolder({ path: { id } });
+      if (result.error) {
+        throw result.error;
+      }
+      if (!result.data) {
+        throw new Error("No data returned from restoreFolder");
       }
       return result.data;
     },
