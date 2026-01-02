@@ -4,6 +4,7 @@ import type {
   DeleteTagResponse,
   FindUserTagsData,
   FindUserTagsResponse,
+  RestoreTagResponse,
 } from "@keepstash/ts-sdk";
 import type {
   UseMutationOptions,
@@ -77,6 +78,26 @@ export const useDeleteTag = (
       }
       if (!result.data) {
         throw new Error("No data returned from deleteTag");
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      invalidateByPrefix("tags");
+    },
+    ...options,
+  });
+
+export const useRestoreTag = (
+  options?: UseMutationOptions<RestoreTagResponse, Error, string>
+) =>
+  useMutation({
+    mutationFn: async (id: string) => {
+      const result = await tags.restoreTag({ path: { id } });
+      if (result.error) {
+        throw result.error;
+      }
+      if (!result.data) {
+        throw new Error("No data returned from restoreTag");
       }
       return result.data;
     },

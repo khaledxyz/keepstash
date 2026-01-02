@@ -14,11 +14,27 @@ import {
 } from "@/components/ui/item";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useDeleteTag } from "../api";
+import { useDeleteTag, useRestoreTag } from "../api";
 
 export function TagItem({ tag }: { tag: Tag }) {
   const prompt = usePrompt();
   const { mutateAsync: deleteTag } = useDeleteTag();
+  const { mutateAsync: restoreTag } = useRestoreTag();
+
+  async function handleRestoreTag() {
+    try {
+      await restoreTag(tag.id);
+      toast.success("Tag restored", {
+        description: `${tag.name} has been restored successfully.`,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Unknown error occurred";
+      toast.error("Failed to restore tag", {
+        description: message,
+      });
+    }
+  }
 
   async function handleDeleteTag() {
     await prompt({
@@ -32,6 +48,10 @@ export function TagItem({ tag }: { tag: Tag }) {
         await deleteTag(tag.id);
         toast.success("Tag deleted", {
           description: `${tag.name} has been deleted successfully.`,
+          action: {
+            label: "Undo",
+            onClick: handleRestoreTag,
+          },
         });
       },
       onError: (error) => {
