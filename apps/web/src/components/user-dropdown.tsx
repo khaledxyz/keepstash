@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 import {
   CreditCardIcon,
   GearIcon,
@@ -52,9 +54,11 @@ export function UserDropdown({ email = "", name = "" }: Props) {
             <CreditCardIcon />
             Billing
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <GearIcon />
-            Settings
+          <DropdownMenuItem asChild>
+            <Link to="/dashboard/settings">
+              <GearIcon />
+              <span>Settings</span>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <KeyboardIcon />
@@ -63,9 +67,15 @@ export function UserDropdown({ email = "", name = "" }: Props) {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <GithubLogoIcon />
-            GitHub
+          <DropdownMenuItem asChild>
+            <Link
+              rel="noopener noreferrer"
+              target="_blank"
+              to="https://github.com/khaledxyz/keepstash"
+            >
+              <GithubLogoIcon />
+              <span>GitHub</span>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
             <LifebuoyIcon />
