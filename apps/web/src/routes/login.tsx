@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
@@ -24,7 +24,6 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export function LoginPage() {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormData>({
@@ -50,7 +49,7 @@ export function LoginPage() {
         return;
       }
 
-      navigate("/dashboard");
+      // PublicOnlyLayout will handle redirect automatically
     } catch {
       form.setError("email", {
         message: "An unexpected error occurred. Please try again.",
