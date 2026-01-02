@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -27,7 +27,6 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterPage() {
-  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<RegisterFormData>({
@@ -59,7 +58,7 @@ export function RegisterPage() {
           "Welcome to Keepstash. You've been automatically logged in.",
       });
 
-      navigate("/dashboard");
+      // PublicOnlyLayout will handle redirect automatically
     } catch {
       form.setError("email", {
         message: "An unexpected error occurred. Please try again.",
