@@ -13,8 +13,7 @@ import { EmailField } from "@/features/auth/components/email-field";
 import { PasswordField } from "@/features/auth/components/password-field";
 
 import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Spinner } from "@/components/ui/spinner";
 
 const registerSchema = z.object({
   email: z.email("Please enter a valid email address."),
@@ -69,41 +68,43 @@ export function RegisterPage() {
   }
 
   return (
-    <AuthCard title="Create your account">
-      <CardContent>
-        <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              control={form.control}
-              name="email"
-              render={({ field, fieldState }) => (
-                <EmailField field={field} fieldState={fieldState} />
-              )}
-            />
-            <Controller
-              control={form.control}
-              name="password"
-              render={({ field, fieldState }) => (
-                <PasswordField field={field} fieldState={fieldState} />
-              )}
-            />
-            <Field>
-              <Button disabled={isLoading} form="register-form" type="submit">
-                {isLoading ? "Creating account..." : "Register"}
-              </Button>
-            </Field>
-          </FieldGroup>
-        </form>
-      </CardContent>
+    <AuthCard title="Create account">
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-3">
+          <Controller
+            control={form.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <EmailField field={field} fieldState={fieldState} />
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <PasswordField field={field} fieldState={fieldState} />
+            )}
+          />
+        </div>
 
-      <CardFooter className="inline-flex justify-center">
-        <p>
-          Already have an account?{" "}
-          <Link className="underline" to="/login">
-            Login
-          </Link>
-        </p>
-      </CardFooter>
+        <Button className="w-full" disabled={isLoading} type="submit">
+          {isLoading ? (
+            <>
+              <Spinner />
+              Creating account...
+            </>
+          ) : (
+            "Sign up"
+          )}
+        </Button>
+      </form>
+
+      <p className="text-center text-muted-foreground text-sm">
+        Already have an account?{" "}
+        <Link className="text-foreground hover:underline" to="/login">
+          Login
+        </Link>
+      </p>
     </AuthCard>
   );
 }

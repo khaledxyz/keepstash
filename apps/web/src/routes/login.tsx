@@ -12,8 +12,6 @@ import { EmailField } from "@/features/auth/components/email-field";
 import { PasswordField } from "@/features/auth/components/password-field";
 
 import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 
 const loginSchema = z.object({
@@ -61,49 +59,51 @@ export function LoginPage() {
 
   return (
     <AuthCard title="Welcome back">
-      <CardContent>
-        <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              control={form.control}
-              name="email"
-              render={({ field, fieldState }) => (
-                <EmailField field={field} fieldState={fieldState} />
-              )}
-            />
-            <Controller
-              control={form.control}
-              name="password"
-              render={({ field, fieldState }) => (
-                <PasswordField field={field} fieldState={fieldState} />
-              )}
-            />
-            <div className="flex justify-end">
-              <Link
-                className="text-muted-foreground text-sm underline hover:text-foreground"
-                to="/forgot-password"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Field>
-              <Button disabled={isLoading} form="login-form" type="submit">
-                {isLoading ? <Spinner /> : null}
-                <span>Login</span>
-              </Button>
-            </Field>
-          </FieldGroup>
-        </form>
-      </CardContent>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="space-y-3">
+          <Controller
+            control={form.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <EmailField field={field} fieldState={fieldState} />
+            )}
+          />
+          <Controller
+            control={form.control}
+            name="password"
+            render={({ field, fieldState }) => (
+              <PasswordField field={field} fieldState={fieldState} />
+            )}
+          />
+        </div>
 
-      <CardFooter className="inline-flex justify-center">
-        <p>
-          Don't have an account?{" "}
-          <Link className="underline" to="/register">
-            Register
+        <div className="flex justify-end">
+          <Link
+            className="text-muted-foreground text-sm hover:text-foreground"
+            to="/forgot-password"
+          >
+            Forgot password?
           </Link>
-        </p>
-      </CardFooter>
+        </div>
+
+        <Button className="w-full" disabled={isLoading} type="submit">
+          {isLoading ? (
+            <>
+              <Spinner />
+              Logging in...
+            </>
+          ) : (
+            "Login"
+          )}
+        </Button>
+      </form>
+
+      <p className="text-center text-muted-foreground text-sm">
+        Don't have an account?{" "}
+        <Link className="text-foreground hover:underline" to="/register">
+          Sign up
+        </Link>
+      </p>
     </AuthCard>
   );
 }

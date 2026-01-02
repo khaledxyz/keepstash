@@ -16,8 +16,6 @@ import { PasswordField } from "@/features/auth/components/password-field";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { CardContent, CardFooter } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 
 const emailSchema = z.object({
@@ -187,90 +185,97 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <AuthCard
-      title={step === "email" ? "Reset your password" : "Verify & reset"}
-    >
-      <CardContent>
-        {step === "email" ? (
-          <form
-            id="email-form"
-            onSubmit={emailForm.handleSubmit(onEmailSubmit)}
-          >
-            <FieldGroup>
-              <p className="text-muted-foreground text-sm">
-                Enter your email address and we'll send you a verification code
-                to reset your password.
-              </p>
-              <Controller
-                control={emailForm.control}
-                name="email"
-                render={({ field, fieldState }) => (
-                  <EmailField field={field} fieldState={fieldState} />
-                )}
-              />
-              <Field>
-                <Button disabled={isLoading} form="email-form" type="submit">
-                  {isLoading && <Spinner />}
-                  <span>Send verification code</span>
-                </Button>
-              </Field>
-            </FieldGroup>
-          </form>
-        ) : (
-          <form
-            id="reset-form"
-            onSubmit={resetForm.handleSubmit(onResetSubmit)}
-          >
-            <FieldGroup>
-              <Alert>
-                <CheckCircleIcon className="text-green-600" weight="fill" />
-                <AlertDescription>
-                  Verification code sent to{" "}
-                  <span className="font-medium">{email}</span>
-                </AlertDescription>
-              </Alert>
-              <Controller
-                control={resetForm.control}
-                name="otp"
-                render={({ field, fieldState }) => (
-                  <OtpField field={field} fieldState={fieldState} />
-                )}
-              />
-              <Controller
-                control={resetForm.control}
-                name="password"
-                render={({ field, fieldState }) => (
-                  <PasswordField
-                    field={field}
-                    fieldState={fieldState}
-                    id="new-password"
-                    label="New password"
-                  />
-                )}
-              />
-              <Field>
-                <Button disabled={isLoading} form="reset-form" type="submit">
-                  {isLoading && <Spinner />}
-                  <span>Reset password</span>
-                </Button>
-              </Field>
-              <Button onClick={handleBackToEmail} type="button" variant="ghost">
-                <ArrowLeftIcon />
-                <span>Back to email</span>
-              </Button>
-            </FieldGroup>
-          </form>
-        )}
-      </CardContent>
+    <AuthCard title={step === "email" ? "Reset password" : "Enter code"}>
+      {step === "email" ? (
+        <form
+          className="space-y-4"
+          onSubmit={emailForm.handleSubmit(onEmailSubmit)}
+        >
+          <p className="text-muted-foreground text-sm">
+            We'll send you a verification code to reset your password.
+          </p>
 
-      <CardFooter className="inline-flex justify-center">
-        <p>
-          Remember your password?{" "}
-          <Link className="underline" to="/login">
-            Login
-          </Link>
-        </p>
-      </CardFooter>
+          <Controller
+            control={emailForm.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <EmailField field={field} fieldState={fieldState} />
+            )}
+          />
+
+          <Button className="w-full" disabled={isLoading} type="submit">
+            {isLoading ? (
+              <>
+                <Spinner />
+                Sending...
+              </>
+            ) : (
+              "Continue"
+            )}
+          </Button>
+
+          <p className="text-center text-muted-foreground text-sm">
+            <Link className="text-foreground hover:underline" to="/login">
+              Back to login
+            </Link>
+          </p>
+        </form>
+      ) : (
+        <form
+          className="space-y-4"
+          onSubmit={resetForm.handleSubmit(onResetSubmit)}
+        >
+          <Alert className="bg-green-50 dark:bg-green-950/20">
+            <CheckCircleIcon className="text-green-600" weight="fill" />
+            <AlertDescription className="text-sm">
+              Code sent to <strong>{email}</strong>
+            </AlertDescription>
+          </Alert>
+
+          <div className="space-y-3">
+            <Controller
+              control={resetForm.control}
+              name="otp"
+              render={({ field, fieldState }) => (
+                <OtpField field={field} fieldState={fieldState} />
+              )}
+            />
+            <Controller
+              control={resetForm.control}
+              name="password"
+              render={({ field, fieldState }) => (
+                <PasswordField
+                  field={field}
+                  fieldState={fieldState}
+                  id="new-password"
+                  label="New password"
+                />
+              )}
+            />
+          </div>
+
+          <Button className="w-full" disabled={isLoading} type="submit">
+            {isLoading ? (
+              <>
+                <Spinner />
+                Resetting...
+              </>
+            ) : (
+              "Reset password"
+            )}
+          </Button>
+
+          <Button
+            className="w-full"
+            onClick={handleBackToEmail}
+            type="button"
+            variant="ghost"
+          >
+            <ArrowLeftIcon className="size-4" />
+            Back
+          </Button>
+        </form>
+      )}
     </AuthCard>
   );
 }
