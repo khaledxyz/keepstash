@@ -2,18 +2,14 @@ import { Navigate, Outlet, useLocation } from "react-router";
 
 import { authClient } from "@/lib/auth-client";
 
-import { Spinner } from "@/components/ui/spinner";
+import { LoadingScreen } from "@/components/loading-screen";
 
 export function ProtectedLayout() {
   const { data: session, isPending } = authClient.useSession();
   const location = useLocation();
 
   if (isPending) {
-    return (
-      <div className="absolute top-0 left-0 grid h-screen w-screen place-items-center bg-background">
-        <Spinner />
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!session) {
