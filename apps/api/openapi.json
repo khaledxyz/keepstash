@@ -10,9 +10,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "Prometheus"
-        ]
+        "tags": ["Prometheus"]
       }
     },
     "/bookmarks": {
@@ -41,9 +39,7 @@
             }
           }
         },
-        "tags": [
-          "Bookmarks"
-        ]
+        "tags": ["Bookmarks"]
       },
       "get": {
         "operationId": "BookmarksController_findUserBookmarks",
@@ -100,9 +96,7 @@
             }
           }
         },
-        "tags": [
-          "Bookmarks"
-        ]
+        "tags": ["Bookmarks"]
       }
     },
     "/bookmarks/{id}": {
@@ -130,9 +124,7 @@
             }
           }
         },
-        "tags": [
-          "Bookmarks"
-        ]
+        "tags": ["Bookmarks"]
       },
       "patch": {
         "operationId": "BookmarksController_updateBookmark",
@@ -168,9 +160,7 @@
             }
           }
         },
-        "tags": [
-          "Bookmarks"
-        ]
+        "tags": ["Bookmarks"]
       },
       "delete": {
         "operationId": "BookmarksController_deleteBookmark",
@@ -196,9 +186,7 @@
             }
           }
         },
-        "tags": [
-          "Bookmarks"
-        ]
+        "tags": ["Bookmarks"]
       }
     },
     "/bookmarks/{id}/restore": {
@@ -226,9 +214,7 @@
             }
           }
         },
-        "tags": [
-          "Bookmarks"
-        ]
+        "tags": ["Bookmarks"]
       }
     },
     "/folders": {
@@ -257,9 +243,7 @@
             }
           }
         },
-        "tags": [
-          "Folders"
-        ]
+        "tags": ["Folders"]
       },
       "get": {
         "operationId": "FoldersController_findUserFolders",
@@ -316,9 +300,7 @@
             }
           }
         },
-        "tags": [
-          "Folders"
-        ]
+        "tags": ["Folders"]
       }
     },
     "/folders/{id}": {
@@ -346,9 +328,7 @@
             }
           }
         },
-        "tags": [
-          "Folders"
-        ]
+        "tags": ["Folders"]
       },
       "patch": {
         "operationId": "FoldersController_updateFolder",
@@ -384,9 +364,7 @@
             }
           }
         },
-        "tags": [
-          "Folders"
-        ]
+        "tags": ["Folders"]
       },
       "delete": {
         "operationId": "FoldersController_deleteFolder",
@@ -412,9 +390,7 @@
             }
           }
         },
-        "tags": [
-          "Folders"
-        ]
+        "tags": ["Folders"]
       }
     },
     "/folders/{id}/restore": {
@@ -442,9 +418,7 @@
             }
           }
         },
-        "tags": [
-          "Folders"
-        ]
+        "tags": ["Folders"]
       }
     },
     "/tags": {
@@ -473,9 +447,7 @@
             }
           }
         },
-        "tags": [
-          "Tags"
-        ]
+        "tags": ["Tags"]
       },
       "get": {
         "operationId": "TagsController_findUserTags",
@@ -532,9 +504,7 @@
             }
           }
         },
-        "tags": [
-          "Tags"
-        ]
+        "tags": ["Tags"]
       }
     },
     "/tags/{id}": {
@@ -562,9 +532,7 @@
             }
           }
         },
-        "tags": [
-          "Tags"
-        ]
+        "tags": ["Tags"]
       },
       "patch": {
         "operationId": "TagsController_updateTag",
@@ -600,9 +568,7 @@
             }
           }
         },
-        "tags": [
-          "Tags"
-        ]
+        "tags": ["Tags"]
       },
       "delete": {
         "operationId": "TagsController_deleteTag",
@@ -628,9 +594,7 @@
             }
           }
         },
-        "tags": [
-          "Tags"
-        ]
+        "tags": ["Tags"]
       }
     },
     "/tags/{id}/restore": {
@@ -658,9 +622,7 @@
             }
           }
         },
-        "tags": [
-          "Tags"
-        ]
+        "tags": ["Tags"]
       }
     },
     "/metadata": {
@@ -689,9 +651,7 @@
             }
           }
         },
-        "tags": [
-          "metadata"
-        ]
+        "tags": ["metadata"]
       }
     }
   },
@@ -731,10 +691,7 @@
             }
           }
         },
-        "required": [
-          "title",
-          "url"
-        ]
+        "required": ["title", "url"]
       },
       "FolderDto": {
         "type": "object",
@@ -749,10 +706,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "name"
-        ]
+        "required": ["id", "name"]
       },
       "TagDto": {
         "type": "object",
@@ -775,13 +729,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "userId",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "name", "userId", "createdAt", "updatedAt"]
       },
       "BookmarkDto": {
         "type": "object",
@@ -819,14 +767,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "title",
-          "url",
-          "userId",
-          "createdAt",
-          "updatedAt"
-        ]
+        "required": ["id", "title", "url", "userId", "createdAt", "updatedAt"]
       },
       "PaginationMeta": {
         "type": "object",
@@ -871,9 +812,7 @@
             "maxLength": 500
           }
         },
-        "required": [
-          "name"
-        ]
+        "required": ["name"]
       },
       "UpdateFolderDto": {
         "type": "object",
@@ -896,9 +835,7 @@
             "maxLength": 100
           }
         },
-        "required": [
-          "name"
-        ]
+        "required": ["name"]
       },
       "UpdateTagDto": {
         "type": "object",
@@ -924,11 +861,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "title",
-          "description",
-          "url"
-        ]
+        "required": ["title", "description", "url"]
       }
     }
   }
