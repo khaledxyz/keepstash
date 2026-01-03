@@ -653,6 +653,13 @@
           },
           "folderId": {
             "type": "string"
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         },
         "required": ["title", "url"]
@@ -710,6 +717,13 @@
           },
           "folderId": {
             "type": "string"
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         }
       },

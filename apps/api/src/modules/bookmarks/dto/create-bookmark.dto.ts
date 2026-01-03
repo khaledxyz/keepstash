@@ -1,8 +1,10 @@
 import {
+  IsArray,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   MaxLength,
 } from "class-validator";
 
@@ -25,4 +27,9 @@ export class CreateBookmarkDto {
   @IsString()
   @IsOptional()
   folderId?: string;
+
+  @IsArray()
+  @IsUUID("4", { each: true })
+  @IsOptional()
+  tagIds?: string[];
 }

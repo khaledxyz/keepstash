@@ -20,7 +20,7 @@ export class BookmarksService {
   ) {}
 
   async createBookmark(createBookmarkDto: CreateBookmarkDto, userId: string) {
-    const { title, description, url, folderId } = createBookmarkDto;
+    const { title, description, url, folderId, tagIds } = createBookmarkDto;
     const [newBookmark] = await this.db
       .insert(schema.bookmark)
       .values({
@@ -31,6 +31,17 @@ export class BookmarksService {
         folderId,
       })
       .returning();
+
+    // Insert bookmark-tag relations if tagIds provided
+    if (tagIds && tagIds.length > 0) {
+      await this.db.insert(schema.bookmarkTag).values(
+        tagIds.map((tagId) => ({
+          bookmarkId: newBookmark.id,
+          tagId,
+        }))
+      );
+    }
+
     return newBookmark;
   }
 
