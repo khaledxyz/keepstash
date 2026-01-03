@@ -624,6 +624,35 @@
         },
         "tags": ["Tags"]
       }
+    },
+    "/metadata": {
+      "get": {
+        "operationId": "MetadataController_getUrlMetadata",
+        "parameters": [
+          {
+            "name": "url",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "uri",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetadataResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["metadata"]
+      }
     }
   },
   "info": {
@@ -810,6 +839,23 @@
             "maxLength": 100
           }
         }
+      },
+      "MetadataResponseDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "description", "url"]
       }
     }
   }
