@@ -36,7 +36,7 @@ export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
       </div>
       <CardHeader>
         <CardTitle className="line-clamp-2">{bookmark.title}</CardTitle>
-        <CardDescription className="flex items-center gap-1">
+        <CardDescription className="flex max-w-72 items-center gap-1">
           <LinkIcon className="shrink-0" />
           <span className="truncate">{bookmark.url}</span>
         </CardDescription>
