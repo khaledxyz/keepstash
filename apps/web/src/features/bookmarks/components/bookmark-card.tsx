@@ -1,7 +1,5 @@
 import type { Bookmark } from "@keepstash/ts-sdk";
 
-import { LinkIcon } from "@phosphor-icons/react";
-
 import {
   Card,
   CardAction,
@@ -10,21 +8,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Image } from "@/components/ui/image";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { BookmarkActions } from "./bookmark-actions";
 import { BookmarkMetadata } from "./shared/bookmark-metadata";
 
 export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
-  // Generate placeholder thumbnail from URL domain
   const domain = new URL(bookmark.url).hostname;
   const thumbnail = `https://via.placeholder.com/430x240.png?text=${encodeURIComponent(domain)}`;
+  console.log(bookmark);
+  console.log("####");
 
   return (
     <Card className="group overflow-hidden pt-0">
       <div className="relative aspect-video w-full overflow-hidden">
-        <img
-          alt={bookmark.title}
+        <Image
+          alt=""
           className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
           height={240}
           src={thumbnail}
@@ -36,18 +36,17 @@ export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
       </div>
       <CardHeader>
         <CardTitle className="line-clamp-2">{bookmark.title}</CardTitle>
-        <CardDescription className="flex max-w-72 items-center gap-1">
-          <LinkIcon className="shrink-0" />
-          <span className="truncate">{bookmark.url}</span>
+        <CardDescription className="line-clamp-2">
+          {bookmark.description}
         </CardDescription>
-        {bookmark.description && (
-          <p className="line-clamp-2 text-muted-foreground text-sm">
-            {bookmark.description}
-          </p>
-        )}
       </CardHeader>
-      <CardFooter className="flex-wrap gap-2">
-        <BookmarkMetadata createdAt={bookmark.createdAt} />
+      <CardFooter className="mt-auto">
+        <BookmarkMetadata
+          createdAt={bookmark.createdAt}
+          folder={bookmark.folder}
+          link={bookmark.url}
+          tags={bookmark.tags}
+        />
       </CardFooter>
     </Card>
   );

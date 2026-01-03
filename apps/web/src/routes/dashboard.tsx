@@ -1,15 +1,14 @@
-import { useState } from "react";
-
 import { GridFourIcon, ListIcon } from "@phosphor-icons/react";
 
 import { BookmarkSheet } from "@/features/bookmarks/components/bookmark-sheet";
 import { BookmarksView } from "@/features/bookmarks/components/bookmarks-view";
+import { useViewMode } from "@/features/bookmarks/store/view-mode-store";
 import { FiltersToolbar } from "@/features/filters/components/filters-toolbar";
 
 import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const { viewMode, setViewMode } = useViewMode();
 
   return (
     <>

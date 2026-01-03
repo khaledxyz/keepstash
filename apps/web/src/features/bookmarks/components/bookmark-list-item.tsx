@@ -11,7 +11,6 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { BookmarkActions } from "./bookmark-actions";
@@ -35,11 +34,14 @@ export function BookmarkListItem({ bookmark }: { bookmark: Bookmark }) {
       <ItemContent>
         <ItemTitle className="line-clamp-1">{bookmark.title}</ItemTitle>
         <ItemDescription className="flex items-center gap-2">
-          <span className="truncate text-muted-foreground text-xs">
-            {bookmark.url}
-          </span>
-          <Separator orientation="vertical" />
-          <BookmarkMetadata createdAt={bookmark.createdAt} />
+          <BookmarkMetadata
+            className="gap-2"
+            createdAt={bookmark.createdAt}
+            folder={bookmark.folder}
+            layout="inline"
+            link={bookmark.url}
+            tags={bookmark.tags}
+          />
         </ItemDescription>
       </ItemContent>
       <ItemActions>
