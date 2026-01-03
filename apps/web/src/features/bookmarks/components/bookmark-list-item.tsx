@@ -1,4 +1,4 @@
-import type { Bookmark } from "../api";
+import type { Bookmark } from "@keepstash/ts-sdk";
 
 import { DotsThreeVerticalIcon } from "@phosphor-icons/react";
 
@@ -16,30 +16,30 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { BookmarkActions } from "./bookmark-actions";
 import { BookmarkMetadata } from "./shared/bookmark-metadata";
-import { BookmarkTags } from "./shared/bookmark-tags";
 
 export function BookmarkListItem({ bookmark }: { bookmark: Bookmark }) {
+  const domain = new URL(bookmark.url).hostname;
+  const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+
   return (
     <Item role="listitem" variant="outline">
       <ItemMedia variant="image">
         <img
           alt=""
-          className="object-cover grayscale"
+          className="object-cover"
           height={32}
-          src="https://github.com/khaledxyz.png"
+          src={favicon}
           width={32}
         />
       </ItemMedia>
       <ItemContent>
         <ItemTitle className="line-clamp-1">{bookmark.title}</ItemTitle>
-        <ItemDescription className="flex items-center">
-          <BookmarkTags tags={bookmark.tags} />
-          <Separator className="mx-2" orientation="vertical" />
-          <BookmarkMetadata
-            dateAdded={bookmark.dateAdded}
-            folder={bookmark.folder}
-            showSeparator={false}
-          />
+        <ItemDescription className="flex items-center gap-2">
+          <span className="truncate text-muted-foreground text-xs">
+            {bookmark.url}
+          </span>
+          <Separator orientation="vertical" />
+          <BookmarkMetadata createdAt={bookmark.createdAt} />
         </ItemDescription>
       </ItemContent>
       <ItemActions>

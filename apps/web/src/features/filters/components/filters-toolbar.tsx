@@ -6,9 +6,11 @@ import {
   useQueryStates,
 } from "nuqs";
 
+import { useFindUserFolders } from "@/features/folders/api";
+
 import { Separator } from "@/components/ui/separator";
 
-import { MOCK_FOLDERS, SORT_METHODS, STATUSES, TYPES } from "../constants";
+import { SORT_METHODS, STATUSES, TYPES } from "../constants";
 import { formatDateRange } from "../utils/date-utils";
 import { ActiveFilters } from "./active-filters";
 import { FilterDate } from "./filter-date";
@@ -28,8 +30,13 @@ export function FiltersToolbar() {
     dateTo: parseAsIsoDateTime,
   });
 
-  // TODO: Replace with API call for folders
-  const folders = MOCK_FOLDERS;
+  const { data: foldersData } = useFindUserFolders();
+
+  const folders =
+    foldersData?.items?.map((f) => ({
+      label: f.name,
+      value: f.id,
+    })) ?? [];
 
   const activeFilters = [
     ...(filters.search

@@ -1,4 +1,4 @@
-import type { Bookmark } from "../api";
+import type { Bookmark } from "@keepstash/ts-sdk";
 
 import {
   DotsThreeVerticalIcon,

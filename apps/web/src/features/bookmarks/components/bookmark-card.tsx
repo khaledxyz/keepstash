@@ -1,4 +1,4 @@
-import type { Bookmark } from "../api";
+import type { Bookmark } from "@keepstash/ts-sdk";
 
 import { LinkIcon } from "@phosphor-icons/react";
 
@@ -10,14 +10,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { BookmarkActions } from "./bookmark-actions";
 import { BookmarkMetadata } from "./shared/bookmark-metadata";
-import { BookmarkTags } from "./shared/bookmark-tags";
 
 export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
+  // Generate placeholder thumbnail from URL domain
+  const domain = new URL(bookmark.url).hostname;
+  const thumbnail = `https://via.placeholder.com/430x240.png?text=${encodeURIComponent(domain)}`;
+
   return (
     <Card className="group overflow-hidden pt-0">
       <div className="relative aspect-video w-full overflow-hidden">
@@ -25,7 +27,7 @@ export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
           alt={bookmark.title}
           className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
           height={240}
-          src={bookmark.thumbnail}
+          src={thumbnail}
           width={430}
         />
         <CardAction className="absolute top-4 right-4">
@@ -38,14 +40,14 @@ export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
           <LinkIcon className="shrink-0" />
           <span className="truncate">{bookmark.url}</span>
         </CardDescription>
+        {bookmark.description && (
+          <p className="line-clamp-2 text-muted-foreground text-sm">
+            {bookmark.description}
+          </p>
+        )}
       </CardHeader>
       <CardFooter className="flex-wrap gap-2">
-        <BookmarkTags tags={bookmark.tags} />
-        <Separator className="hidden sm:block" orientation="vertical" />
-        <BookmarkMetadata
-          dateAdded={bookmark.dateAdded}
-          folder={bookmark.folder}
-        />
+        <BookmarkMetadata createdAt={bookmark.createdAt} />
       </CardFooter>
     </Card>
   );

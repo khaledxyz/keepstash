@@ -1,9 +1,6 @@
-import type { Bookmark } from "@/features/bookmarks/api";
-
-import { Suspense, use } from "react";
-
 import { EmptyIcon } from "@phosphor-icons/react";
 
+import { useFindUserBookmarks } from "@/features/bookmarks/api";
 import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
 import {
   BookmarksGrid,
@@ -24,26 +21,20 @@ import {
 } from "@/components/ui/empty";
 
 interface Props {
-  bookmarksPromise: Promise<Bookmark[]>;
   viewMode: "grid" | "list";
 }
 
-export function BookmarksView({ bookmarksPromise, viewMode }: Props) {
-  const Skeleton =
-    viewMode === "grid" ? BookmarksGridSkeleton : BookmarksListSkeleton;
+export function BookmarksView({ viewMode }: Props) {
+  const { data, isLoading } = useFindUserBookmarks();
+  const bookmarks = data?.items ?? [];
 
-  return (
-    <Suspense fallback={<Skeleton />}>
-      <BookmarksViewContent
-        bookmarksPromise={bookmarksPromise}
-        viewMode={viewMode}
-      />
-    </Suspense>
-  );
-}
-
-function BookmarksViewContent({ bookmarksPromise, viewMode }: Props) {
-  const bookmarks = use(bookmarksPromise);
+  if (isLoading) {
+    return viewMode === "grid" ? (
+      <BookmarksGridSkeleton />
+    ) : (
+      <BookmarksListSkeleton />
+    );
+  }
 
   if (!bookmarks || bookmarks.length === 0) {
     return (

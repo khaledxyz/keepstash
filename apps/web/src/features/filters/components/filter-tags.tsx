@@ -1,9 +1,9 @@
 import { TagIcon } from "@phosphor-icons/react";
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 
-import { Badge } from "@/components/ui/badge";
+import { useFindUserTags } from "@/features/tags/api";
 
-import { MOCK_TAGS } from "../constants";
+import { Badge } from "@/components/ui/badge";
 
 export function FilterTags() {
   const [selectedTags, setSelectedTags] = useQueryState(
@@ -11,16 +11,20 @@ export function FilterTags() {
     parseAsArrayOf(parseAsString).withDefault([])
   );
 
-  // TODO: Replace with API call
-  const tags = MOCK_TAGS;
+  const { data: tagsData } = useFindUserTags();
+  const tags = tagsData?.items ?? [];
 
-  const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
+  const toggleTag = (tagName: string) => {
+    if (selectedTags.includes(tagName)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tagName));
     } else {
-      setSelectedTags([...selectedTags, tag]);
+      setSelectedTags([...selectedTags, tagName]);
     }
   };
+
+  if (tags.length === 0) {
+    return null;
+  }
 
   return (
     <div className="flex items-center gap-1">
@@ -28,15 +32,14 @@ export function FilterTags() {
         <TagIcon />
         <span>Tags</span>
       </div>
-      {tags.map((tag, i) => (
+      {tags.map((tag) => (
         <Badge
           className="cursor-pointer"
-          // biome-ignore lint/suspicious/noArrayIndexKey: <will update later>
-          key={i}
-          onClick={() => toggleTag(tag)}
-          variant={selectedTags.includes(tag) ? "default" : "outline"}
+          key={tag.id}
+          onClick={() => toggleTag(tag.name)}
+          variant={selectedTags.includes(tag.name) ? "default" : "outline"}
         >
-          {tag}
+          {tag.name}
         </Badge>
       ))}
     </div>
