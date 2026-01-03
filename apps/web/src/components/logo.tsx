@@ -7,18 +7,21 @@ import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
-const logoVariants = cva("inline-flex select-none items-center font-medium", {
-  variants: {
-    size: {
-      sm: "gap-1 text-sm [&_svg:not([class*='size-'])]:size-3",
-      md: "gap-1.5 text-base [&_svg:not([class*='size-'])]:size-4",
-      lg: "gap-2 text-lg [&_svg:not([class*='size-'])]:size-5",
+const logoVariants = cva(
+  "group inline-flex select-none items-center gap-1 font-medium",
+  {
+    variants: {
+      size: {
+        sm: "text-sm [&_svg:not([class*='size-'])]:size-3",
+        md: "text-base [&_svg:not([class*='size-'])]:size-4",
+        lg: "text-lg [&_svg:not([class*='size-'])]:size-5",
+      },
     },
-  },
-  defaultVariants: {
-    size: "md",
-  },
-});
+    defaultVariants: {
+      size: "md",
+    },
+  }
+);
 
 interface LogoProps
   extends VariantProps<typeof logoVariants>,
@@ -36,7 +39,10 @@ export function Logo({
 }: LogoProps) {
   const content = (
     <>
-      <AsteriskIcon weight="bold" />
+      <AsteriskIcon
+        className="transition-transform duration-700 ease-out group-hover:rotate-180"
+        weight="bold"
+      />
       <span>{import.meta.env.VITE_APP_NAME || "keepstash"}</span>
     </>
   );
