@@ -12,6 +12,7 @@ import { AuthModule } from "@modules/auth/auth.module";
 
 import { BookmarksModule } from "./modules/bookmarks/bookmarks.module";
 import { FoldersModule } from "./modules/folders/folders.module";
+import { MetadataModule } from "./modules/metadata/metadata.module";
 import { TagsModule } from "./modules/tags/tags.module";
 
 @Module({
@@ -28,6 +29,7 @@ import { TagsModule } from "./modules/tags/tags.module";
     BookmarksModule,
     FoldersModule,
     TagsModule,
+    MetadataModule,
   ],
   controllers: [],
   providers: [
