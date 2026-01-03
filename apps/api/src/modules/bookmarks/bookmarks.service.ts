@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 import * as schema from "@infra/database/schema";
 
-import { and, count, eq, ilike, isNull, sql } from "drizzle-orm";
+import { and, count, eq, ilike, isNull } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { PaginatedResponse } from "@/common/types/paginated-response.type";
 import { DATABASE_CONNECTION } from "@/infra/database/database-connection";
@@ -61,21 +61,34 @@ export class BookmarksService {
     }
 
     const [bookmarks, [{ total }]] = await Promise.all([
-      this.db
-        .select()
-        .from(schema.bookmark)
-        .where(and(...conditions))
-        .limit(limit)
-        .offset(offset)
-        .orderBy(sql`${schema.bookmark.createdAt} DESC`),
+      this.db.query.bookmark.findMany({
+        where: and(...conditions),
+        limit,
+        offset,
+        orderBy: (bookmark, { desc }) => [desc(bookmark.createdAt)],
+        with: {
+          folder: true,
+          bookmarkTags: {
+            with: {
+              tag: true,
+            },
+          },
+        },
+      }),
       this.db
         .select({ total: count() })
         .from(schema.bookmark)
         .where(and(...conditions)),
     ]);
 
+    const transformedBookmarks = bookmarks.map((bookmark) => ({
+      ...bookmark,
+      tags: bookmark.bookmarkTags.map((bt) => bt.tag),
+      bookmarkTags: undefined,
+    }));
+
     return {
-      items: bookmarks,
+      items: transformedBookmarks,
       meta: {
         page,
         limit,
