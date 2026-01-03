@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { metadata } from "@keepstash/ts-sdk";
 import { PlusIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
+import { useDebounceValue } from "usehooks-ts";
 import z from "zod";
 
 import { useCreateBookmark } from "@/features/bookmarks/api";
@@ -53,6 +55,7 @@ const formSchema = z.object({
 
 export function BookmarkDialog() {
   const [open, setOpen] = useState(false);
+  const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
 
   const { data: foldersData, isLoading: foldersLoading } = useFindUserFolders();
   const { data: tagsData, isLoading: tagsLoading } = useFindUserTags();
@@ -74,6 +77,61 @@ export function BookmarkDialog() {
   });
 
   const selectedTagIds = form.watch("tagIds") ?? [];
+  const urlValue = form.watch("url");
+  const [debouncedUrl] = useDebounceValue(urlValue, 800);
+
+  // Fetch metadata when debounced URL changes
+  useEffect(() => {
+    const fetchMetadata = async () => {
+      // Skip if URL is empty or invalid
+      if (!debouncedUrl) {
+        return;
+      }
+
+      try {
+        new URL(debouncedUrl); // Validate URL format
+      } catch {
+        return; // Invalid URL, skip fetching
+      }
+
+      // Only fetch if title is empty (don't override user-entered data)
+      const currentTitle = form.getValues("title");
+      if (currentTitle) {
+        return;
+      }
+
+      setIsFetchingMetadata(true);
+
+      try {
+        const result = await metadata.getUrlMetadata({
+          query: { url: debouncedUrl },
+        });
+
+        if (result.error) {
+          console.error("Failed to fetch metadata:", result.error);
+          return;
+        }
+
+        if (result.data) {
+          // Only set title if it's still empty (user might have typed something)
+          if (!form.getValues("title") && result.data.title) {
+            form.setValue("title", result.data.title);
+          }
+
+          // Only set description if it's still empty
+          if (!form.getValues("description") && result.data.description) {
+            form.setValue("description", result.data.description);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching metadata:", error);
+      } finally {
+        setIsFetchingMetadata(false);
+      }
+    };
+
+    fetchMetadata();
+  }, [debouncedUrl, form]);
 
   const toggleTag = (tagId: string) => {
     const currentTags = form.getValues("tagIds") ?? [];
@@ -134,6 +192,11 @@ export function BookmarkDialog() {
                     placeholder="https://example.com"
                     type="url"
                   />
+                  {isFetchingMetadata && (
+                    <FieldDescription>
+                      Fetching page metadata...
+                    </FieldDescription>
+                  )}
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
