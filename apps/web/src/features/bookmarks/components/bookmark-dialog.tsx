@@ -82,6 +82,7 @@ export function BookmarkDialog() {
 
   // Fetch metadata when debounced URL changes
   useEffect(() => {
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <handle later>
     const fetchMetadata = async () => {
       // Skip if URL is empty or invalid
       if (!debouncedUrl) {
