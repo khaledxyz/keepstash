@@ -1,5 +1,5 @@
 import { TagIcon } from "@phosphor-icons/react";
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
+import { parseAsArrayOf, parseAsString, throttle, useQueryState } from "nuqs";
 
 import { useFindUserTags } from "@/features/tags/api";
 
@@ -8,7 +8,9 @@ import { Badge } from "@/components/ui/badge";
 export function FilterTags() {
   const [selectedTags, setSelectedTags] = useQueryState(
     "tags",
-    parseAsArrayOf(parseAsString).withDefault([])
+    parseAsArrayOf(parseAsString)
+      .withDefault([])
+      .withOptions({ limitUrlUpdates: throttle(300) })
   );
 
   const { data: tagsData } = useFindUserTags();

@@ -1,7 +1,7 @@
 import type { DateRange } from "react-day-picker";
 
 import { CalendarIcon } from "@phosphor-icons/react";
-import { parseAsIsoDateTime, useQueryState } from "nuqs";
+import { parseAsIsoDateTime, throttle, useQueryState } from "nuqs";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -19,8 +19,14 @@ import {
 } from "../utils/date-utils";
 
 export function FilterDate() {
-  const [dateFrom, setDateFrom] = useQueryState("dateFrom", parseAsIsoDateTime);
-  const [dateTo, setDateTo] = useQueryState("dateTo", parseAsIsoDateTime);
+  const [dateFrom, setDateFrom] = useQueryState(
+    "dateFrom",
+    parseAsIsoDateTime.withOptions({ limitUrlUpdates: throttle(300) })
+  );
+  const [dateTo, setDateTo] = useQueryState(
+    "dateTo",
+    parseAsIsoDateTime.withOptions({ limitUrlUpdates: throttle(300) })
+  );
 
   const date: DateRange | undefined =
     dateFrom || dateTo

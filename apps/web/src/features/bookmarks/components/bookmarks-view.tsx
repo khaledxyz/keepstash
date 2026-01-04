@@ -5,8 +5,10 @@ import {
   parseAsArrayOf,
   parseAsIsoDateTime,
   parseAsString,
+  throttle,
   useQueryStates,
 } from "nuqs";
+import { useDebounceValue } from "usehooks-ts";
 
 import { useFindUserBookmarks } from "@/features/bookmarks/api";
 import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
@@ -33,19 +35,27 @@ interface Props {
 }
 
 export function BookmarksView({ viewMode }: Props) {
-  const [filters] = useQueryStates({
-    search: parseAsString.withDefault(""),
-    folder: parseAsString.withDefault(""),
-    sort: parseAsString.withDefault(""),
-    tags: parseAsArrayOf(parseAsString).withDefault([]),
-    dateFrom: parseAsIsoDateTime,
-    dateTo: parseAsIsoDateTime,
-  });
+  const [filters] = useQueryStates(
+    {
+      search: parseAsString.withDefault(""),
+      folder: parseAsString.withDefault(""),
+      sort: parseAsString.withDefault(""),
+      tags: parseAsArrayOf(parseAsString).withDefault([]),
+      dateFrom: parseAsIsoDateTime,
+      dateTo: parseAsIsoDateTime,
+    },
+    {
+      limitUrlUpdates: throttle(300),
+    }
+  );
+
+  // Debounce the search filter to prevent rapid API calls while typing
+  const [debouncedSearch] = useDebounceValue(filters.search, 300);
 
   // Build query params, filtering out empty values
   const queryParams = useMemo(
     () => ({
-      ...(filters.search && { search: filters.search }),
+      ...(debouncedSearch && { search: debouncedSearch }),
       ...(filters.folder && { folder: filters.folder }),
       ...(filters.sort && {
         sort: filters.sort as "Most Recent" | "Oldest First" | "Alphabetical",
@@ -55,7 +65,7 @@ export function BookmarksView({ viewMode }: Props) {
       ...(filters.dateTo && { dateTo: filters.dateTo.toISOString() }),
     }),
     [
-      filters.search,
+      debouncedSearch,
       filters.folder,
       filters.sort,
       filters.tags,

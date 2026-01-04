@@ -5,6 +5,7 @@ import {
   parseAsArrayOf,
   parseAsIsoDateTime,
   parseAsString,
+  throttle,
   useQueryStates,
 } from "nuqs";
 
@@ -22,14 +23,19 @@ import { FilterSelect } from "./filter-select";
 import { FilterTags } from "./filter-tags";
 
 export function FiltersToolbar() {
-  const [filters, setFilters] = useQueryStates({
-    search: parseAsString.withDefault(""),
-    folder: parseAsString.withDefault(""),
-    sort: parseAsString.withDefault(""),
-    tags: parseAsArrayOf(parseAsString).withDefault([]),
-    dateFrom: parseAsIsoDateTime,
-    dateTo: parseAsIsoDateTime,
-  });
+  const [filters, setFilters] = useQueryStates(
+    {
+      search: parseAsString.withDefault(""),
+      folder: parseAsString.withDefault(""),
+      sort: parseAsString.withDefault(""),
+      tags: parseAsArrayOf(parseAsString).withDefault([]),
+      dateFrom: parseAsIsoDateTime,
+      dateTo: parseAsIsoDateTime,
+    },
+    {
+      limitUrlUpdates: throttle(300),
+    }
+  );
 
   const { data: foldersData } = useFindUserFolders();
   const { data: tagsData } = useFindUserTags();

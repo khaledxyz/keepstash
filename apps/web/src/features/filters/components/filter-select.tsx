@@ -1,6 +1,6 @@
 import type { FilterOption } from "../types";
 
-import { parseAsString, useQueryState } from "nuqs";
+import { parseAsString, throttle, useQueryState } from "nuqs";
 
 import { Field } from "@/components/ui/field";
 import {
@@ -32,7 +32,9 @@ export function FilterSelect({
 }: FilterSelectProps) {
   const [value, setValue] = useQueryState(
     queryKey,
-    parseAsString.withDefault("")
+    parseAsString
+      .withDefault("")
+      .withOptions({ limitUrlUpdates: throttle(300) })
   );
 
   return (

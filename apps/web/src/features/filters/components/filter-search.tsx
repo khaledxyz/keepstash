@@ -1,5 +1,5 @@
 import { MagnifyingGlassIcon } from "@phosphor-icons/react";
-import { parseAsString, useQueryState } from "nuqs";
+import { parseAsString, throttle, useQueryState } from "nuqs";
 
 import {
   InputGroup,
@@ -10,7 +10,9 @@ import {
 export function FilterSearch() {
   const [search, setSearch] = useQueryState(
     "search",
-    parseAsString.withDefault("").withOptions({ throttleMs: 300 })
+    parseAsString
+      .withDefault("")
+      .withOptions({ limitUrlUpdates: throttle(300) })
   );
 
   return (
