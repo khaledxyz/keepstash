@@ -2,7 +2,18 @@ import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 import * as schema from "@infra/database/schema";
 
-import { and, count, eq, ilike, isNull } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gte,
+  ilike,
+  isNull,
+  lte,
+  type SQL,
+} from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { PaginatedResponse } from "@/common/types/paginated-response.type";
 import { DATABASE_CONNECTION } from "@/infra/database/database-connection";
@@ -49,51 +60,113 @@ export class BookmarksService {
     query: QueryBookmarkDto,
     userId: string
   ): Promise<PaginatedResponse<BookmarkDto>> {
-    const { search, page = 1, limit = 20 } = query;
+    const {
+      search,
+      folder,
+      tags,
+      dateFrom,
+      dateTo,
+      sort = "Most Recent",
+      page = 1,
+      limit = 20,
+    } = query;
     const offset = (page - 1) * limit;
 
+    // Base conditions
     const conditions = [
       eq(schema.bookmark.userId, userId),
       isNull(schema.bookmark.deletedAt),
     ];
+
+    // Search filter
     if (search) {
       conditions.push(ilike(schema.bookmark.title, `%${search}%`));
     }
 
-    const [bookmarks, [{ total }]] = await Promise.all([
-      this.db.query.bookmark.findMany({
-        where: and(...conditions),
-        limit,
-        offset,
-        orderBy: (bookmark, { desc }) => [desc(bookmark.createdAt)],
-        with: {
-          folder: true,
-          bookmarkTags: {
-            with: {
-              tag: true,
-            },
+    // Folder filter
+    if (folder) {
+      conditions.push(eq(schema.bookmark.folderId, folder));
+    }
+
+    // Date range filters
+    if (dateFrom) {
+      conditions.push(gte(schema.bookmark.createdAt, new Date(dateFrom)));
+    }
+    if (dateTo) {
+      conditions.push(lte(schema.bookmark.createdAt, new Date(dateTo)));
+    }
+
+    // Determine sort order
+    let orderByClause: SQL[];
+    switch (sort) {
+      case "Oldest First":
+        orderByClause = [asc(schema.bookmark.createdAt)];
+        break;
+      case "Alphabetical":
+        orderByClause = [asc(schema.bookmark.title)];
+        break;
+      default:
+        orderByClause = [desc(schema.bookmark.createdAt)];
+        break;
+    }
+
+    // Add tag filtering to where conditions if provided
+    const bookmarkQuery = this.db.query.bookmark.findMany({
+      where: and(...conditions),
+      limit,
+      offset,
+      orderBy: orderByClause,
+      with: {
+        folder: true,
+        bookmarkTags: {
+          with: {
+            tag: true,
           },
+          ...(tags &&
+            tags.length > 0 && {
+              where: (bookmarkTag, { inArray }) =>
+                inArray(bookmarkTag.tagId, tags),
+            }),
         },
-      }),
+      },
+    });
+
+    // Fetch bookmarks with relations
+    let bookmarks = await bookmarkQuery;
+
+    // Filter bookmarks that have ALL requested tags (client-side for AND logic)
+    if (tags && tags.length > 0) {
+      bookmarks = bookmarks.filter((bookmark) => {
+        const bookmarkTagIds = bookmark.bookmarkTags.map((bt) => bt.tagId);
+        return tags.every((tagId) => bookmarkTagIds.includes(tagId));
+      });
+    }
+
+    // Get total count with same filters
+    const [[{ total }]] = await Promise.all([
       this.db
         .select({ total: count() })
         .from(schema.bookmark)
         .where(and(...conditions)),
     ]);
 
+    // Transform bookmarks with tags
     const transformedBookmarks = bookmarks.map((bookmark) => ({
       ...bookmark,
       tags: bookmark.bookmarkTags.map((bt) => bt.tag),
       bookmarkTags: undefined,
     }));
 
+    const finalTotal =
+      tags && tags.length > 0 ? transformedBookmarks.length : total;
+
     return {
       items: transformedBookmarks,
       meta: {
         page,
         limit,
-        total,
-        totalPages: Math.ceil(total / limit),
+        total: finalTotal,
+        totalPages: Math.ceil(finalTotal / limit),
       },
     };
   }
