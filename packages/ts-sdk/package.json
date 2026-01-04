@@ -1,7 +1,10 @@
 {
   "name": "@keepstash/ts-sdk",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for keepstash API",
   "type": "module",
+  "license": "MIT",
+  "author": "khaledxyz <me@khaledxyz.com> (https://github.com/khaledxyz)",
   "main": "./src/client/index.ts",
   "types": "./src/client/index.ts",
   "exports": {
@@ -34,8 +37,12 @@
     "prepare": "pnpm generate",
     "prepublishOnly": "pnpm generate"
   },
-  "packageManager": "pnpm@10.24.0",
   "devDependencies": {
     "@hey-api/openapi-ts": "0.89.2"
-  }
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.24.0"
+  },
+  "packageManager": "pnpm@10.24.0"
 }

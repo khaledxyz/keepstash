@@ -1,6 +1,26 @@
 {
   "name": "keepstash",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "A modern bookmark management application",
+  "private": true,
+  "keywords": [
+    "bookmarks",
+    "bookmark-manager",
+    "monorepo",
+    "nestjs",
+    "react",
+    "vite"
+  ],
+  "author": "khaledxyz <me@khaledxyz.com> (https://github.com/khaledxyz)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khaledxyz/keepstash.git"
+  },
+  "bugs": {
+    "url": "https://github.com/khaledxyz/keepstash/issues"
+  },
+  "homepage": "https://github.com/khaledxyz/keepstash#readme",
   "scripts": {
     "dev": "pnpm --parallel dev & pnpm dev:watch-sdk",
     "dev:web": "pnpm --filter web dev",
@@ -14,10 +34,6 @@
     "lint:fix": "ultracite fix",
     "prepare": "lefthook install"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.24.0",
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
     "@types/node": "^25.0.3",
@@ -30,5 +46,10 @@
     "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
       "pnpm dlx ultracite fix"
     ]
-  }
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.24.0"
+  },
+  "packageManager": "pnpm@10.24.0"
 }

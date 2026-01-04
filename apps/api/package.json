@@ -1,6 +1,10 @@
 {
   "name": "@keepstash/api",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "keepstash API - NestJS backend for bookmark management",
+  "private": true,
+  "license": "MIT",
+  "author": "khaledxyz <me@khaledxyz.com> (https://github.com/khaledxyz)",
   "scripts": {
     "build": "nest build",
     "start": "nest start",
@@ -49,5 +53,10 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
-  }
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.24.0"
+  },
+  "packageManager": "pnpm@10.24.0"
 }

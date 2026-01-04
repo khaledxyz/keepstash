@@ -1,8 +1,11 @@
 {
-  "name": "keepstash",
+  "name": "@keepstash/web",
+  "version": "0.1.0",
+  "description": "keepstash Web - React frontend for bookmark management",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "license": "MIT",
+  "author": "khaledxyz <me@khaledxyz.com> (https://github.com/khaledxyz)",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -50,5 +53,10 @@
     "globals": "^16.5.0",
     "typescript": "~5.9.3",
     "vite": "^7.2.4"
-  }
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=10.24.0"
+  },
+  "packageManager": "pnpm@10.24.0"
 }
