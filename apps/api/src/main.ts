@@ -35,7 +35,9 @@ async function bootstrap() {
   });
 
   // Global configuration
-  app.setGlobalPrefix(configService.get<string>("APP_PREFIX"));
+  app.setGlobalPrefix(configService.get<string>("APP_PREFIX"), {
+    exclude: ["/health"],
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -59,7 +61,7 @@ async function bootstrap() {
   writeFileSync(openapiPath, JSON.stringify(document, null, 2));
 
   // Start server
-  await app.listen(configService.getOrThrow("APP_PORT"));
+  await app.listen(configService.get("APP_PORT") ?? 5000);
 }
 
 bootstrap();
