@@ -1,8 +1,9 @@
 import { Navigate } from "react-router";
 
+import { env, isFeatureEnabled } from "@/lib/env";
+
 export default function HomePage() {
-  const enableRootRedirect =
-    import.meta.env.VITE_ENABLE_ROOT_REDIRECT === "true";
+  const enableRootRedirect = isFeatureEnabled(env.enableRootRedirect);
 
   if (enableRootRedirect) {
     return <Navigate replace to="/dashboard" />;

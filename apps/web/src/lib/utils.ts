@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { twMerge } from "tailwind-merge";
 
+import { env } from "@/lib/env";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -48,7 +50,7 @@ export function timeAgo(date?: Date | string | number | null): string {
 }
 
 export function sleep(ms?: number): Promise<void> {
-  if (import.meta.env.PROD) {
+  if (env.isProd) {
     return Promise.resolve();
   }
 

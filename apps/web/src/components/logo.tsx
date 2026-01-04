@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { AsteriskIcon } from "@phosphor-icons/react";
 import { cva } from "class-variance-authority";
 
+import { env } from "@/lib/env";
 import { cn } from "@/lib/utils";
 
 const logoVariants = cva(
@@ -43,7 +44,7 @@ export function Logo({
         className="transition-transform duration-700 ease-out group-hover:rotate-180"
         weight="bold"
       />
-      <span>{import.meta.env.VITE_APP_NAME || "keepstash"}</span>
+      <span>{env.appName}</span>
     </>
   );
 

@@ -9,7 +9,9 @@ import "./index.css";
 
 import { client } from "@keepstash/ts-sdk";
 
-const baseUrl = `${import.meta.env.VITE_API_URL?.replace(/\/$/, "") ?? ""}${import.meta.env.VITE_API_PREFIX ?? ""}`;
+import { getApiBaseUrl } from "@/lib/env";
+
+const baseUrl = getApiBaseUrl();
 
 client.setConfig({
   baseUrl,
