@@ -11,13 +11,11 @@ import type {
   UseQueryOptions,
 } from "@tanstack/react-query";
 
-import { faker } from "@faker-js/faker";
 import { tags } from "@keepstash/ts-sdk";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { invalidateByPrefix } from "@/lib/query-client";
 import { queryKeysFactory } from "@/lib/query-key-factory";
-import { sleep } from "@/lib/utils";
 
 export const tagsQueryKeys = queryKeysFactory("tags");
 
@@ -106,19 +104,3 @@ export const useRestoreTag = (
     },
     ...options,
   });
-
-// Legacy faker methods (deprecated - use hooks above)
-export function createTag() {
-  return {
-    id: faker.string.uuid(),
-    name: faker.lorem.word(),
-    dateCreated: faker.date.past({ years: 2 }),
-  };
-}
-
-export async function fetchTags() {
-  await sleep(0);
-  return faker.helpers.multiple(createTag, { count: 8 });
-}
-
-export type Tag = ReturnType<typeof createTag>;

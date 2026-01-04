@@ -1,10 +1,7 @@
-import { fetchTags } from "@/features/tags/api";
 import { TagDialog } from "@/features/tags/components/tag-dialog";
 import { TagsView } from "@/features/tags/components/tag-view";
 
 export function TagsPage() {
-  const tagsPromise = fetchTags();
-
   return (
     <div className="container">
       <div className="mb-6 flex justify-between">
@@ -15,7 +12,7 @@ export function TagsPage() {
         <TagDialog />
       </div>
 
-      <TagsView tagsPromise={tagsPromise} />
+      <TagsView />
     </div>
   );
 }

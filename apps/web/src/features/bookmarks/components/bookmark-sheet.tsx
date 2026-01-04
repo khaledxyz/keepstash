@@ -30,19 +30,19 @@ export function BookmarkSheet() {
             <TabsContent className="space-y-4" value="view">
               <Field>
                 <FieldLabel>Title</FieldLabel>
-                <Input readOnly value={bookmark.title} />
+                <Input readOnly />
               </Field>
               <Field>
                 <FieldLabel>URL</FieldLabel>
-                <Input readOnly value={bookmark.url} />
+                <Input readOnly />
               </Field>
               <Field>
                 <FieldLabel>Folder</FieldLabel>
-                <Input readOnly value={bookmark.folder} />
+                <Input readOnly />
               </Field>
               <Field>
                 <FieldLabel>Tags</FieldLabel>
-                <Input readOnly value={bookmark.tags.join(", ")} />
+                <Input readOnly />
               </Field>
             </TabsContent>
 
@@ -63,7 +63,7 @@ export function BookmarkSheet() {
               </Field>
               <Field>
                 <FieldLabel>Folder</FieldLabel>
-                <Input defaultValue={bookmark.folder} />
+                <Input />
               </Field>
             </TabsContent>
           </Tabs>
