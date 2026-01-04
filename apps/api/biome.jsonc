@@ -1,6 +1,9 @@
 {
   "root": false,
   "extends": ["ultracite/core"],
+  "files": {
+    "includes": ["./openapi.json"]
+  },
   "javascript": {
     "parser": {
       "unsafeParameterDecoratorsEnabled": true
