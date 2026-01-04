@@ -11,7 +11,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { formatDate, getDatePresets } from "../utils/date-utils";
+import {
+  formatDate,
+  getDatePresets,
+  getEndOfDay,
+  getStartOfDay,
+} from "../utils/date-utils";
 
 export function FilterDate() {
   const [dateFrom, setDateFrom] = useQueryState("dateFrom", parseAsIsoDateTime);
@@ -23,8 +28,18 @@ export function FilterDate() {
       : undefined;
 
   const setDate = (range: DateRange | undefined) => {
-    setDateFrom(range?.from ?? null);
-    setDateTo(range?.to ?? null);
+    if (!range) {
+      setDateFrom(null);
+      setDateTo(null);
+      return;
+    }
+
+    // Normalize dates: start of day for 'from', end of day for 'to'
+    const normalizedFrom = range.from ? getStartOfDay(range.from) : null;
+    const normalizedTo = range.to ? getEndOfDay(range.to) : null;
+
+    setDateFrom(normalizedFrom);
+    setDateTo(normalizedTo);
   };
 
   const presets = getDatePresets();

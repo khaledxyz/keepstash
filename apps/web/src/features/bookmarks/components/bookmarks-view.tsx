@@ -1,4 +1,12 @@
+import { useMemo } from "react";
+
 import { EmptyIcon } from "@phosphor-icons/react";
+import {
+  parseAsArrayOf,
+  parseAsIsoDateTime,
+  parseAsString,
+  useQueryStates,
+} from "nuqs";
 
 import { useFindUserBookmarks } from "@/features/bookmarks/api";
 import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
@@ -25,7 +33,38 @@ interface Props {
 }
 
 export function BookmarksView({ viewMode }: Props) {
-  const { data, isLoading } = useFindUserBookmarks();
+  const [filters] = useQueryStates({
+    search: parseAsString.withDefault(""),
+    folder: parseAsString.withDefault(""),
+    sort: parseAsString.withDefault(""),
+    tags: parseAsArrayOf(parseAsString).withDefault([]),
+    dateFrom: parseAsIsoDateTime,
+    dateTo: parseAsIsoDateTime,
+  });
+
+  // Build query params, filtering out empty values
+  const queryParams = useMemo(
+    () => ({
+      ...(filters.search && { search: filters.search }),
+      ...(filters.folder && { folder: filters.folder }),
+      ...(filters.sort && {
+        sort: filters.sort as "Most Recent" | "Oldest First" | "Alphabetical",
+      }),
+      ...(filters.tags.length > 0 && { tags: filters.tags }),
+      ...(filters.dateFrom && { dateFrom: filters.dateFrom.toISOString() }),
+      ...(filters.dateTo && { dateTo: filters.dateTo.toISOString() }),
+    }),
+    [
+      filters.search,
+      filters.folder,
+      filters.sort,
+      filters.tags,
+      filters.dateFrom,
+      filters.dateTo,
+    ]
+  );
+
+  const { data, isLoading } = useFindUserBookmarks(queryParams);
   const bookmarks = data?.items ?? [];
 
   if (isLoading) {

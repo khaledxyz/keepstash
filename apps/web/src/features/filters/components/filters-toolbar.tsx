@@ -1,4 +1,6 @@
-import { FileIcon, FolderIcon, FunnelIcon } from "@phosphor-icons/react";
+import { useMemo } from "react";
+
+import { FolderIcon, FunnelIcon } from "@phosphor-icons/react";
 import {
   parseAsArrayOf,
   parseAsIsoDateTime,
@@ -7,10 +9,11 @@ import {
 } from "nuqs";
 
 import { useFindUserFolders } from "@/features/folders/api";
+import { useFindUserTags } from "@/features/tags/api";
 
 import { Separator } from "@/components/ui/separator";
 
-import { SORT_METHODS, STATUSES, TYPES } from "../constants";
+import { SORT_METHODS } from "../constants";
 import { formatDateRange } from "../utils/date-utils";
 import { ActiveFilters } from "./active-filters";
 import { FilterDate } from "./filter-date";
@@ -23,66 +26,82 @@ export function FiltersToolbar() {
     search: parseAsString.withDefault(""),
     folder: parseAsString.withDefault(""),
     sort: parseAsString.withDefault(""),
-    status: parseAsString.withDefault(""),
     tags: parseAsArrayOf(parseAsString).withDefault([]),
-    type: parseAsString.withDefault(""),
     dateFrom: parseAsIsoDateTime,
     dateTo: parseAsIsoDateTime,
   });
 
   const { data: foldersData } = useFindUserFolders();
+  const { data: tagsData } = useFindUserTags();
 
-  const folders =
-    foldersData?.items?.map((f) => ({
-      label: f.name,
-      value: f.id,
-    })) ?? [];
+  const folders = useMemo(
+    () =>
+      foldersData?.items?.map((f) => ({
+        label: f.name,
+        value: f.id,
+      })) ?? [],
+    [foldersData?.items]
+  );
 
-  const activeFilters = [
-    ...(filters.search
-      ? [
-          {
-            key: "search",
-            label: `Search: ${filters.search}`,
-            value: filters.search,
-          },
-        ]
-      : []),
-    ...(filters.folder
-      ? [
-          {
-            key: "folder",
-            label: `Folder: ${filters.folder}`,
-            value: filters.folder,
-          },
-        ]
-      : []),
-    ...(filters.sort
-      ? [{ key: "sort", label: `Sort: ${filters.sort}`, value: filters.sort }]
-      : []),
-    ...(filters.status
-      ? [
-          {
-            key: "status",
-            label: `Status: ${filters.status}`,
-            value: filters.status,
-          },
-        ]
-      : []),
-    ...(filters.type
-      ? [{ key: "type", label: `Type: ${filters.type}`, value: filters.type }]
-      : []),
-    ...filters.tags.map((tag) => ({ key: "tags", label: tag, value: tag })),
-    ...(filters.dateFrom || filters.dateTo
-      ? [
-          {
-            key: "date",
-            label: `Date: ${formatDateRange(filters.dateFrom, filters.dateTo)}`,
-            value: "date",
-          },
-        ]
-      : []),
-  ];
+  const folderName = useMemo(
+    () => foldersData?.items?.find((f) => f.id === filters.folder)?.name,
+    [foldersData?.items, filters.folder]
+  );
+
+  const tagNames = useMemo(
+    () =>
+      tagsData?.items
+        ?.filter((t) => filters.tags.includes(t.id))
+        .map((t) => ({ id: t.id, name: t.name })) ?? [],
+    [tagsData?.items, filters.tags]
+  );
+
+  const activeFilters = useMemo(
+    () => [
+      ...(filters.search
+        ? [
+            {
+              key: "search",
+              label: `Search: ${filters.search}`,
+              value: filters.search,
+            },
+          ]
+        : []),
+      ...(filters.folder && folderName
+        ? [
+            {
+              key: "folder",
+              label: `Folder: ${folderName}`,
+              value: filters.folder,
+            },
+          ]
+        : []),
+      ...(filters.sort
+        ? [
+            {
+              key: "sort",
+              label: `Sort: ${filters.sort}`,
+              value: filters.sort,
+            },
+          ]
+        : []),
+      ...tagNames.map((tag) => ({
+        key: "tags",
+        label: tag.name,
+        value: tag.id,
+      })),
+      ...(filters.dateFrom || filters.dateTo
+        ? [
+            {
+              key: "date",
+              label: `Date: ${formatDateRange(filters.dateFrom, filters.dateTo)}`,
+              value: "date",
+            },
+          ]
+        : []),
+    ],
+    [filters, folderName, tagNames]
+  );
 
   const removeFilter = (key: string, value?: string) => {
     if (key === "tags" && value) {
@@ -99,9 +118,7 @@ export function FiltersToolbar() {
       search: null,
       folder: null,
       sort: null,
-      status: null,
       tags: null,
-      type: null,
       dateFrom: null,
       dateTo: null,
     });
@@ -120,21 +137,6 @@ export function FiltersToolbar() {
             options={folders}
             placeholder="Folder"
             queryKey="folder"
-          />
-          <FilterSelect
-            icon={<FileIcon />}
-            label="Type"
-            options={TYPES}
-            placeholder="Type"
-            queryKey="type"
-          />
-          <FilterSelect
-            className="w-full max-w-42"
-            icon={<FileIcon />}
-            label="Status"
-            options={STATUSES}
-            placeholder="Status"
-            queryKey="status"
           />
           <FilterSelect
             icon={<FunnelIcon />}

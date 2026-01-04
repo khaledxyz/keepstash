@@ -14,11 +14,11 @@ export function FilterTags() {
   const { data: tagsData } = useFindUserTags();
   const tags = tagsData?.items ?? [];
 
-  const toggleTag = (tagName: string) => {
-    if (selectedTags.includes(tagName)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tagName));
+  const toggleTag = (tagId: string) => {
+    if (selectedTags.includes(tagId)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tagId));
     } else {
-      setSelectedTags([...selectedTags, tagName]);
+      setSelectedTags([...selectedTags, tagId]);
     }
   };
 
@@ -36,8 +36,8 @@ export function FilterTags() {
         <Badge
           className="cursor-pointer"
           key={tag.id}
-          onClick={() => toggleTag(tag.name)}
-          variant={selectedTags.includes(tag.name) ? "default" : "outline"}
+          onClick={() => toggleTag(tag.id)}
+          variant={selectedTags.includes(tag.id) ? "default" : "outline"}
         >
           {tag.name}
         </Badge>

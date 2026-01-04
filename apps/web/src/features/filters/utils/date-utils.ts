@@ -64,20 +64,37 @@ export function formatDateRange(from: Date | null, to: Date | null): string {
   return "";
 }
 
+export function getStartOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+export function getEndOfDay(date: Date): Date {
+  const d = new Date(date);
+  d.setHours(23, 59, 59, 999);
+  return d;
+}
+
 export function getStartOfWeek(date: Date): Date {
   const d = new Date(date);
   const day = d.getDay();
   const diff = d.getDate() - day;
-  return new Date(d.setDate(diff));
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 export function getStartOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
+  const d = new Date(date.getFullYear(), date.getMonth(), 1);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
 export function addDays(date: Date, days: number): Date {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
+  result.setHours(0, 0, 0, 0);
   return result;
 }
 
@@ -85,34 +102,52 @@ export function getDatePresets(): DatePreset[] {
   return [
     {
       label: "Today",
-      getValue: () => ({ from: new Date(), to: new Date() }),
+      getValue: () => {
+        const now = new Date();
+        return { from: getStartOfDay(now), to: getEndOfDay(now) };
+      },
     },
     {
       label: "Yesterday",
       getValue: () => {
         const yesterday = addDays(new Date(), -1);
-        return { from: yesterday, to: yesterday };
+        return { from: yesterday, to: getEndOfDay(yesterday) };
       },
     },
     {
       label: "This Week",
-      getValue: () => ({ from: getStartOfWeek(new Date()), to: new Date() }),
+      getValue: () => {
+        const now = new Date();
+        return { from: getStartOfWeek(now), to: getEndOfDay(now) };
+      },
     },
     {
       label: "This Month",
-      getValue: () => ({ from: getStartOfMonth(new Date()), to: new Date() }),
+      getValue: () => {
+        const now = new Date();
+        return { from: getStartOfMonth(now), to: getEndOfDay(now) };
+      },
     },
     {
       label: "Last 7 Days",
-      getValue: () => ({ from: addDays(new Date(), -7), to: new Date() }),
+      getValue: () => {
+        const now = new Date();
+        return { from: addDays(now, -7), to: getEndOfDay(now) };
+      },
     },
     {
       label: "Last 30 Days",
-      getValue: () => ({ from: addDays(new Date(), -30), to: new Date() }),
+      getValue: () => {
+        const now = new Date();
+        return { from: addDays(now, -30), to: getEndOfDay(now) };
+      },
     },
     {
       label: "Last 60 Days",
-      getValue: () => ({ from: addDays(new Date(), -60), to: new Date() }),
+      getValue: () => {
+        const now = new Date();
+        return { from: addDays(now, -60), to: getEndOfDay(now) };
+      },
     },
   ];
 }
