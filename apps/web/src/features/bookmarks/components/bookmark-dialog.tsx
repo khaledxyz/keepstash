@@ -332,10 +332,10 @@ export function BookmarkDialog() {
                 </div>
               )}
               {!tagsLoading && availableTags.length === 0 && (
-                <div className="text-center text-muted-foreground text-sm">
-                  <p className="mb-2">No tags yet</p>
+                <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                  <p>No tags yet</p>
                   <Button asChild size="sm" variant="outline">
-                    <Link to="/tags">Create Tag</Link>
+                    <Link to="tags">Create Tag</Link>
                   </Button>
                 </div>
               )}

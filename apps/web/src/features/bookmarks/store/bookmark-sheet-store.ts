@@ -16,6 +16,12 @@ export const useBookmarkSheet = create<BookmarkSheetStore>((set) => ({
   mode: "view",
   isOpen: false,
   open: (bookmark, mode) => set({ bookmark, mode, isOpen: true }),
-  close: () => set({ bookmark: null, isOpen: false }),
+  close: () => {
+    set({ isOpen: false });
+    // Delay clearing bookmark to allow animation to complete
+    setTimeout(() => {
+      set({ bookmark: null, mode: "view" });
+    }, 100); // matches close animation duration
+  },
   setMode: (mode) => set({ mode }),
 }));
