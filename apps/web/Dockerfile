@@ -16,6 +16,7 @@ COPY packages/ts-sdk/src ./packages/ts-sdk/src
 COPY apps/api/openapi.json ./apps/api/
 
 RUN pnpm install --frozen-lockfile
+RUN pnpm --filter @keepstash/ts-sdk generate
 
 # ===============================
 # Stage 2: Builder
