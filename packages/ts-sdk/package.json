@@ -38,7 +38,7 @@
     "prepublishOnly": "pnpm generate"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "0.89.2"
+    "@hey-api/openapi-ts": "0.90.1"
   },
   "engines": {
     "node": ">=22.0.0",
