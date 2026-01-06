@@ -12,7 +12,7 @@ COPY apps/web/package.json ./apps/web/
 COPY packages/ts-sdk/package.json ./packages/ts-sdk/
 
 COPY packages/ts-sdk/openapi-ts.config.ts ./packages/ts-sdk/
-COPY packages/ts-sdk/src ./packages/ts-sdk/src
+COPY packages/ts-sdk ./packages/ts-sdk
 COPY apps/api/openapi.json ./apps/api/
 
 RUN pnpm install --frozen-lockfile
