@@ -26,10 +26,10 @@ COPY --from=deps /app/apps/api/node_modules ./apps/api/node_modules
 
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
 COPY apps/api/package.json ./apps/api/
-
 COPY apps/api/tsconfig*.json ./apps/api/
 COPY apps/api/nest-cli.json ./apps/api/
 COPY apps/api/src ./apps/api/src
+COPY apps/api/drizzle ./apps/api/drizzle
 
 RUN pnpm --filter @keepstash/api build
 
@@ -58,7 +58,18 @@ COPY --from=builder --chown=nodejs:nodejs /app/production/node_modules ./node_mo
 COPY --from=builder --chown=nodejs:nodejs /app/production/apps/api/node_modules ./apps/api/node_modules
 
 COPY --from=builder --chown=nodejs:nodejs /app/apps/api/dist ./apps/api/dist
+COPY --from=builder --chown=nodejs:nodejs /app/apps/api/drizzle ./apps/api/drizzle
 COPY --from=builder --chown=nodejs:nodejs /app/apps/api/package.json ./apps/api/
+
+# Create startup script that runs migrations then starts the app
+RUN echo '#!/bin/sh' > /app/apps/api/start.sh && \
+    echo 'set -e' >> /app/apps/api/start.sh && \
+    echo 'echo "Running database migrations..."' >> /app/apps/api/start.sh && \
+    echo 'node dist/migrate.js' >> /app/apps/api/start.sh && \
+    echo 'echo "Migrations complete. Starting API..."' >> /app/apps/api/start.sh && \
+    echo 'exec node dist/main.js' >> /app/apps/api/start.sh && \
+    chmod +x /app/apps/api/start.sh && \
+    chown nodejs:nodejs /app/apps/api/start.sh
 
 USER nodejs
 
@@ -66,8 +77,8 @@ WORKDIR /app/apps/api
 
 EXPOSE 5000
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=5 \
   CMD node -e "require('http').get('http://localhost:5000/health', r => process.exit(r.statusCode === 200 ? 0 : 1))"
 
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["node", "dist/main.js"]
+CMD ["sh", "start.sh"]
