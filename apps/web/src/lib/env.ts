@@ -4,13 +4,14 @@
  */
 function getEnv(key: keyof RuntimeEnv, defaultValue = ""): string {
   // Check runtime config (from Docker)
-  if (typeof window !== "undefined" && window._env_?.[key]) {
+  if (typeof window !== "undefined" && window._env_?.[key] !== undefined) {
     return window._env_[key];
   }
 
   // Fallback to build-time config (local development)
-  if (import.meta.env[key]) {
-    return import.meta.env[key];
+  const viteEnv = import.meta.env[key];
+  if (viteEnv !== undefined) {
+    return viteEnv;
   }
 
   return defaultValue;
@@ -25,14 +26,25 @@ function isProd(): boolean {
 
 /**
  * Application environment configuration
+ * Using getters to ensure runtime values are read dynamically
  */
 export const env = {
-  appName: getEnv("VITE_APP_NAME", "keepstash"),
-  apiUrl: getEnv("VITE_API_URL", ""),
-  apiPrefix: getEnv("VITE_API_PREFIX", "/api"),
-  enableRootRedirect: getEnv("VITE_ENABLE_ROOT_REDIRECT", "true"),
-  isProd: isProd(),
-} as const;
+  get appName() {
+    return getEnv("VITE_APP_NAME", "keepstash");
+  },
+  get apiUrl() {
+    return getEnv("VITE_API_URL", "");
+  },
+  get apiPrefix() {
+    return getEnv("VITE_API_PREFIX", "/api");
+  },
+  get enableRootRedirect() {
+    return getEnv("VITE_ENABLE_ROOT_REDIRECT", "true");
+  },
+  get isProd() {
+    return isProd();
+  },
+};
 
 /**
  * Check if a boolean feature flag is enabled
