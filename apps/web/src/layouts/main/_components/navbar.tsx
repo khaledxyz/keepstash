@@ -20,8 +20,8 @@ export function Navbar() {
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Logo href="/dashboard" isLink />
-          <Separator orientation="vertical" />
-          <ul>
+          <Separator className="hidden md:block" orientation="vertical" />
+          <ul className="hidden items-center md:flex">
             <li>
               <Button asChild variant="ghost">
                 <Link to="dashboard/folders">
@@ -39,10 +39,10 @@ export function Navbar() {
           </ul>
         </div>
 
-        <div className="flex items-center">
+        <div className="hidden items-center md:flex">
           <div className="flex items-center gap-1">
             <ThemePicker />
-            <BookmarkDialog />
+            <BookmarkDialog showTrigger />
           </div>
           <Separator className="mx-2" orientation="vertical" />
           <UserDropdown email={session?.user.email} name={session?.user.name} />

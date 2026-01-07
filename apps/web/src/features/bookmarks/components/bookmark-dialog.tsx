@@ -53,8 +53,28 @@ const formSchema = z.object({
   tagIds: z.array(z.string()).optional(),
 });
 
-export function BookmarkDialog() {
-  const [open, setOpen] = useState(false);
+interface BookmarkDialogProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  showTrigger?: boolean;
+}
+
+export function BookmarkDialog({
+  open: controlledOpen,
+  onOpenChange,
+  showTrigger = false,
+}: BookmarkDialogProps = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (isControlled) {
+      onOpenChange?.(newOpen);
+    } else {
+      setInternalOpen(newOpen);
+    }
+  };
   const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
 
   const { data: foldersData, isLoading: foldersLoading } = useFindUserFolders();
@@ -154,7 +174,7 @@ export function BookmarkDialog() {
 
       toast.success("Bookmark created successfully");
       form.reset();
-      setOpen(false);
+      handleOpenChange(false);
     } catch (error) {
       toast.error("Failed to create bookmark");
       console.error("Failed to create bookmark:", error);
@@ -162,13 +182,15 @@ export function BookmarkDialog() {
   };
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button>
-          <PlusIcon weight="bold" />
-          <span>New Bookmark</span>
-        </Button>
-      </DialogTrigger>
+    <Dialog onOpenChange={handleOpenChange} open={open}>
+      {showTrigger && (
+        <DialogTrigger asChild>
+          <Button>
+            <PlusIcon weight="bold" />
+            <span>New Bookmark</span>
+          </Button>
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[525px]">
         <form id="bookmark-form" onSubmit={form.handleSubmit(onSubmit)}>
           <DialogHeader>
@@ -349,7 +371,7 @@ export function BookmarkDialog() {
             <Button
               onClick={() => {
                 form.reset();
-                setOpen(false);
+                handleOpenChange(false);
               }}
               type="button"
               variant="outline"

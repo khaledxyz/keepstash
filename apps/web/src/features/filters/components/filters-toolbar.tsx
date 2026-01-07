@@ -133,10 +133,10 @@ export function FiltersToolbar() {
   return (
     <div className="space-y-2">
       {/* First row */}
-      <div className="flex items-center">
+      <div className="flex flex-col items-center gap-1 md:flex-row md:gap-2">
         <FilterSearch />
-        <Separator className="mx-2" orientation="vertical" />
-        <div className="flex items-center gap-1">
+        <Separator className="hidden md:block" orientation="vertical" />
+        <div className="flex w-full items-center justify-start gap-1 md:w-fit">
           <FilterSelect
             icon={<FolderIcon />}
             label="Folder"

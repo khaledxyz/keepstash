@@ -2,6 +2,8 @@ import type { FilterOption } from "../types";
 
 import { parseAsString, throttle, useQueryState } from "nuqs";
 
+import { cn } from "@/lib/utils";
+
 import { Field } from "@/components/ui/field";
 import {
   Select,
@@ -28,7 +30,7 @@ export function FilterSelect({
   label,
   icon,
   options,
-  className = "w-[150px]",
+  className,
 }: FilterSelectProps) {
   const [value, setValue] = useQueryState(
     queryKey,
@@ -38,7 +40,7 @@ export function FilterSelect({
   );
 
   return (
-    <Field className={className}>
+    <Field className={cn("", className)}>
       <Select onValueChange={setValue} value={value}>
         <SelectTrigger>
           <div className="flex items-center gap-2">

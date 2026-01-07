@@ -16,7 +16,7 @@ export function FilterSearch() {
   );
 
   return (
-    <InputGroup className="max-w-52">
+    <InputGroup className="md:max-w-52">
       <InputGroupInput
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search bookmarks..."

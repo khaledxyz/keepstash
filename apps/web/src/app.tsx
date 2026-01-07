@@ -14,6 +14,7 @@ import { ForgotPasswordPage } from "./routes/forgot-password";
 import HomePage from "./routes/home";
 import { LoginPage } from "./routes/login";
 import { NotFoundPage } from "./routes/not-found";
+import { ProfilePage } from "./routes/profile";
 import { RegisterPage } from "./routes/register";
 import { SettingsPage } from "./routes/settings";
 import { TagsPage } from "./routes/tags";
@@ -31,6 +32,7 @@ export default function App() {
               <Route element={<MainLayout />}>
                 <Route element={<DashboardPage />} path="dashboard" />
                 <Route element={<SettingsPage />} path="dashboard/settings" />
+                <Route element={<ProfilePage />} path="dashboard/profile" />
                 <Route element={<FoldersPage />} path="dashboard/folders" />
                 <Route element={<TagsPage />} path="dashboard/tags" />
               </Route>
