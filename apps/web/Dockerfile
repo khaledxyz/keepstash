@@ -15,7 +15,9 @@ COPY packages/ts-sdk/openapi-ts.config.ts ./packages/ts-sdk/
 COPY packages/ts-sdk ./packages/ts-sdk
 COPY apps/api/openapi.json ./apps/api/
 
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
 RUN pnpm --filter @keepstash/ts-sdk generate
 
 # ===============================
@@ -77,5 +79,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost/health || exit 1
 
 ENTRYPOINT ["dumb-init", "--"]
-
 CMD ["/entrypoint.sh"]
