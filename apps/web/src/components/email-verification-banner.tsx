@@ -72,7 +72,7 @@ export default function EmailVerificationBanner({ email }: Props) {
             weight="bold"
           />
           <p className="text-muted-foreground">
-            Please verify your email address to access all features
+            Please verify your email address.
           </p>
         </div>
 

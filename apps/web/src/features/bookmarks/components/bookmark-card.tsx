@@ -17,8 +17,6 @@ import { BookmarkMetadata } from "./shared/bookmark-metadata";
 export function BookmarkCard({ bookmark }: { bookmark: Bookmark }) {
   const domain = new URL(bookmark.url).hostname;
   const thumbnail = `https://via.placeholder.com/430x240.png?text=${encodeURIComponent(domain)}`;
-  console.log(bookmark);
-  console.log("####");
 
   return (
     <Card className="group overflow-hidden pt-0">

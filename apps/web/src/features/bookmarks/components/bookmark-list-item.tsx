@@ -3,6 +3,7 @@ import type { Bookmark } from "@keepstash/ts-sdk";
 import { DotsThreeVerticalIcon } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
+import { Image } from "@/components/ui/image";
 import {
   Item,
   ItemActions,
@@ -23,7 +24,7 @@ export function BookmarkListItem({ bookmark }: { bookmark: Bookmark }) {
   return (
     <Item role="listitem" variant="outline">
       <ItemMedia variant="image">
-        <img
+        <Image
           alt=""
           className="object-cover"
           height={32}

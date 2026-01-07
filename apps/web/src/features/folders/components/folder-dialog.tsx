@@ -71,7 +71,7 @@ export function FolderDialog() {
       <DialogTrigger asChild>
         <Button>
           <PlusIcon weight="bold" />
-          <span>Folders</span>
+          <span>Create Folder</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

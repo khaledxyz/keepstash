@@ -60,7 +60,7 @@ export function TagsView() {
   }
 
   return (
-    <ItemGroup className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <ItemGroup className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
       {data.items.map((tag) => (
         <TagItem key={tag.id} tag={tag} />
       ))}

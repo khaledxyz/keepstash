@@ -32,6 +32,7 @@ export function BookmarkMetadata({
   className,
 }: Props) {
   const isInline = layout === "inline";
+  const iconSize = 16;
 
   return (
     <ul
@@ -40,9 +41,9 @@ export function BookmarkMetadata({
         className
       )}
     >
-      <MetadataItem icon={<LinkIcon />}>
+      <MetadataItem icon={<LinkIcon size={iconSize} weight="regular" />}>
         <Link
-          className="truncate underline"
+          className="line-clamp-1 break-all underline"
           rel="noopener noreferrer"
           target="_blank"
           to={link}
@@ -51,12 +52,12 @@ export function BookmarkMetadata({
         </Link>
       </MetadataItem>
       {folder && (
-        <MetadataItem icon={<FolderIcon />}>
+        <MetadataItem icon={<FolderIcon size={iconSize} weight="regular" />}>
           <span>{folder.name}</span>
         </MetadataItem>
       )}
       {tags.length > 0 && (
-        <MetadataItem icon={<TagIcon />}>
+        <MetadataItem icon={<TagIcon size={iconSize} weight="regular" />}>
           <div className="flex flex-wrap gap-1">
             {tags.map((tag) => (
               <Badge key={tag.id} variant="outline">
@@ -66,7 +67,7 @@ export function BookmarkMetadata({
           </div>
         </MetadataItem>
       )}
-      <MetadataItem icon={<CalendarIcon />}>
+      <MetadataItem icon={<CalendarIcon size={iconSize} weight="regular" />}>
         <span>{timeAgo(createdAt)}</span>
       </MetadataItem>
     </ul>
@@ -82,7 +83,7 @@ function MetadataItem({
 }) {
   return (
     <li className="flex items-center gap-1">
-      {icon}
+      <span className="shrink-0">{icon}</span>
       {children}
     </li>
   );
