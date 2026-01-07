@@ -57,7 +57,7 @@ async function bootstrap() {
     ignoreGlobalPrefix: true,
   });
   SwaggerModule.setup("docs", app, document);
-  const openapiPath = resolve(__dirname, "../../openapi.json");
+  const openapiPath = resolve(__dirname, "../openapi.json");
   writeFileSync(openapiPath, JSON.stringify(document, null, 2));
 
   // Start server

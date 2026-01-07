@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard } from "@nestjs/throttler";
 
 import { DatabaseModule } from "@infra/database/database.module";
@@ -13,6 +14,7 @@ import { AuthModule } from "@modules/auth/auth.module";
 import { BookmarksModule } from "./modules/bookmarks/bookmarks.module";
 import { FoldersModule } from "./modules/folders/folders.module";
 import { MetadataModule } from "./modules/metadata/metadata.module";
+import { NotificationsModule } from "./modules/notifications/notifications.module";
 import { TagsModule } from "./modules/tags/tags.module";
 
 @Module({
@@ -23,6 +25,7 @@ import { TagsModule } from "./modules/tags/tags.module";
     RateLimiterModule,
     HealthModule,
     DatabaseModule,
+    EventEmitterModule.forRoot(),
 
     // MODULES
     AuthModule,
@@ -30,6 +33,7 @@ import { TagsModule } from "./modules/tags/tags.module";
     FoldersModule,
     TagsModule,
     MetadataModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [
