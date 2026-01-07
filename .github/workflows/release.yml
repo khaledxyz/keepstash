@@ -1,5 +1,4 @@
 name: Build and Push Docker Images
-
 on:
   release:
     types: [published]
@@ -44,8 +43,16 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/api:${{ steps.version.outputs.minor }}
             ${{ secrets.DOCKER_USERNAME }}/api:${{ steps.version.outputs.major }}
             ${{ secrets.DOCKER_USERNAME }}/api:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            ${{ secrets.DOCKER_USERNAME }}/api:cache
+          cache-from: |
+            type=registry,ref=${{ secrets.DOCKER_USERNAME }}/api:cache
+            type=gha
+          cache-to: |
+            type=registry,ref=${{ secrets.DOCKER_USERNAME }}/api:cache,mode=max
+            type=gha,mode=max
+          provenance: false
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
 
       - name: Build and push Web image
         uses: docker/build-push-action@v6
@@ -58,5 +65,13 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/web:${{ steps.version.outputs.minor }}
             ${{ secrets.DOCKER_USERNAME }}/web:${{ steps.version.outputs.major }}
             ${{ secrets.DOCKER_USERNAME }}/web:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            ${{ secrets.DOCKER_USERNAME }}/web:cache
+          cache-from: |
+            type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:cache
+            type=gha
+          cache-to: |
+            type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:cache,mode=max
+            type=gha,mode=max
+          provenance: false
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
