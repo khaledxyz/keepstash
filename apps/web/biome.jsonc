@@ -1,6 +1,9 @@
 {
   "root": false,
   "extends": ["ultracite/core", "ultracite/react"],
+  "files": {
+    "includes": ["!!**/dev-dist"]
+  },
   "assist": {
     "actions": {
       "source": {
