@@ -52,7 +52,9 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "globals": "^16.5.0",
     "typescript": "~5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-plugin-pwa": "^1.2.0",
+    "workbox-window": "^7.4.0"
   },
   "engines": {
     "node": ">=22.0.0",
