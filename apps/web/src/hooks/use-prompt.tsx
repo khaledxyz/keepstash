@@ -1,16 +1,16 @@
 import React from "react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalDescription,
+  ResponsiveModalFooter,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
+} from "@/components/ui/responsive-modal";
 import { Spinner } from "@/components/ui/spinner";
 
 // Extract the variant type from Button props
@@ -97,7 +97,7 @@ const PromptDialog = React.memo(
     };
 
     return (
-      <Dialog
+      <ResponsiveModal
         onOpenChange={(openState) => {
           if (!(openState || isProcessing)) {
             onCancel();
@@ -105,11 +105,13 @@ const PromptDialog = React.memo(
         }}
         open={open}
       >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{description}</DialogDescription>
-          </DialogHeader>
+        <ResponsiveModalContent>
+          <ResponsiveModalHeader>
+            <ResponsiveModalTitle>{title}</ResponsiveModalTitle>
+            <ResponsiveModalDescription>
+              {description}
+            </ResponsiveModalDescription>
+          </ResponsiveModalHeader>
 
           {verificationText ? (
             <Field>
@@ -132,7 +134,7 @@ const PromptDialog = React.memo(
             </Field>
           ) : null}
 
-          <DialogFooter>
+          <ResponsiveModalFooter>
             <Button
               aria-label={cancelText}
               disabled={isProcessing}
@@ -153,9 +155,9 @@ const PromptDialog = React.memo(
               {isProcessing ? <Spinner /> : null}
               {isProcessing ? processingText : confirmText}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </ResponsiveModalFooter>
+        </ResponsiveModalContent>
+      </ResponsiveModal>
     );
   }
 );

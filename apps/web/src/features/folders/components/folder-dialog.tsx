@@ -8,20 +8,20 @@ import z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalFooter,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
+  ResponsiveModalTrigger,
+} from "@/components/ui/responsive-modal";
 import { Spinner } from "@/components/ui/spinner";
 
 import { useCreateFolder } from "../api";
@@ -67,17 +67,17 @@ export function FolderDialog() {
   }
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
+    <ResponsiveModal onOpenChange={setOpen} open={open}>
+      <ResponsiveModalTrigger asChild>
         <Button>
           <PlusIcon weight="bold" />
           <span>Create Folder</span>
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create Folder</DialogTitle>
-        </DialogHeader>
+      </ResponsiveModalTrigger>
+      <ResponsiveModalContent>
+        <ResponsiveModalHeader>
+          <ResponsiveModalTitle>Create Folder</ResponsiveModalTitle>
+        </ResponsiveModalHeader>
 
         <form id="folder-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
@@ -124,7 +124,7 @@ export function FolderDialog() {
           </FieldGroup>
         </form>
 
-        <DialogFooter>
+        <ResponsiveModalFooter>
           <Button
             disabled={createFolder.isPending}
             form="folder-form"
@@ -133,8 +133,8 @@ export function FolderDialog() {
             {createFolder.isPending ? <Spinner /> : null}
             <span>{createFolder.isPending ? "Creating..." : "Create"}</span>
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </ResponsiveModalFooter>
+      </ResponsiveModalContent>
+    </ResponsiveModal>
   );
 }

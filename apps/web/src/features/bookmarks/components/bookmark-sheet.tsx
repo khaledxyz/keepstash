@@ -22,6 +22,13 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
+  ResponsiveSheet,
+  ResponsiveSheetContent,
+  ResponsiveSheetFooter,
+  ResponsiveSheetHeader,
+  ResponsiveSheetTitle,
+} from "@/components/ui/responsive-sheet";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -30,13 +37,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -133,11 +133,11 @@ export function BookmarkSheet() {
   };
 
   return (
-    <Sheet onOpenChange={(open) => !open && close()} open={isOpen}>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Bookmark Details</SheetTitle>
-        </SheetHeader>
+    <ResponsiveSheet onOpenChange={(open) => !open && close()} open={isOpen}>
+      <ResponsiveSheetContent>
+        <ResponsiveSheetHeader>
+          <ResponsiveSheetTitle>Bookmark Details</ResponsiveSheetTitle>
+        </ResponsiveSheetHeader>
 
         <form
           className="flex h-full flex-col"
@@ -374,7 +374,7 @@ export function BookmarkSheet() {
           </div>
 
           {isEditMode && (
-            <SheetFooter className="px-4 py-4">
+            <ResponsiveSheetFooter className="px-4 py-4">
               <Button
                 onClick={() => {
                   form.reset();
@@ -401,10 +401,10 @@ export function BookmarkSheet() {
                   "Save Changes"
                 )}
               </Button>
-            </SheetFooter>
+            </ResponsiveSheetFooter>
           )}
         </form>
-      </SheetContent>
-    </Sheet>
+      </ResponsiveSheetContent>
+    </ResponsiveSheet>
   );
 }

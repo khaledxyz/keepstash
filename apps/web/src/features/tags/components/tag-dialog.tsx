@@ -8,20 +8,20 @@ import z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalFooter,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
+  ResponsiveModalTrigger,
+} from "@/components/ui/responsive-modal";
 import { Spinner } from "@/components/ui/spinner";
 
 import { useCreateTag } from "../api";
@@ -59,17 +59,17 @@ export function TagDialog() {
   }
 
   return (
-    <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
+    <ResponsiveModal onOpenChange={setOpen} open={open}>
+      <ResponsiveModalTrigger asChild>
         <Button>
           <PlusIcon weight="bold" />
           <span>Create Tag</span>
         </Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create Tag</DialogTitle>
-        </DialogHeader>
+      </ResponsiveModalTrigger>
+      <ResponsiveModalContent>
+        <ResponsiveModalHeader>
+          <ResponsiveModalTitle>Create Tag</ResponsiveModalTitle>
+        </ResponsiveModalHeader>
 
         <form id="tag-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
@@ -95,13 +95,13 @@ export function TagDialog() {
           </FieldGroup>
         </form>
 
-        <DialogFooter>
+        <ResponsiveModalFooter>
           <Button disabled={createTag.isPending} form="tag-form" type="submit">
             {createTag.isPending ? <Spinner /> : null}
             <span>Create</span>
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </ResponsiveModalFooter>
+      </ResponsiveModalContent>
+    </ResponsiveModal>
   );
 }

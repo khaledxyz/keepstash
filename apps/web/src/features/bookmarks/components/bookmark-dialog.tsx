@@ -16,21 +16,21 @@ import { useFindUserTags } from "@/features/tags/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Field,
   FieldDescription,
   FieldError,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  ResponsiveModal,
+  ResponsiveModalContent,
+  ResponsiveModalDescription,
+  ResponsiveModalFooter,
+  ResponsiveModalHeader,
+  ResponsiveModalTitle,
+  ResponsiveModalTrigger,
+} from "@/components/ui/responsive-modal";
 import {
   Select,
   SelectContent,
@@ -53,7 +53,7 @@ const formSchema = z.object({
   tagIds: z.array(z.string()).optional(),
 });
 
-interface BookmarkDialogProps {
+interface Props {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   showTrigger?: boolean;
@@ -63,7 +63,7 @@ export function BookmarkDialog({
   open: controlledOpen,
   onOpenChange,
   showTrigger = false,
-}: BookmarkDialogProps = {}) {
+}: Props = {}) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
@@ -182,23 +182,23 @@ export function BookmarkDialog({
   };
 
   return (
-    <Dialog onOpenChange={handleOpenChange} open={open}>
+    <ResponsiveModal onOpenChange={handleOpenChange} open={open}>
       {showTrigger && (
-        <DialogTrigger asChild>
+        <ResponsiveModalTrigger asChild>
           <Button>
             <PlusIcon weight="bold" />
             <span>New Bookmark</span>
           </Button>
-        </DialogTrigger>
+        </ResponsiveModalTrigger>
       )}
-      <DialogContent className="sm:max-w-[525px]">
+      <ResponsiveModalContent className="sm:max-w-[525px]">
         <form id="bookmark-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>Create Bookmark</DialogTitle>
-            <DialogDescription>
+          <ResponsiveModalHeader>
+            <ResponsiveModalTitle>Create Bookmark</ResponsiveModalTitle>
+            <ResponsiveModalDescription>
               Add a new bookmark to your collection. Fill in the details below.
-            </DialogDescription>
-          </DialogHeader>
+            </ResponsiveModalDescription>
+          </ResponsiveModalHeader>
 
           <div className="grid gap-4 py-4">
             {/* URL */}
@@ -367,7 +367,7 @@ export function BookmarkDialog({
             </Field>
           </div>
 
-          <DialogFooter>
+          <ResponsiveModalFooter>
             <Button
               onClick={() => {
                 form.reset();
@@ -385,9 +385,9 @@ export function BookmarkDialog({
             >
               {createBookmark.isPending ? "Creating..." : "Create Bookmark"}
             </Button>
-          </DialogFooter>
+          </ResponsiveModalFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </ResponsiveModalContent>
+    </ResponsiveModal>
   );
 }

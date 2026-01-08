@@ -34,8 +34,8 @@ export default function HomePage() {
         </nav>
       </header>
 
-      <main className="container flex flex-1 flex-col items-center justify-center py-12">
-        <div className="mx-auto max-w-2xl text-center">
+      <main className="container flex-1 py-12">
+        <div className="mx-auto max-w-2xl text-left md:text-center">
           <h1 className="mb-4 font-bold text-5xl tracking-tight sm:text-6xl">
             Save your links.
             <br />
@@ -50,7 +50,7 @@ export default function HomePage() {
           </Button>
         </div>
 
-        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-4">
           <div className="flex flex-col items-center text-center">
             <BookmarkIcon className="mb-3 size-8 text-muted-foreground" />
             <h3 className="mb-1 font-semibold">Save Bookmarks</h3>
@@ -81,14 +81,14 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mt-16 rounded-lg border bg-muted/50 p-8">
+        <div className="mt-16 rounded-lg border bg-card p-8">
           <div className="mx-auto max-w-xl text-center">
             <h2 className="mb-2 font-semibold text-2xl">Self-Host It</h2>
             <p className="mb-6 text-muted-foreground">
               KeepStash is open source. Run it on your own infrastructure and
               keep full control of your data.
             </p>
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-1">
               <Button asChild variant="outline">
                 <Link
                   rel="noopener noreferrer"
@@ -115,17 +115,18 @@ export default function HomePage() {
 
       <footer className="border-t">
         <div className="container flex flex-wrap items-center justify-between gap-4 text-muted-foreground text-sm">
-          <div className="flex items-center gap-4">
-            <Link
-              className="flex items-center gap-1.5 hover:text-foreground"
-              rel="noopener noreferrer"
-              target="_blank"
-              to="https://status.khaledxyz.com/status/keepstash"
-            >
-              <span className="size-2 rounded-full bg-green-500" />
-              All Systems Operational
-            </Link>
-          </div>
+          <Link
+            className="flex items-center gap-1.5 hover:text-foreground"
+            rel="noopener noreferrer"
+            target="_blank"
+            to="https://status.khaledxyz.com/status/keepstash"
+          >
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-green-500" />
+            </span>
+            All Systems Operational
+          </Link>
           <div className="flex items-center gap-1">
             <Link
               className="flex items-center gap-1.5 hover:text-foreground"
