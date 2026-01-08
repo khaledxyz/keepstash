@@ -10,11 +10,6 @@
         respond "OK" 200
     }
 
-    # API proxy
-    handle /api/* {
-        reverse_proxy {$API_URL:http://api:5000}
-    }
-
     # Serve static files
     @static {
         path *.js *.css *.png *.jpg *.jpeg *.gif *.svg *.ico *.woff *.woff2 *.ttf *.eot *.webp
