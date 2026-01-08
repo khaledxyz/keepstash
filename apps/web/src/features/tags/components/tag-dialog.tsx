@@ -92,15 +92,20 @@ export function TagDialog() {
                 </Field>
               )}
             />
+
+            <ResponsiveModalFooter>
+              <Button
+                disabled={createTag.isPending}
+                form="tag-form"
+                size="lg"
+                type="submit"
+              >
+                {createTag.isPending ? <Spinner /> : null}
+                <span>Create</span>
+              </Button>
+            </ResponsiveModalFooter>
           </FieldGroup>
         </form>
-
-        <ResponsiveModalFooter>
-          <Button disabled={createTag.isPending} form="tag-form" type="submit">
-            {createTag.isPending ? <Spinner /> : null}
-            <span>Create</span>
-          </Button>
-        </ResponsiveModalFooter>
       </ResponsiveModalContent>
     </ResponsiveModal>
   );

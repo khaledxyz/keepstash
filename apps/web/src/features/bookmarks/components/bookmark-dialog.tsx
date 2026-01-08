@@ -19,6 +19,7 @@ import {
   Field,
   FieldDescription,
   FieldError,
+  FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -59,11 +60,14 @@ interface Props {
   showTrigger?: boolean;
 }
 
+const snapPoints = [0.95, 1];
+
 export function BookmarkDialog({
   open: controlledOpen,
   onOpenChange,
   showTrigger = false,
 }: Props = {}) {
+  const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
@@ -75,6 +79,11 @@ export function BookmarkDialog({
       setInternalOpen(newOpen);
     }
   };
+  const handleClose = () => {
+    form.reset();
+    handleOpenChange(false);
+  };
+
   const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
 
   const { data: foldersData, isLoading: foldersLoading } = useFindUserFolders();
@@ -182,7 +191,13 @@ export function BookmarkDialog({
   };
 
   return (
-    <ResponsiveModal onOpenChange={handleOpenChange} open={open}>
+    <ResponsiveModal
+      activeSnapPoint={snap}
+      onOpenChange={handleOpenChange}
+      open={open}
+      setActiveSnapPoint={setSnap}
+      snapPoints={snapPoints}
+    >
       {showTrigger && (
         <ResponsiveModalTrigger asChild>
           <Button>
@@ -191,16 +206,16 @@ export function BookmarkDialog({
           </Button>
         </ResponsiveModalTrigger>
       )}
-      <ResponsiveModalContent className="sm:max-w-[525px]">
-        <form id="bookmark-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <ResponsiveModalHeader>
-            <ResponsiveModalTitle>Create Bookmark</ResponsiveModalTitle>
-            <ResponsiveModalDescription>
-              Add a new bookmark to your collection. Fill in the details below.
-            </ResponsiveModalDescription>
-          </ResponsiveModalHeader>
+      <ResponsiveModalContent>
+        <ResponsiveModalHeader>
+          <ResponsiveModalTitle>Create Bookmark</ResponsiveModalTitle>
+          <ResponsiveModalDescription>
+            Add a new bookmark to your collection. Fill in the details below.
+          </ResponsiveModalDescription>
+        </ResponsiveModalHeader>
 
-          <div className="grid gap-4 py-4">
+        <form id="bookmark-form" onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
             {/* URL */}
             <Controller
               control={form.control}
@@ -277,19 +292,29 @@ export function BookmarkDialog({
             <Controller
               control={form.control}
               name="folderId"
-              render={({ field, fieldState }) => {
-                let placeholder = "Select folder";
-                if (foldersLoading) {
-                  placeholder = "Loading folders...";
-                } else if (!hasFolders) {
-                  placeholder = "No folders available";
-                }
-
-                return (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="bookmark-folder">Folder</FieldLabel>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="bookmark-folder">Folder</FieldLabel>
+                  {foldersLoading && (
+                    <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                      <p>Loading folders...</p>
+                    </div>
+                  )}
+                  {!(foldersLoading || hasFolders) && (
+                    <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                      <p>No folders yet</p>
+                      <Button
+                        asChild
+                        onClick={handleClose}
+                        size="sm"
+                        variant="outline"
+                      >
+                        <Link to="/dashboard/folders">Create Folder</Link>
+                      </Button>
+                    </div>
+                  )}
+                  {!foldersLoading && hasFolders && (
                     <Select
-                      disabled={foldersLoading || !hasFolders}
                       name={field.name}
                       onValueChange={field.onChange}
                       value={field.value}
@@ -298,44 +323,47 @@ export function BookmarkDialog({
                         aria-invalid={fieldState.invalid}
                         id="bookmark-folder"
                       >
-                        <SelectValue placeholder={placeholder} />
+                        <SelectValue placeholder="Select folder" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Folders</SelectLabel>
-                          {hasFolders ? (
-                            folders.map((folder) => (
-                              <SelectItem key={folder.id} value={folder.id}>
-                                {folder.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <div className="p-2 text-center text-muted-foreground text-sm">
-                              <p className="mb-2">No folders yet</p>
-                              <Button asChild size="sm" variant="outline">
-                                <Link to="/folders">Create Folder</Link>
-                              </Button>
-                            </div>
-                          )}
+                          {folders.map((folder) => (
+                            <SelectItem key={folder.id} value={folder.id}>
+                              {folder.name}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
-                    <FieldDescription>
-                      Optional folder to organize your bookmark
-                    </FieldDescription>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Field>
-                );
-              }}
+                  )}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
 
             {/* Tags */}
             <Field>
               <FieldLabel>Tags</FieldLabel>
               {tagsLoading && (
-                <p className="text-muted-foreground text-sm">Loading tags...</p>
+                <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                  <p>Loading tags...</p>
+                </div>
+              )}
+              {!tagsLoading && availableTags.length === 0 && (
+                <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                  <p>No tags yet</p>
+                  <Button
+                    asChild
+                    onClick={handleClose}
+                    size="sm"
+                    variant="outline"
+                  >
+                    <Link to="/dashboard/tags">Create Tag</Link>
+                  </Button>
+                </div>
               )}
               {!tagsLoading && availableTags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -353,39 +381,29 @@ export function BookmarkDialog({
                   ))}
                 </div>
               )}
-              {!tagsLoading && availableTags.length === 0 && (
-                <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
-                  <p>No tags yet</p>
-                  <Button asChild size="sm" variant="outline">
-                    <Link to="tags">Create Tag</Link>
-                  </Button>
-                </div>
-              )}
-              <FieldDescription>
-                Select tags to categorize your bookmark
-              </FieldDescription>
             </Field>
-          </div>
 
-          <ResponsiveModalFooter>
-            <Button
-              onClick={() => {
-                form.reset();
-                handleOpenChange(false);
-              }}
-              type="button"
-              variant="outline"
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={createBookmark.isPending || form.formState.isSubmitting}
-              form="bookmark-form"
-              type="submit"
-            >
-              {createBookmark.isPending ? "Creating..." : "Create Bookmark"}
-            </Button>
-          </ResponsiveModalFooter>
+            <ResponsiveModalFooter>
+              <Button
+                onClick={handleClose}
+                size="lg"
+                type="button"
+                variant="outline"
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={
+                  createBookmark.isPending || form.formState.isSubmitting
+                }
+                form="bookmark-form"
+                size="lg"
+                type="submit"
+              >
+                {createBookmark.isPending ? "Creating..." : "Create Bookmark"}
+              </Button>
+            </ResponsiveModalFooter>
+          </FieldGroup>
         </form>
       </ResponsiveModalContent>
     </ResponsiveModal>

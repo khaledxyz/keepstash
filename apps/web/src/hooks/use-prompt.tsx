@@ -139,7 +139,7 @@ const PromptDialog = React.memo(
               aria-label={cancelText}
               disabled={isProcessing}
               onClick={onCancel}
-              size="sm"
+              size="lg"
               variant="ghost"
             >
               {cancelText}
@@ -149,7 +149,7 @@ const PromptDialog = React.memo(
               aria-label={confirmText}
               disabled={!isValid || isProcessing}
               onClick={handleConfirm}
-              size="sm"
+              size="lg"
               variant={variant}
             >
               {isProcessing ? <Spinner /> : null}

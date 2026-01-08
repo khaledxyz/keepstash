@@ -121,19 +121,20 @@ export function FolderDialog() {
                 </Field>
               )}
             />
+
+            <ResponsiveModalFooter>
+              <Button
+                disabled={createFolder.isPending}
+                form="folder-form"
+                size="lg"
+                type="submit"
+              >
+                {createFolder.isPending ? <Spinner /> : null}
+                <span>{createFolder.isPending ? "Creating..." : "Create"}</span>
+              </Button>
+            </ResponsiveModalFooter>
           </FieldGroup>
         </form>
-
-        <ResponsiveModalFooter>
-          <Button
-            disabled={createFolder.isPending}
-            form="folder-form"
-            type="submit"
-          >
-            {createFolder.isPending ? <Spinner /> : null}
-            <span>{createFolder.isPending ? "Creating..." : "Create"}</span>
-          </Button>
-        </ResponsiveModalFooter>
       </ResponsiveModalContent>
     </ResponsiveModal>
   );

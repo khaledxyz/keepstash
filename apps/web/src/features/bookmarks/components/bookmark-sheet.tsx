@@ -1,6 +1,6 @@
 import type { UpdateBookmark } from "@keepstash/ts-sdk";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
@@ -60,7 +60,10 @@ const bookmarkSchema = z.object({
 
 type BookmarkFormData = z.infer<typeof bookmarkSchema>;
 
+const snapPoints = [0.95, 1];
+
 export function BookmarkSheet() {
+  const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const { bookmark, mode, isOpen, close, setMode } = useBookmarkSheet();
   const { data: foldersData, isLoading: foldersLoading } = useFindUserFolders();
   const { data: tagsData, isLoading: tagsLoading } = useFindUserTags();
@@ -133,248 +136,233 @@ export function BookmarkSheet() {
   };
 
   return (
-    <ResponsiveSheet onOpenChange={(open) => !open && close()} open={isOpen}>
+    <ResponsiveSheet
+      activeSnapPoint={snap}
+      onOpenChange={(open) => !open && close()}
+      open={isOpen}
+      setActiveSnapPoint={setSnap}
+      snapPoints={snapPoints}
+    >
       <ResponsiveSheetContent>
         <ResponsiveSheetHeader>
           <ResponsiveSheetTitle>Bookmark Details</ResponsiveSheetTitle>
         </ResponsiveSheetHeader>
-
         <form
           className="flex h-full flex-col"
           id="bookmark-sheet-form"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="flex-1 space-y-6 overflow-y-auto px-4">
-            <Tabs
-              className="mt-6"
-              onValueChange={(v) => setMode(v as "edit" | "view")}
-              value={mode}
-            >
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="view">View</TabsTrigger>
-                <TabsTrigger value="edit">Edit</TabsTrigger>
-              </TabsList>
+          <Tabs
+            onValueChange={(v) => setMode(v as "edit" | "view")}
+            value={mode}
+          >
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="view">View</TabsTrigger>
+              <TabsTrigger value="edit">Edit</TabsTrigger>
+            </TabsList>
 
-              <TabsContent className="space-y-4" value="view">
-                <FieldGroup>
+            <TabsContent value="view">
+              <FieldGroup>
+                <Field>
+                  <FieldLabel>Title</FieldLabel>
+                  <Input disabled readOnly value={bookmark.title} />
+                </Field>
+
+                <Field>
+                  <FieldLabel>URL</FieldLabel>
+                  <Input disabled readOnly value={bookmark.url} />
+                </Field>
+
+                {bookmark.description && (
                   <Field>
-                    <FieldLabel>Title</FieldLabel>
-                    <Input disabled readOnly value={bookmark.title} />
-                  </Field>
-
-                  <Field>
-                    <FieldLabel>URL</FieldLabel>
-                    <Input disabled readOnly value={bookmark.url} />
-                  </Field>
-
-                  {bookmark.description && (
-                    <Field>
-                      <FieldLabel>Description</FieldLabel>
-                      <Textarea
-                        disabled
-                        readOnly
-                        rows={3}
-                        value={bookmark.description}
-                      />
-                    </Field>
-                  )}
-
-                  <Field>
-                    <FieldLabel>Folder</FieldLabel>
-                    <Input
+                    <FieldLabel>Description</FieldLabel>
+                    <Textarea
                       disabled
                       readOnly
-                      value={bookmark.folder?.name ?? "No folder"}
+                      rows={3}
+                      value={bookmark.description}
                     />
                   </Field>
-
-                  <Field>
-                    <FieldLabel>Tags</FieldLabel>
-                    {bookmark.tags && bookmark.tags.length > 0 ? (
-                      <div className="flex flex-wrap gap-2">
-                        {bookmark.tags.map((tag) => (
-                          <Badge key={tag.id}>{tag.name}</Badge>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-muted-foreground text-sm">No tags</p>
-                    )}
-                  </Field>
-                </FieldGroup>
-              </TabsContent>
-
-              <TabsContent className="space-y-4" value="edit">
-                <FieldGroup>
-                  <Controller
-                    control={form.control}
-                    name="title"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="bookmark-title">Title</FieldLabel>
-                        <Input
-                          {...field}
-                          aria-invalid={fieldState.invalid}
-                          id="bookmark-title"
-                          placeholder="Bookmark title"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
+                )}
+                <Field>
+                  <FieldLabel>Folder</FieldLabel>
+                  <Input
+                    disabled
+                    readOnly
+                    value={bookmark.folder?.name ?? "No folder"}
                   />
+                </Field>
+                <Field>
+                  <FieldLabel>Tags</FieldLabel>
+                  {bookmark.tags && bookmark.tags.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {bookmark.tags.map((tag) => (
+                        <Badge key={tag.id}>{tag.name}</Badge>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">No tags</p>
+                  )}
+                </Field>
+              </FieldGroup>
+            </TabsContent>
 
-                  <Controller
-                    control={form.control}
-                    name="url"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="bookmark-url">URL</FieldLabel>
-                        <Input
-                          {...field}
-                          aria-invalid={fieldState.invalid}
-                          id="bookmark-url"
-                          placeholder="https://example.com"
-                          type="url"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
+            <TabsContent value="edit">
+              <FieldGroup>
+                <Controller
+                  control={form.control}
+                  name="title"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="bookmark-title">Title</FieldLabel>
+                      <Input
+                        {...field}
+                        aria-invalid={fieldState.invalid}
+                        id="bookmark-title"
+                        placeholder="Bookmark title"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
 
-                  <Controller
-                    control={form.control}
-                    name="description"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="bookmark-description">
-                          Description
-                        </FieldLabel>
-                        <Textarea
-                          {...field}
-                          aria-invalid={fieldState.invalid}
-                          id="bookmark-description"
-                          placeholder="Add a description..."
-                          rows={3}
-                        />
-                        <FieldDescription>
-                          Optional description for your bookmark
-                        </FieldDescription>
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
+                <Controller
+                  control={form.control}
+                  name="url"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="bookmark-url">URL</FieldLabel>
+                      <Input
+                        {...field}
+                        aria-invalid={fieldState.invalid}
+                        id="bookmark-url"
+                        placeholder="https://example.com"
+                        type="url"
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
 
-                  <Controller
-                    control={form.control}
-                    name="folderId"
-                    render={({ field, fieldState }) => {
-                      let placeholder = "Select folder";
-                      if (foldersLoading) {
-                        placeholder = "Loading folders...";
-                      } else if (!hasFolders) {
-                        placeholder = "No folders available";
-                      }
+                <Controller
+                  control={form.control}
+                  name="description"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="bookmark-description">
+                        Description
+                      </FieldLabel>
+                      <Textarea
+                        {...field}
+                        aria-invalid={fieldState.invalid}
+                        id="bookmark-description"
+                        placeholder="Add a description..."
+                        rows={3}
+                      />
+                      <FieldDescription>
+                        Optional description for your bookmark
+                      </FieldDescription>
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
 
-                      return (
-                        <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor="bookmark-folder">
-                            Folder
-                          </FieldLabel>
-                          <Select
-                            disabled={foldersLoading || !hasFolders}
-                            name={field.name}
-                            onValueChange={field.onChange}
-                            value={field.value}
+                <Controller
+                  control={form.control}
+                  name="folderId"
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="bookmark-folder">Folder</FieldLabel>
+                      {foldersLoading && (
+                        <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                          <p>Loading folders...</p>
+                        </div>
+                      )}
+                      {!(foldersLoading || hasFolders) && (
+                        <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                          <p>No folders yet</p>
+                          <Button asChild size="sm" variant="outline">
+                            <Link to="/dashboard/folders">Create Folder</Link>
+                          </Button>
+                        </div>
+                      )}
+                      {!foldersLoading && hasFolders && (
+                        <Select
+                          name={field.name}
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        >
+                          <SelectTrigger
+                            aria-invalid={fieldState.invalid}
+                            id="bookmark-folder"
                           >
-                            <SelectTrigger
-                              aria-invalid={fieldState.invalid}
-                              id="bookmark-folder"
-                            >
-                              <SelectValue placeholder={placeholder} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Folders</SelectLabel>
-                                {hasFolders ? (
-                                  folders.map((folder) => (
-                                    <SelectItem
-                                      key={folder.id}
-                                      value={folder.id}
-                                    >
-                                      {folder.name}
-                                    </SelectItem>
-                                  ))
-                                ) : (
-                                  <div className="p-2 text-center text-muted-foreground text-sm">
-                                    <p className="mb-2">No folders yet</p>
-                                    <Button asChild size="sm" variant="outline">
-                                      <Link to="/folders">Create Folder</Link>
-                                    </Button>
-                                  </div>
-                                )}
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <FieldDescription>
-                            Optional folder to organize your bookmark
-                          </FieldDescription>
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      );
-                    }}
-                  />
+                            <SelectValue placeholder="Select folder" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Folders</SelectLabel>
+                              {folders.map((folder) => (
+                                <SelectItem key={folder.id} value={folder.id}>
+                                  {folder.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      )}
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
 
-                  <Field>
-                    <FieldLabel>Tags</FieldLabel>
-                    {tagsLoading && (
-                      <p className="text-muted-foreground text-sm">
-                        Loading tags...
-                      </p>
-                    )}
-                    {!tagsLoading && availableTags.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {availableTags.map((tag) => (
-                          <Badge
-                            className="cursor-pointer"
-                            key={tag.id}
-                            onClick={() => toggleTag(tag.id)}
-                            variant={
-                              selectedTagIds.includes(tag.id)
-                                ? "default"
-                                : "outline"
-                            }
-                          >
-                            {tag.name}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
-                    {!tagsLoading && availableTags.length === 0 && (
-                      <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
-                        <p>No tags yet</p>
-                        <Button asChild size="sm" variant="outline">
-                          <Link to="tags">Create Tag</Link>
-                        </Button>
-                      </div>
-                    )}
-                    <FieldDescription>
-                      Select tags to categorize your bookmark
-                    </FieldDescription>
-                  </Field>
-                </FieldGroup>
-              </TabsContent>
-            </Tabs>
-          </div>
+                <Field>
+                  <FieldLabel>Tags</FieldLabel>
+                  {tagsLoading && (
+                    <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                      <p>Loading tags...</p>
+                    </div>
+                  )}
+                  {!tagsLoading && availableTags.length === 0 && (
+                    <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
+                      <p>No tags yet</p>
+                      <Button asChild size="sm" variant="outline">
+                        <Link to="/dashboard/tags">Create Tag</Link>
+                      </Button>
+                    </div>
+                  )}
+                  {!tagsLoading && availableTags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {availableTags.map((tag) => (
+                        <Badge
+                          className="cursor-pointer"
+                          key={tag.id}
+                          onClick={() => toggleTag(tag.id)}
+                          variant={
+                            selectedTagIds.includes(tag.id)
+                              ? "default"
+                              : "outline"
+                          }
+                        >
+                          {tag.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </Field>
+              </FieldGroup>
+            </TabsContent>
+          </Tabs>
 
           {isEditMode && (
-            <ResponsiveSheetFooter className="px-4 py-4">
+            <ResponsiveSheetFooter className="mt-5">
               <Button
                 onClick={() => {
                   form.reset();
