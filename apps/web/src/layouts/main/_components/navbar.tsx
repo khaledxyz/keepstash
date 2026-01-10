@@ -16,12 +16,12 @@ export function Navbar() {
   const { data: session } = authClient.useSession();
 
   return (
-    <nav className="border-b">
+    <nav className="hidden border-b md:flex">
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Logo href="/dashboard" isLink />
-          <Separator className="hidden md:block" orientation="vertical" />
-          <ul className="hidden items-center md:flex">
+          <Separator orientation="vertical" />
+          <ul className="items-center">
             <li>
               <Button asChild variant="ghost">
                 <Link to="dashboard/folders">
@@ -39,7 +39,7 @@ export function Navbar() {
           </ul>
         </div>
 
-        <div className="hidden items-center md:flex">
+        <div className="flex items-center">
           <div className="flex items-center gap-1">
             <ThemePicker />
             <BookmarkDialog showTrigger />

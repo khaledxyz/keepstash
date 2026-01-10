@@ -1,6 +1,6 @@
 import type { UpdateBookmark } from "@keepstash/ts-sdk";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
@@ -60,10 +60,7 @@ const bookmarkSchema = z.object({
 
 type BookmarkFormData = z.infer<typeof bookmarkSchema>;
 
-const snapPoints = [0.95, 1];
-
 export function BookmarkSheet() {
-  const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const { bookmark, mode, isOpen, close, setMode } = useBookmarkSheet();
   const { data: foldersData, isLoading: foldersLoading } = useFindUserFolders();
   const { data: tagsData, isLoading: tagsLoading } = useFindUserTags();
@@ -136,13 +133,7 @@ export function BookmarkSheet() {
   };
 
   return (
-    <ResponsiveSheet
-      activeSnapPoint={snap}
-      onOpenChange={(open) => !open && close()}
-      open={isOpen}
-      setActiveSnapPoint={setSnap}
-      snapPoints={snapPoints}
-    >
+    <ResponsiveSheet onOpenChange={(open) => !open && close()} open={isOpen}>
       <ResponsiveSheetContent>
         <ResponsiveSheetHeader>
           <ResponsiveSheetTitle>Bookmark Details</ResponsiveSheetTitle>

@@ -161,7 +161,11 @@ function ResponsiveModalTitle({
     return <DialogTitle {...props}>{children}</DialogTitle>;
   }
 
-  return <DrawerTitle {...props}>{children}</DrawerTitle>;
+  return (
+    <DrawerTitle className="text-center" {...props}>
+      {children}
+    </DrawerTitle>
+  );
 }
 
 type ResponsiveModalDescriptionProps = React.ComponentProps<
@@ -182,7 +186,11 @@ function ResponsiveModalDescription({
     return <DialogDescription {...props}>{children}</DialogDescription>;
   }
 
-  return <DrawerDescription {...props}>{children}</DrawerDescription>;
+  return (
+    <DrawerDescription className="hidden" {...props}>
+      {children}
+    </DrawerDescription>
+  );
 }
 
 export {

@@ -60,14 +60,11 @@ interface Props {
   showTrigger?: boolean;
 }
 
-const snapPoints = [0.95, 1];
-
 export function BookmarkDialog({
   open: controlledOpen,
   onOpenChange,
   showTrigger = false,
 }: Props = {}) {
-  const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
@@ -191,13 +188,7 @@ export function BookmarkDialog({
   };
 
   return (
-    <ResponsiveModal
-      activeSnapPoint={snap}
-      onOpenChange={handleOpenChange}
-      open={open}
-      setActiveSnapPoint={setSnap}
-      snapPoints={snapPoints}
-    >
+    <ResponsiveModal onOpenChange={handleOpenChange} open={open}>
       {showTrigger && (
         <ResponsiveModalTrigger asChild>
           <Button>
