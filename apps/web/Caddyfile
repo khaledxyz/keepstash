@@ -1,16 +1,7 @@
 :80 {
-    # Enable gzip compression
     encode gzip
-
-    # Root directory
     root * /srv/dist
 
-    # Health check endpoint
-    handle /health {
-        respond "OK" 200
-    }
-
-    # Serve static files
     @static {
         path *.js *.css *.png *.jpg *.jpeg *.gif *.svg *.ico *.woff *.woff2 *.ttf *.eot *.webp
     }
@@ -19,21 +10,11 @@
         file_server
     }
 
-    # SPA routing - serve index.html for all non-static routes
     handle {
         try_files {path} /index.html
         file_server
     }
 
-    # Security headers
-    header {
-        X-Content-Type-Options "nosniff"
-        X-Frame-Options "DENY"
-        X-XSS-Protection "1; mode=block"
-        Referrer-Policy "strict-origin-when-cross-origin"
-    }
-
-    # Logging
     log {
         output stdout
         format console
