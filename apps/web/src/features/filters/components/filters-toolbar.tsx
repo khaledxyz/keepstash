@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import { FolderIcon, FunnelIcon } from "@phosphor-icons/react";
 import {
   parseAsArrayOf,
@@ -40,74 +38,64 @@ export function FiltersToolbar() {
   const { data: foldersData } = useFindUserFolders();
   const { data: tagsData } = useFindUserTags();
 
-  const folders = useMemo(
-    () =>
-      foldersData?.items?.map((f) => ({
-        label: f.name,
-        value: f.id,
-      })) ?? [],
-    [foldersData?.items]
-  );
+  const folders =
+    foldersData?.items?.map((f) => ({
+      label: f.name,
+      value: f.id,
+    })) ?? [];
 
-  const folderName = useMemo(
-    () => foldersData?.items?.find((f) => f.id === filters.folder)?.name,
-    [foldersData?.items, filters.folder]
-  );
+  const folderName = foldersData?.items?.find(
+    (f) => f.id === filters.folder
+  )?.name;
 
-  const tagNames = useMemo(
-    () =>
-      tagsData?.items
-        ?.filter((t) => filters.tags.includes(t.id))
-        .map((t) => ({ id: t.id, name: t.name })) ?? [],
-    [tagsData?.items, filters.tags]
-  );
+  const tagNames =
+    tagsData?.items
+      ?.filter((t) => filters.tags.includes(t.id))
+      .map((t) => ({ id: t.id, name: t.name })) ?? [];
 
-  const activeFilters = useMemo(
-    () => [
-      ...(filters.search
-        ? [
-            {
-              key: "search",
-              label: `Search: ${filters.search}`,
-              value: filters.search,
-            },
-          ]
-        : []),
-      ...(filters.folder && folderName
-        ? [
-            {
-              key: "folder",
-              label: `Folder: ${folderName}`,
-              value: filters.folder,
-            },
-          ]
-        : []),
-      ...(filters.sort
-        ? [
-            {
-              key: "sort",
-              label: `Sort: ${filters.sort}`,
-              value: filters.sort,
-            },
-          ]
-        : []),
-      ...tagNames.map((tag) => ({
-        key: "tags",
-        label: tag.name,
-        value: tag.id,
-      })),
-      ...(filters.dateFrom || filters.dateTo
-        ? [
-            {
-              key: "date",
-              label: `Date: ${formatDateRange(filters.dateFrom, filters.dateTo)}`,
-              value: "date",
-            },
-          ]
-        : []),
-    ],
-    [filters, folderName, tagNames]
-  );
+  const activeFilters = [
+    ...(filters.search
+      ? [
+          {
+            key: "search",
+            label: `Search: ${filters.search}`,
+            value: filters.search,
+          },
+        ]
+      : []),
+    ...(filters.folder && folderName
+      ? [
+          {
+            key: "folder",
+            label: `Folder: ${folderName}`,
+            value: filters.folder,
+          },
+        ]
+      : []),
+    ...(filters.sort
+      ? [
+          {
+            key: "sort",
+            label: `Sort: ${filters.sort}`,
+            value: filters.sort,
+          },
+        ]
+      : []),
+    ...tagNames.map((tag) => ({
+      key: "tags",
+      label: tag.name,
+      value: tag.id,
+    })),
+    ...(filters.dateFrom || filters.dateTo
+      ? [
+          {
+            key: "date",
+            label: `Date: ${formatDateRange(filters.dateFrom, filters.dateTo)}`,
+            value: "date",
+          },
+        ]
+      : []),
+  ];
 
   const removeFilter = (key: string, value?: string) => {
     if (key === "tags" && value) {
