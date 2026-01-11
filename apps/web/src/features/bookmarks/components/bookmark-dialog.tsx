@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Link } from "react-router";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { metadata } from "@keepstash/ts-sdk";
-import { PlusIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { useDebounceValue } from "usehooks-ts";
 import z from "zod";
 
 import { useCreateBookmark } from "@/features/bookmarks/api";
+import { useBookmarkDialogStore } from "@/features/bookmarks/store/bookmark-dialog-store";
 import { useFindUserFolders } from "@/features/folders/api";
+import { useFolderDialogStore } from "@/features/folders/store/folder-dialog-store";
 import { useFindUserTags } from "@/features/tags/api";
+import { useTagDialogStore } from "@/features/tags/store/tag-dialog-store";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,6 @@ import {
   ResponsiveModalFooter,
   ResponsiveModalHeader,
   ResponsiveModalTitle,
-  ResponsiveModalTrigger,
 } from "@/components/ui/responsive-modal";
 import {
   Select,
@@ -54,32 +54,12 @@ const formSchema = z.object({
   tagIds: z.array(z.string()).optional(),
 });
 
-interface Props {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-  showTrigger?: boolean;
-}
+type BookmarkFormData = z.infer<typeof formSchema>;
 
-export function BookmarkDialog({
-  open: controlledOpen,
-  onOpenChange,
-  showTrigger = false,
-}: Props = {}) {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isControlled = controlledOpen !== undefined;
-  const open = isControlled ? controlledOpen : internalOpen;
-
-  const handleOpenChange = (newOpen: boolean) => {
-    if (isControlled) {
-      onOpenChange?.(newOpen);
-    } else {
-      setInternalOpen(newOpen);
-    }
-  };
-  const handleClose = () => {
-    form.reset();
-    handleOpenChange(false);
-  };
+export function BookmarkDialog() {
+  const { isOpen, closeDialog } = useBookmarkDialogStore();
+  const { openCreateDialog: openFolderDialog } = useFolderDialogStore();
+  const { openCreateDialog: openTagDialog } = useTagDialogStore();
 
   const [isFetchingMetadata, setIsFetchingMetadata] = useState(false);
 
@@ -89,9 +69,8 @@ export function BookmarkDialog({
 
   const folders = foldersData?.items ?? [];
   const availableTags = tagsData?.items ?? [];
-  const hasFolders = folders.length > 0;
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<BookmarkFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       url: "",
@@ -101,6 +80,18 @@ export function BookmarkDialog({
       tagIds: [],
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      form.reset({
+        url: "",
+        title: "",
+        description: "",
+        folderId: "",
+        tagIds: [],
+      });
+    }
+  }, [isOpen, form]);
 
   const selectedTagIds = form.watch("tagIds") ?? [];
   const urlValue = form.watch("url");
@@ -168,7 +159,7 @@ export function BookmarkDialog({
     form.setValue("tagIds", newTags);
   };
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (data: BookmarkFormData) => {
     try {
       await createBookmark.mutateAsync({
         url: data.url,
@@ -179,8 +170,8 @@ export function BookmarkDialog({
       });
 
       toast.success("Bookmark created successfully");
+      closeDialog();
       form.reset();
-      handleOpenChange(false);
     } catch (error) {
       toast.error("Failed to create bookmark");
       console.error("Failed to create bookmark:", error);
@@ -188,15 +179,7 @@ export function BookmarkDialog({
   };
 
   return (
-    <ResponsiveModal onOpenChange={handleOpenChange} open={open}>
-      {showTrigger && (
-        <ResponsiveModalTrigger asChild>
-          <Button>
-            <PlusIcon weight="bold" />
-            <span>New Bookmark</span>
-          </Button>
-        </ResponsiveModalTrigger>
-      )}
+    <ResponsiveModal onOpenChange={closeDialog} open={isOpen}>
       <ResponsiveModalContent>
         <ResponsiveModalHeader>
           <ResponsiveModalTitle>Create Bookmark</ResponsiveModalTitle>
@@ -291,20 +274,19 @@ export function BookmarkDialog({
                       <p>Loading folders...</p>
                     </div>
                   )}
-                  {!(foldersLoading || hasFolders) && (
+                  {!(foldersLoading || folders.length > 0) && (
                     <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
                       <p>No folders yet</p>
                       <Button
-                        asChild
-                        onClick={handleClose}
+                        onClick={openFolderDialog}
                         size="sm"
                         variant="outline"
                       >
-                        <Link to="/dashboard/folders">Create Folder</Link>
+                        Create Folder
                       </Button>
                     </div>
                   )}
-                  {!foldersLoading && hasFolders && (
+                  {!foldersLoading && folders.length > 0 && (
                     <Select
                       name={field.name}
                       onValueChange={field.onChange}
@@ -346,13 +328,8 @@ export function BookmarkDialog({
               {!tagsLoading && availableTags.length === 0 && (
                 <div className="flex items-center justify-between rounded-sm border border-dashed p-2">
                   <p>No tags yet</p>
-                  <Button
-                    asChild
-                    onClick={handleClose}
-                    size="sm"
-                    variant="outline"
-                  >
-                    <Link to="/dashboard/tags">Create Tag</Link>
+                  <Button onClick={openTagDialog} size="sm" variant="outline">
+                    Create Tag
                   </Button>
                 </div>
               )}
@@ -376,7 +353,7 @@ export function BookmarkDialog({
 
             <ResponsiveModalFooter>
               <Button
-                onClick={handleClose}
+                onClick={closeDialog}
                 size="lg"
                 type="button"
                 variant="outline"

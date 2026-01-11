@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -20,11 +19,11 @@ import {
   ResponsiveModalFooter,
   ResponsiveModalHeader,
   ResponsiveModalTitle,
-  ResponsiveModalTrigger,
 } from "@/components/ui/responsive-modal";
 import { Spinner } from "@/components/ui/spinner";
 
-import { useCreateFolder } from "../api";
+import { useCreateFolder, useUpdateFolder } from "../api";
+import { useFolderDialogStore } from "../store/folder-dialog-store";
 
 const folderSchema = z.object({
   name: z
@@ -40,9 +39,9 @@ const folderSchema = z.object({
 type FolderFormData = z.infer<typeof folderSchema>;
 
 export function FolderDialog() {
-  const [open, setOpen] = useState(false);
-
+  const { isOpen, mode, folder, closeDialog } = useFolderDialogStore();
   const createFolder = useCreateFolder();
+  const updateFolder = useUpdateFolder();
 
   const form = useForm<FolderFormData>({
     resolver: zodResolver(folderSchema),
@@ -52,31 +51,68 @@ export function FolderDialog() {
     },
   });
 
+  useEffect(() => {
+    if (isOpen && folder) {
+      form.reset({
+        name: folder.name,
+        description: folder.description ?? "",
+      });
+    } else if (isOpen) {
+      form.reset({
+        name: "",
+        description: "",
+      });
+    }
+  }, [isOpen, folder, form]);
+
   async function onSubmit(data: FolderFormData) {
     const { name, description } = data;
-    await createFolder.mutateAsync({
-      name,
-      description,
-    });
 
-    setOpen(false);
+    if (mode === "edit" && folder) {
+      await updateFolder.mutateAsync({
+        id: folder.id,
+        data: {
+          name,
+          description,
+        },
+      });
+
+      toast.success(`Updated folder ${name}`, {
+        description,
+      });
+    }
+
+    if (mode === "create") {
+      await createFolder.mutateAsync({
+        name,
+        description,
+      });
+
+      toast.success(`Created folder ${name}`, {
+        description,
+      });
+    }
+
+    closeDialog();
     form.reset();
-    toast.success(`Created folder ${name}`, {
-      description,
-    });
   }
 
+  const isPending = createFolder.isPending || updateFolder.isPending;
+
+  const getButtonText = () => {
+    if (isPending) {
+      return mode === "edit" ? "Updating..." : "Creating...";
+    }
+    return mode === "edit" ? "Update" : "Create";
+  };
+
   return (
-    <ResponsiveModal onOpenChange={setOpen} open={open}>
-      <ResponsiveModalTrigger asChild>
-        <Button>
-          <PlusIcon weight="bold" />
-          <span>Create Folder</span>
-        </Button>
-      </ResponsiveModalTrigger>
+    <ResponsiveModal onOpenChange={closeDialog} open={isOpen}>
       <ResponsiveModalContent>
         <ResponsiveModalHeader>
-          <ResponsiveModalTitle>Create Folder</ResponsiveModalTitle>
+          <ResponsiveModalTitle>
+            {mode === "edit" ? "Edit Folder" : "Create Folder"}
+          </ResponsiveModalTitle>
         </ResponsiveModalHeader>
 
         <form id="folder-form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -124,13 +160,13 @@ export function FolderDialog() {
 
             <ResponsiveModalFooter>
               <Button
-                disabled={createFolder.isPending}
+                disabled={isPending}
                 form="folder-form"
                 size="lg"
                 type="submit"
               >
-                {createFolder.isPending ? <Spinner /> : null}
-                <span>{createFolder.isPending ? "Creating..." : "Create"}</span>
+                {isPending ? <Spinner /> : null}
+                <span>{getButtonText()}</span>
               </Button>
             </ResponsiveModalFooter>
           </FieldGroup>

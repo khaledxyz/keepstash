@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -20,11 +19,11 @@ import {
   ResponsiveModalFooter,
   ResponsiveModalHeader,
   ResponsiveModalTitle,
-  ResponsiveModalTrigger,
 } from "@/components/ui/responsive-modal";
 import { Spinner } from "@/components/ui/spinner";
 
-import { useCreateTag } from "../api";
+import { useCreateTag, useUpdateTag } from "../api";
+import { useTagDialogStore } from "../store/tag-dialog-store";
 
 const tagSchema = z.object({
   name: z
@@ -36,9 +35,9 @@ const tagSchema = z.object({
 type TagFormData = z.infer<typeof tagSchema>;
 
 export function TagDialog() {
-  const [open, setOpen] = useState(false);
-
+  const { isOpen, mode, tag, closeDialog } = useTagDialogStore();
   const createTag = useCreateTag();
+  const updateTag = useUpdateTag();
 
   const form = useForm<TagFormData>({
     resolver: zodResolver(tagSchema),
@@ -47,28 +46,59 @@ export function TagDialog() {
     },
   });
 
+  useEffect(() => {
+    if (isOpen && tag) {
+      form.reset({
+        name: tag.name,
+      });
+    } else if (isOpen) {
+      form.reset({
+        name: "",
+      });
+    }
+  }, [isOpen, tag, form]);
+
   async function onSubmit(data: TagFormData) {
     const { name } = data;
-    await createTag.mutateAsync({
-      name,
-    });
 
-    setOpen(false);
+    if (mode === "edit" && tag) {
+      await updateTag.mutateAsync({
+        id: tag.id,
+        data: {
+          name,
+        },
+      });
+      toast.success(`Updated tag ${name}`);
+    }
+
+    if (mode === "create") {
+      await createTag.mutateAsync({
+        name,
+      });
+
+      toast.success(`Created tag ${name}`);
+    }
+
+    closeDialog();
     form.reset();
-    toast.success(`Created tag ${name}`);
   }
 
+  const isPending = createTag.isPending || updateTag.isPending;
+
+  const getButtonText = () => {
+    if (isPending) {
+      return mode === "edit" ? "Updating..." : "Creating...";
+    }
+    return mode === "edit" ? "Update" : "Create";
+  };
+
   return (
-    <ResponsiveModal onOpenChange={setOpen} open={open}>
-      <ResponsiveModalTrigger asChild>
-        <Button>
-          <PlusIcon weight="bold" />
-          <span>Create Tag</span>
-        </Button>
-      </ResponsiveModalTrigger>
+    <ResponsiveModal onOpenChange={closeDialog} open={isOpen}>
       <ResponsiveModalContent>
         <ResponsiveModalHeader>
-          <ResponsiveModalTitle>Create Tag</ResponsiveModalTitle>
+          <ResponsiveModalTitle>
+            {mode === "edit" ? "Edit Tag" : "Create Tag"}
+          </ResponsiveModalTitle>
         </ResponsiveModalHeader>
 
         <form id="tag-form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -95,13 +125,13 @@ export function TagDialog() {
 
             <ResponsiveModalFooter>
               <Button
-                disabled={createTag.isPending}
+                disabled={isPending}
                 form="tag-form"
                 size="lg"
                 type="submit"
               >
-                {createTag.isPending ? <Spinner /> : null}
-                <span>Create</span>
+                {isPending ? <Spinner /> : null}
+                <span>{getButtonText()}</span>
               </Button>
             </ResponsiveModalFooter>
           </FieldGroup>
