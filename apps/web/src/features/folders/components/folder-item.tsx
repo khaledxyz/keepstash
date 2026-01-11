@@ -16,11 +16,13 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useDeleteFolder, useRestoreFolder } from "../api";
+import { useFolderDialogStore } from "../store/folder-dialog-store";
 
 export function FolderItem({ folder }: { folder: Folder }) {
   const prompt = usePrompt();
   const { mutateAsync: deleteFolder } = useDeleteFolder();
   const { mutateAsync: restoreFolder } = useRestoreFolder();
+  const { openEditDialog } = useFolderDialogStore();
 
   async function handleRestoreFolder() {
     try {
@@ -39,7 +41,7 @@ export function FolderItem({ folder }: { folder: Folder }) {
 
   async function handleDeleteFolder() {
     await prompt({
-      title: "Delete folder",
+      title: "Delete folder?",
       description: `Are you sure you want to delete "${folder.name}"? You can restore it later if needed.`,
       variant: "destructive",
       confirmText: "Delete",
@@ -75,7 +77,11 @@ export function FolderItem({ folder }: { folder: Folder }) {
         <Button onClick={handleDeleteFolder} size="icon" variant="destructive">
           <TrashIcon />
         </Button>
-        <Button size="icon" variant="outline">
+        <Button
+          onClick={() => openEditDialog(folder)}
+          size="icon"
+          variant="outline"
+        >
           <PencilIcon />
         </Button>
       </ItemActions>

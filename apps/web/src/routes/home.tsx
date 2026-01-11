@@ -10,13 +10,16 @@ import {
 
 import { env, isFeatureEnabled } from "@/lib/env";
 
+import { usePWAInstall } from "@/hooks/use-pwa-install";
+
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
+  const { isInstalled } = usePWAInstall();
   const enableRootRedirect = isFeatureEnabled(env.enableRootRedirect);
 
-  if (enableRootRedirect) {
+  if (enableRootRedirect || isInstalled) {
     return <Navigate replace to="/dashboard" />;
   }
 

@@ -5,6 +5,8 @@ import type {
   FindUserFoldersData,
   FindUserFoldersResponse,
   RestoreFolderResponse,
+  UpdateFolder,
+  UpdateFolderResponse,
 } from "@keepstash/ts-sdk";
 import type {
   UseMutationOptions,
@@ -56,6 +58,30 @@ export const useCreateFolder = (
       }
       if (!result.data) {
         throw new Error("No data returned from createFolder");
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      invalidateByPrefix("folders");
+    },
+    ...options,
+  });
+
+export const useUpdateFolder = (
+  options?: UseMutationOptions<
+    UpdateFolderResponse,
+    Error,
+    { id: string; data: UpdateFolder }
+  >
+) =>
+  useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: UpdateFolder }) => {
+      const result = await folders.updateFolder({ path: { id }, body: data });
+      if (result.error) {
+        throw result.error;
+      }
+      if (!result.data) {
+        throw new Error("No data returned from updateFolder");
       }
       return result.data;
     },

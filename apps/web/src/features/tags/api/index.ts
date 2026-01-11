@@ -5,6 +5,8 @@ import type {
   FindUserTagsData,
   FindUserTagsResponse,
   RestoreTagResponse,
+  UpdateTag,
+  UpdateTagResponse,
 } from "@keepstash/ts-sdk";
 import type {
   UseMutationOptions,
@@ -56,6 +58,30 @@ export const useCreateTag = (
       }
       if (!result.data) {
         throw new Error("No data returned from createTag");
+      }
+      return result.data;
+    },
+    onSuccess: () => {
+      invalidateByPrefix("tags");
+    },
+    ...options,
+  });
+
+export const useUpdateTag = (
+  options?: UseMutationOptions<
+    UpdateTagResponse,
+    Error,
+    { id: string; data: UpdateTag }
+  >
+) =>
+  useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: UpdateTag }) => {
+      const result = await tags.updateTag({ path: { id }, body: data });
+      if (result.error) {
+        throw result.error;
+      }
+      if (!result.data) {
+        throw new Error("No data returned from updateTag");
       }
       return result.data;
     },

@@ -1,5 +1,6 @@
-import { FolderIcon } from "@phosphor-icons/react";
+import { FolderIcon, PlusIcon } from "@phosphor-icons/react";
 
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -11,11 +12,12 @@ import {
 import { ItemGroup } from "@/components/ui/item";
 
 import { useFindUserFolders } from "../api";
-import { FolderDialog } from "./folder-dialog";
+import { useFolderDialogStore } from "../store/folder-dialog-store";
 import { FolderItem, FoldersSkeleton } from "./folder-item";
 
 export function FoldersView() {
   const { data, isLoading, isError, error } = useFindUserFolders();
+  const { openCreateDialog } = useFolderDialogStore();
 
   if (isLoading) {
     return <FoldersSkeleton />;
@@ -53,7 +55,10 @@ export function FoldersView() {
         </EmptyDescription>
 
         <EmptyContent>
-          <FolderDialog />
+          <Button onClick={openCreateDialog}>
+            <PlusIcon weight="bold" />
+            <span>Create Folder</span>
+          </Button>
         </EmptyContent>
       </Empty>
     );

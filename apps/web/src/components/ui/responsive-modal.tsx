@@ -142,7 +142,11 @@ function ResponsiveModalFooter({
     return <DialogFooter {...props}>{children}</DialogFooter>;
   }
 
-  return <DrawerFooter {...props}>{children}</DrawerFooter>;
+  return (
+    <DrawerFooter className="flex flex-row *:flex-1" {...props}>
+      {children}
+    </DrawerFooter>
+  );
 }
 
 type ResponsiveModalTitleProps = React.ComponentProps<typeof DialogTitle> &

@@ -140,7 +140,7 @@ const PromptDialog = React.memo(
               disabled={isProcessing}
               onClick={onCancel}
               size="lg"
-              variant="ghost"
+              variant="outline"
             >
               {cancelText}
             </Button>

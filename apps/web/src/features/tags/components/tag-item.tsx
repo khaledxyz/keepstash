@@ -15,11 +15,13 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useDeleteTag, useRestoreTag } from "../api";
+import { useTagDialogStore } from "../store/tag-dialog-store";
 
 export function TagItem({ tag }: { tag: Tag }) {
   const prompt = usePrompt();
   const { mutateAsync: deleteTag } = useDeleteTag();
   const { mutateAsync: restoreTag } = useRestoreTag();
+  const { openEditDialog } = useTagDialogStore();
 
   async function handleRestoreTag() {
     try {
@@ -38,7 +40,7 @@ export function TagItem({ tag }: { tag: Tag }) {
 
   async function handleDeleteTag() {
     await prompt({
-      title: "Delete tag",
+      title: "Delete tag?",
       description: `Are you sure you want to delete "${tag.name}"? You can restore it later if needed.`,
       variant: "destructive",
       confirmText: "Delete",
@@ -73,7 +75,11 @@ export function TagItem({ tag }: { tag: Tag }) {
         <Button onClick={handleDeleteTag} size="icon" variant="destructive">
           <TrashIcon />
         </Button>
-        <Button size="icon" variant="outline">
+        <Button
+          onClick={() => openEditDialog(tag)}
+          size="icon"
+          variant="outline"
+        >
           <PencilIcon />
         </Button>
       </ItemActions>

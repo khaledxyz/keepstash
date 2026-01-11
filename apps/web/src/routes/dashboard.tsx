@@ -2,13 +2,16 @@ import { GridFourIcon, ListIcon } from "@phosphor-icons/react";
 
 import { BookmarkSheet } from "@/features/bookmarks/components/bookmark-sheet";
 import { BookmarksView } from "@/features/bookmarks/components/bookmarks-view";
+import { useBookmarkDialogStore } from "@/features/bookmarks/store/bookmark-dialog-store";
 import { useViewMode } from "@/features/bookmarks/store/view-mode-store";
 import { FiltersToolbar } from "@/features/filters/components/filters-toolbar";
 
+import { MobileFAB } from "@/components/mobile-fab";
 import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const { viewMode, setViewMode } = useViewMode();
+  const { openDialog } = useBookmarkDialogStore();
 
   return (
     <>
@@ -41,6 +44,7 @@ export default function DashboardPage() {
         <BookmarksView viewMode={viewMode} />
       </div>
 
+      <MobileFAB label="Create bookmark" onClick={openDialog} />
       <BookmarkSheet />
     </>
   );

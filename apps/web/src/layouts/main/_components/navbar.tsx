@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 
-import { FolderIcon, TagIcon } from "@phosphor-icons/react";
+import { FolderIcon, PlusIcon, TagIcon } from "@phosphor-icons/react";
 
 import { authClient } from "@/lib/auth-client";
 
-import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
+import { useBookmarkDialogStore } from "@/features/bookmarks/store/bookmark-dialog-store";
 
 import { Logo } from "@/components/logo";
 import { ThemePicker } from "@/components/theme-picker";
@@ -14,6 +14,7 @@ import { UserDropdown } from "@/components/user-dropdown";
 
 export function Navbar() {
   const { data: session } = authClient.useSession();
+  const { openDialog } = useBookmarkDialogStore();
 
   return (
     <nav className="hidden border-b md:flex">
@@ -42,7 +43,10 @@ export function Navbar() {
         <div className="flex items-center">
           <div className="flex items-center gap-1">
             <ThemePicker />
-            <BookmarkDialog showTrigger />
+            <Button onClick={openDialog}>
+              <PlusIcon weight="bold" />
+              <span>Create Bookmark</span>
+            </Button>
           </div>
           <Separator className="mx-2" orientation="vertical" />
           <UserDropdown email={session?.user.email} name={session?.user.name} />

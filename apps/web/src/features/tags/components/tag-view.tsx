@@ -1,5 +1,6 @@
-import { TagIcon } from "@phosphor-icons/react";
+import { PlusIcon, TagIcon } from "@phosphor-icons/react";
 
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -11,11 +12,12 @@ import {
 import { ItemGroup } from "@/components/ui/item";
 
 import { useFindUserTags } from "../api";
-import { TagDialog } from "./tag-dialog";
+import { useTagDialogStore } from "../store/tag-dialog-store";
 import { TagItem, TagsSkeleton } from "./tag-item";
 
 export function TagsView() {
   const { data, isLoading, isError, error } = useFindUserTags();
+  const { openCreateDialog } = useTagDialogStore();
 
   if (isLoading) {
     return <TagsSkeleton />;
@@ -53,7 +55,10 @@ export function TagsView() {
         </EmptyDescription>
 
         <EmptyContent>
-          <TagDialog />
+          <Button onClick={openCreateDialog}>
+            <PlusIcon weight="bold" />
+            <span>Create Tag</span>
+          </Button>
         </EmptyContent>
       </Empty>
     );
