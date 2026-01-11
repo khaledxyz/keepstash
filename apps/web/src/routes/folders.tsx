@@ -1,7 +1,7 @@
 import { FolderDialog } from "@/features/folders/components/folder-dialog";
 import { FoldersView } from "@/features/folders/components/folder-view";
 
-export function FoldersPage() {
+export default function FoldersPage() {
   return (
     <div className="container">
       <div className="mb-6 flex justify-between">

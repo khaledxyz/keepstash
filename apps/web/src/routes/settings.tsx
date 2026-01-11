@@ -1,6 +1,6 @@
 import { SettingsView } from "@/features/settings/settings-view";
 
-export function SettingsPage() {
+export default function SettingsPage() {
   return (
     <div className="container">
       <div className="mb-6">

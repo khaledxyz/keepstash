@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 import { Button } from "@/components/ui/button";
 
-export function NotFoundPage() {
+export default function NotFoundPage() {
   return (
     <div className="grid h-screen w-screen place-items-center bg-background px-4">
       <div className="max-w-md space-y-4 text-center">

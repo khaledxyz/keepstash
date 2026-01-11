@@ -2,14 +2,13 @@ import { Navigate, Outlet, useLocation } from "react-router";
 
 import { authClient } from "@/lib/auth-client";
 
-import { LoadingScreen } from "@/components/loading-screen";
-
 export function PublicOnlyLayout() {
   const { data: session, isPending } = authClient.useSession();
   const location = useLocation();
 
+  // Return null during loading - outer Suspense handles the loading state
   if (isPending) {
-    return <LoadingScreen />;
+    return null;
   }
 
   if (session) {

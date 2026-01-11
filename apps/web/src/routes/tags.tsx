@@ -1,7 +1,7 @@
 import { TagDialog } from "@/features/tags/components/tag-dialog";
 import { TagsView } from "@/features/tags/components/tag-view";
 
-export function TagsPage() {
+export default function TagsPage() {
   return (
     <div className="container">
       <div className="mb-6 flex justify-between">

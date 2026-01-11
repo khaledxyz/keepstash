@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-export function ProfilePage() {
+export default function ProfilePage() {
   const { data: session } = authClient.useSession();
 
   async function handleSignOut() {

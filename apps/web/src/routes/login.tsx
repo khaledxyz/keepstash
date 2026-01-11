@@ -3,15 +3,22 @@ import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
+import { WarningCircleIcon } from "@phosphor-icons/react";
+import { z } from "zod";
 
 import { authClient } from "@/lib/auth-client";
 
 import { AuthCard } from "@/features/auth/components/auth-card";
-import { EmailField } from "@/features/auth/components/email-field";
-import { PasswordField } from "@/features/auth/components/password-field";
 
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
 const loginSchema = z.object({
@@ -21,7 +28,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export function LoginPage() {
+export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormData>({
@@ -33,23 +40,21 @@ export function LoginPage() {
   });
 
   async function onSubmit(data: LoginFormData) {
-    setIsLoading(true);
     try {
-      const result = await authClient.signIn.email({
-        email: data.email,
-        password: data.password,
-      });
-
-      if (result.error) {
-        form.setError("email", {
-          message: result.error.message,
-        });
-        return;
-      }
-
-      // PublicOnlyLayout will handle redirect automatically
+      await authClient.signIn.email(
+        {
+          email: data.email.trim().toLowerCase(),
+          password: data.password,
+        },
+        {
+          onRequest: () => setIsLoading(true),
+          onError: (ctx) => {
+            form.setError("root", { message: ctx.error.message });
+          },
+        }
+      );
     } catch {
-      form.setError("email", {
+      form.setError("root", {
         message: "An unexpected error occurred. Please try again.",
       });
     } finally {
@@ -57,50 +62,102 @@ export function LoginPage() {
     }
   }
 
+  const rootError = form.formState.errors.root;
+
   return (
     <AuthCard title="Welcome back">
-      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-3">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FieldGroup>
+          {rootError && (
+            <Alert variant="destructive">
+              <WarningCircleIcon />
+              <AlertTitle>{rootError.message}</AlertTitle>
+            </Alert>
+          )}
+
           <Controller
             control={form.control}
             name="email"
             render={({ field, fieldState }) => (
-              <EmailField field={field} fieldState={fieldState} />
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <Input
+                  {...field}
+                  aria-describedby={
+                    fieldState.invalid ? "email-error" : undefined
+                  }
+                  aria-invalid={fieldState.invalid}
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  autoCorrect="off"
+                  disabled={isLoading}
+                  id="email"
+                  inputMode="email"
+                  placeholder="user@keepstash.io"
+                  spellCheck="false"
+                  type="email"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} id="email-error" />
+                )}
+              </Field>
             )}
           />
+
           <Controller
             control={form.control}
             name="password"
             render={({ field, fieldState }) => (
-              <PasswordField field={field} fieldState={fieldState} />
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input
+                  {...field}
+                  aria-describedby={
+                    fieldState.invalid ? "password-error" : undefined
+                  }
+                  aria-invalid={fieldState.invalid}
+                  autoCapitalize="none"
+                  autoComplete="current-password"
+                  autoCorrect="off"
+                  disabled={isLoading}
+                  id="password"
+                  placeholder="••••••••"
+                  spellCheck="false"
+                  type="password"
+                />
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} id="password-error" />
+                )}
+              </Field>
             )}
           />
-        </div>
 
-        <div className="flex justify-end">
-          <Link
-            className="text-muted-foreground text-sm hover:text-foreground"
-            to="/forgot-password"
-          >
-            Forgot password?
-          </Link>
-        </div>
+          <div className="flex justify-end">
+            <Link
+              className="text-muted-foreground text-sm hover:text-foreground"
+              tabIndex={isLoading ? -1 : undefined}
+              to="/forgot-password"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
-        <Button className="w-full" disabled={isLoading} type="submit">
-          {isLoading ? (
-            <>
-              <Spinner />
-              Logging in...
-            </>
-          ) : (
-            "Login"
-          )}
-        </Button>
+          <Field orientation="horizontal">
+            <Button className="w-full" disabled={isLoading} type="submit">
+              {isLoading ? <Spinner /> : null}
+              {isLoading ? "Logging in..." : "Login"}
+            </Button>
+          </Field>
+        </FieldGroup>
       </form>
 
       <p className="text-center text-muted-foreground text-sm">
         Don't have an account?{" "}
-        <Link className="text-foreground hover:underline" to="/register">
+        <Link
+          className="text-foreground hover:underline"
+          tabIndex={isLoading ? -1 : undefined}
+          to="/register"
+        >
           Sign up
         </Link>
       </p>
