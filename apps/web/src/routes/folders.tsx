@@ -1,6 +1,5 @@
 import { PlusIcon } from "@phosphor-icons/react";
 
-import { FolderDialog } from "@/features/folders/components/folder-dialog";
 import { FoldersView } from "@/features/folders/components/folder-view";
 import { useFolderDialogStore } from "@/features/folders/store/folder-dialog-store";
 
@@ -24,7 +23,6 @@ export default function FoldersPage() {
       </div>
 
       <FoldersView />
-      <FolderDialog />
       <MobileFAB label="Create folder" onClick={openCreateDialog} />
     </div>
   );

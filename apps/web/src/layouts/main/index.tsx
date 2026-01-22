@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 
 import { authClient } from "@/lib/auth-client";
 
-import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
+import { Modals } from "@/providers/modals";
 
 import EmailVerificationBanner from "@/components/email-verification-banner";
 import { MobileBottomBar } from "@/components/mobile-bottom-bar";
@@ -19,7 +19,7 @@ export function MainLayout() {
   return (
     <>
       {/* TODO: find a better location for this dialog */}
-      <BookmarkDialog />
+      <Modals />
       <PWAInstallPrompt />
       {!isPending && (
         <Activity mode={shouldShowBanner ? "visible" : "hidden"}>

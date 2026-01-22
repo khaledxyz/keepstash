@@ -1,6 +1,5 @@
 import { PlusIcon } from "@phosphor-icons/react";
 
-import { TagDialog } from "@/features/tags/components/tag-dialog";
 import { TagsView } from "@/features/tags/components/tag-view";
 import { useTagDialogStore } from "@/features/tags/store/tag-dialog-store";
 
@@ -24,7 +23,6 @@ export default function TagsPage() {
       </div>
 
       <TagsView />
-      <TagDialog />
       <MobileFAB label="Create tag" onClick={openCreateDialog} />
     </div>
   );

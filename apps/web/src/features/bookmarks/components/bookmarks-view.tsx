@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { EmptyIcon } from "@phosphor-icons/react";
+import { EmptyIcon, PlusIcon } from "@phosphor-icons/react";
 import {
   parseAsArrayOf,
   parseAsIsoDateTime,
@@ -11,7 +11,6 @@ import {
 import { useDebounceValue } from "usehooks-ts";
 
 import { useFindUserBookmarks } from "@/features/bookmarks/api";
-import { BookmarkDialog } from "@/features/bookmarks/components/bookmark-dialog";
 import {
   BookmarksGrid,
   BookmarksGridSkeleton,
@@ -21,6 +20,7 @@ import {
   BookmarksListSkeleton,
 } from "@/features/bookmarks/layouts/bookmarks-list";
 
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -29,6 +29,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+
+import { useBookmarkDialogStore } from "../store/bookmark-dialog-store";
 
 interface Props {
   viewMode: "grid" | "list";
@@ -51,6 +53,8 @@ export function BookmarksView({ viewMode }: Props) {
 
   // Debounce the search filter to prevent rapid API calls while typing
   const [debouncedSearch] = useDebounceValue(filters.search, 300);
+
+  const { openDialog } = useBookmarkDialogStore();
 
   // Build query params, filtering out empty values
   const queryParams = useMemo(
@@ -100,7 +104,10 @@ export function BookmarksView({ viewMode }: Props) {
         </EmptyDescription>
 
         <EmptyContent>
-          <BookmarkDialog />
+          <Button onClick={openDialog}>
+            <PlusIcon weight="bold" />
+            <span>New Bookmark</span>
+          </Button>
         </EmptyContent>
       </Empty>
     );
