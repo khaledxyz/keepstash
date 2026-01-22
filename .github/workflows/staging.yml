@@ -1,7 +1,7 @@
-name: Build and Push Staging Images
+name: Build and Deploy Staging
 on:
-  release:
-    types: [published]
+  push:
+    branches: [master]
 
 jobs:
   build-api:
@@ -23,26 +23,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PAT }}
 
-      - name: Extract version from tag
-        id: version
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          VERSION=${VERSION#v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "major=$(echo $VERSION | cut -d. -f1)" >> $GITHUB_OUTPUT
-          echo "minor=$(echo $VERSION | cut -d. -f1-2)" >> $GITHUB_OUTPUT
-
-      - name: Build and push API image
+      - name: Build and push API staging image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./apps/api/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/api:${{ steps.version.outputs.version }}
-            ${{ secrets.DOCKER_USERNAME }}/api:${{ steps.version.outputs.minor }}
-            ${{ secrets.DOCKER_USERNAME }}/api:${{ steps.version.outputs.major }}
-            ${{ secrets.DOCKER_USERNAME }}/api:latest
+            ${{ secrets.DOCKER_USERNAME }}/api:staging
+            ${{ secrets.DOCKER_USERNAME }}/api:${{ github.sha }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/api:cache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/api:cache,mode=max
           provenance: false
@@ -66,26 +55,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PAT }}
 
-      - name: Extract version from tag
-        id: version
-        run: |
-          VERSION=${GITHUB_REF#refs/tags/}
-          VERSION=${VERSION#v}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "major=$(echo $VERSION | cut -d. -f1)" >> $GITHUB_OUTPUT
-          echo "minor=$(echo $VERSION | cut -d. -f1-2)" >> $GITHUB_OUTPUT
-
-      - name: Build and push Web image
+      - name: Build and push Web staging image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./apps/web/Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/web:${{ steps.version.outputs.version }}
-            ${{ secrets.DOCKER_USERNAME }}/web:${{ steps.version.outputs.minor }}
-            ${{ secrets.DOCKER_USERNAME }}/web:${{ steps.version.outputs.major }}
-            ${{ secrets.DOCKER_USERNAME }}/web:latest
+            ${{ secrets.DOCKER_USERNAME }}/web:staging
+            ${{ secrets.DOCKER_USERNAME }}/web:${{ github.sha }}
           cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:cache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/web:cache,mode=max
           provenance: false
