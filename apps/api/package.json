@@ -1,7 +1,7 @@
 {
-  "name": "@keepstash/api",
+  "name": "@okiba/api",
   "version": "0.1.0",
-  "description": "keepstash API - NestJS backend for bookmark management",
+  "description": "okiba API - NestJS backend for bookmark management",
   "private": true,
   "license": "MIT",
   "author": "khaledxyz <me@khaledxyz.com> (https://github.com/khaledxyz)",

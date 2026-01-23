@@ -32,7 +32,7 @@ COPY apps/api/nest-cli.json ./apps/api/
 COPY apps/api/src ./apps/api/src
 COPY apps/api/drizzle ./apps/api/drizzle
 
-RUN pnpm --filter @keepstash/api build
+RUN pnpm --filter @okiba/api build
 
 WORKDIR /app/production
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./

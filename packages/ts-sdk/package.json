@@ -1,7 +1,7 @@
 {
-  "name": "@keepstash/ts-sdk",
+  "name": "@okiba/ts-sdk",
   "version": "0.1.0",
-  "description": "TypeScript SDK for keepstash API",
+  "description": "TypeScript SDK for okiba API",
   "type": "module",
   "license": "MIT",
   "author": "khaledxyz <me@khaledxyz.com> (https://github.com/khaledxyz)",
