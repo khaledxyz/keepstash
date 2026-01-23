@@ -1,10 +1,8 @@
 services:
   api:
-    image: okiba/api:staging
-    container_name: okiba-api
+    image: okiba/api:${IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - .env
+    env_file: .env
     depends_on:
       postgres:
         condition: service_healthy
@@ -14,11 +12,17 @@ services:
       timeout: 3s
       retries: 3
       start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.okiba-api-http.entrypoints=http"
       - "traefik.http.routers.okiba-api-http.rule=Host(`${HOST}`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.okiba-api-secure.priority=100"
       - "traefik.http.routers.okiba-api-http.middlewares=https-redirect@file"
       - "traefik.http.routers.okiba-api-secure.entrypoints=https"
       - "traefik.http.routers.okiba-api-secure.rule=Host(`${HOST}`) && PathPrefix(`/api`)"
@@ -29,23 +33,28 @@ services:
       - "traefik.http.services.okiba-api.loadbalancer.server.port=5000"
     networks:
       - proxy-network
-      - backend
+      - okiba-backend
 
   web:
-    image: okiba/web:staging
-    container_name: okiba-web
+    image: okiba/web:${IMAGE_TAG:-latest}
     restart: unless-stopped
-    env_file:
-      - .env
+    env_file: .env
     depends_on:
       api:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.okiba-web-http.entrypoints=http"
@@ -59,14 +68,12 @@ services:
       - "traefik.http.services.okiba-web.loadbalancer.server.port=80"
     networks:
       - proxy-network
-      - backend
+      - okiba-backend
 
   postgres:
     image: postgres:16-alpine
-    container_name: okiba-postgres
     restart: unless-stopped
-    env_file:
-      - .env
+    env_file: .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -74,8 +81,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    security_opt:
+      - no-new-privileges:true
+    shm_size: 256mb
     networks:
-      - backend
+      - okiba-backend
 
 volumes:
   postgres_data:
@@ -84,5 +99,5 @@ networks:
   proxy-network:
     external: true
     name: ${PROXY_NETWORK}
-  backend:
+  okiba-backend:
     internal: true
