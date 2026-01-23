@@ -7,23 +7,18 @@ steps:
     commands:
       - |
         if ! echo "$CI_COMMIT_TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
-          echo "❌ Error: Tag must follow semantic versioning format (e.g., v1.0.0)"
+          echo "❌ Error: Tag must be vX.Y.Z"
           exit 1
         fi
-        echo "✓ Tag validation passed: $CI_COMMIT_TAG"
 
   - name: extract-version
     image: alpine:3.19
     commands:
       - |
         VERSION="${CI_COMMIT_TAG#v}"
-        MAJOR=$(echo "$VERSION" | cut -d. -f1)
-        MINOR=$(echo "$VERSION" | cut -d. -f1-2)
         echo "export VERSION=$VERSION" > version.env
-        echo "export MAJOR=$MAJOR" >> version.env
-        echo "export MINOR=$MINOR" >> version.env
 
-  - name: promote-api-image
+  - name: promote-and-push
     image: docker:27-cli
     environment:
       DOCKER_USERNAME: { from_secret: DOCKER_USERNAME }
@@ -33,45 +28,21 @@ steps:
     commands:
       - . ./version.env
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker pull "$DOCKER_USERNAME/api:staging"
       - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:$VERSION"
-      - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:$MINOR"
-      - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:$MAJOR"
       - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:latest"
-      - docker push "$DOCKER_USERNAME/api:$VERSION"
-      - docker push "$DOCKER_USERNAME/api:$MINOR"
-      - docker push "$DOCKER_USERNAME/api:$MAJOR"
-      - docker push "$DOCKER_USERNAME/api:latest"
-      - 'echo "✓ API image promoted to production with tags: $VERSION, $MINOR, $MAJOR, latest"'
-    depends_on: [ extract-version ]
-
-  - name: promote-web-image
-    image: docker:27-cli
-    environment:
-      DOCKER_USERNAME: { from_secret: DOCKER_USERNAME }
-      DOCKER_PASSWORD: { from_secret: DOCKER_PASSWORD }
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    commands:
-      - . ./version.env
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker pull "$DOCKER_USERNAME/web:staging"
       - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:$VERSION"
-      - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:$MINOR"
-      - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:$MAJOR"
       - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:latest"
+      - docker push "$DOCKER_USERNAME/api:$VERSION"
+      - docker push "$DOCKER_USERNAME/api:latest"
       - docker push "$DOCKER_USERNAME/web:$VERSION"
-      - docker push "$DOCKER_USERNAME/web:$MINOR"
-      - docker push "$DOCKER_USERNAME/web:$MAJOR"
       - docker push "$DOCKER_USERNAME/web:latest"
-      - 'echo "✓ Web image promoted to production with tags: $VERSION, $MINOR, $MAJOR, latest"'
+      - docker logout
+      - 'echo "✓ Images promoted to $VERSION and pushed to Hub."'
     depends_on: [ extract-version ]
 
   - name: deploy-production
     image: docker:27-cli
     environment:
-      DOCKER_USERNAME: { from_secret: DOCKER_USERNAME }
-      DOCKER_PASSWORD: { from_secret: DOCKER_PASSWORD }
       PRODUCTION_ENV_FILE: { from_secret: PRODUCTION_ENV_FILE }
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -81,8 +52,20 @@ steps:
       - cd /production
       - echo "$PRODUCTION_ENV_FILE" > .env
       - echo "IMAGE_TAG=$VERSION" >> .env
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker compose pull
       - docker compose up -d --force-recreate --remove-orphans
-      - 'echo "✓ Production deployment completed successfully with version $VERSION!"'
-    depends_on: [ promote-api-image, promote-web-image ]
+    depends_on: [ promote-and-push ]
+
+  - name: release-summary
+    image: alpine:3.19
+    commands:
+      - . ./version.env
+      - |
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🚀 PRODUCTION RELEASE SUCCESSFUL"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "Version:    $VERSION"
+        echo "Tag:        $CI_COMMIT_TAG"
+        echo "Commit:     ${CI_COMMIT_SHA:0:8}"
+        echo "Status:     Deployed to Production VPS"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    depends_on: [ deploy-production ]
