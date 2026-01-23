@@ -117,7 +117,7 @@ export default function ProfilePage() {
             <Link
               rel="noopener noreferrer"
               target="_blank"
-              to="https://github.com/khaledxyz/keepstash"
+              to="https://github.com/khaledxyz/okiba"
             >
               <GithubLogoIcon className="mr-3 h-5 w-5" />
               <span>GitHub</span>

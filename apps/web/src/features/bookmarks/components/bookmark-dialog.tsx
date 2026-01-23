@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { metadata } from "@keepstash/ts-sdk";
+import { metadata } from "@okiba/ts-sdk";
 import { toast } from "sonner";
 import { useDebounceValue } from "usehooks-ts";
 import z from "zod";

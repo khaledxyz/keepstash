@@ -1,4 +1,4 @@
-import type { Tag } from "@keepstash/ts-sdk";
+import type { Tag } from "@okiba/ts-sdk";
 
 import { PencilIcon, TrashIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";

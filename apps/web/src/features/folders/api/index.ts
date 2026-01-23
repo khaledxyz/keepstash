@@ -7,13 +7,13 @@ import type {
   RestoreFolderResponse,
   UpdateFolder,
   UpdateFolderResponse,
-} from "@keepstash/ts-sdk";
+} from "@okiba/ts-sdk";
 import type {
   UseMutationOptions,
   UseQueryOptions,
 } from "@tanstack/react-query";
 
-import { folders } from "@keepstash/ts-sdk";
+import { folders } from "@okiba/ts-sdk";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { invalidateByPrefix } from "@/lib/query-client";

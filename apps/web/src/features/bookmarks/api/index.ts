@@ -7,13 +7,13 @@ import type {
   RestoreBookmarkResponse,
   UpdateBookmark,
   UpdateBookmarkResponse,
-} from "@keepstash/ts-sdk";
+} from "@okiba/ts-sdk";
 import type {
   UseMutationOptions,
   UseQueryOptions,
 } from "@tanstack/react-query";
 
-import { bookmarks } from "@keepstash/ts-sdk";
+import { bookmarks } from "@okiba/ts-sdk";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { invalidateByPrefix } from "@/lib/query-client";

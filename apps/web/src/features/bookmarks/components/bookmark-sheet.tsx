@@ -1,4 +1,4 @@
-import type { UpdateBookmark } from "@keepstash/ts-sdk";
+import type { UpdateBookmark } from "@okiba/ts-sdk";
 
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";

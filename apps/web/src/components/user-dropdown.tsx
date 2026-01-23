@@ -71,7 +71,7 @@ export function UserDropdown({ email = "", name = "" }: Props) {
             <Link
               rel="noopener noreferrer"
               target="_blank"
-              to="https://github.com/khaledxyz/keepstash"
+              to="https://github.com/khaledxyz/okiba"
             >
               <GithubLogoIcon />
               <span>GitHub</span>

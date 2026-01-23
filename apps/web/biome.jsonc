@@ -19,7 +19,7 @@
               ":BLANK_LINE:",
               ":PACKAGE:",
               ":BLANK_LINE:",
-              ["@keepstash/*", "@keepstash/**"],
+              ["@okiba/*", "@okiba/**"],
               ":BLANK_LINE:",
               ["@/lib", "@/lib/**"],
               ":BLANK_LINE:",

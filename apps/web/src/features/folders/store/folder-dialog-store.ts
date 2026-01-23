@@ -1,4 +1,4 @@
-import type { Folder } from "@keepstash/ts-sdk";
+import type { Folder } from "@okiba/ts-sdk";
 
 import { create } from "zustand";
 

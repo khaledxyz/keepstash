@@ -7,7 +7,7 @@ import App from "./app";
 
 import "./index.css";
 
-import { client } from "@keepstash/ts-sdk";
+import { client } from "@okiba/ts-sdk";
 
 import { getApiBaseUrl } from "@/lib/env";
 

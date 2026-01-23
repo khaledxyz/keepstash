@@ -1,4 +1,4 @@
-import type { Bookmark } from "@keepstash/ts-sdk";
+import type { Bookmark } from "@okiba/ts-sdk";
 
 import { create } from "zustand";
 

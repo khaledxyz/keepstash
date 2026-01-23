@@ -1,4 +1,4 @@
-import type { Tag } from "@keepstash/ts-sdk";
+import type { Tag } from "@okiba/ts-sdk";
 
 import { create } from "zustand";
 

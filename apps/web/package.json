@@ -1,7 +1,7 @@
 {
-  "name": "@keepstash/web",
+  "name": "@okiba/web",
   "version": "0.1.0",
-  "description": "keepstash Web - React frontend for bookmark management",
+  "description": "okiba Web - React frontend for bookmark management",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -16,7 +16,7 @@
     "@faker-js/faker": "^10.2.0",
     "@fontsource-variable/manrope": "^5.2.8",
     "@hookform/resolvers": "^5.2.2",
-    "@keepstash/ts-sdk": "workspace:*",
+    "@okiba/ts-sdk": "workspace:*",
     "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-query": "^5.90.16",

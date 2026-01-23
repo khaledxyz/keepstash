@@ -88,15 +88,15 @@ export default function HomePage() {
           <div className="mx-auto max-w-xl text-center">
             <h2 className="mb-2 font-semibold text-2xl">Self-Host It</h2>
             <p className="mb-6 text-muted-foreground">
-              KeepStash is open source. Run it on your own infrastructure and
-              keep full control of your data.
+              Okiba is open source. Run it on your own infrastructure and keep
+              full control of your data.
             </p>
             <div className="flex justify-center gap-1">
               <Button asChild variant="outline">
                 <Link
                   rel="noopener noreferrer"
                   target="_blank"
-                  to="https://github.com/khaledxyz/keepstash"
+                  to="https://github.com/khaledxyz/okiba"
                 >
                   <GithubLogoIcon className="mr-2" />
                   View on GitHub
@@ -106,7 +106,7 @@ export default function HomePage() {
                 <Link
                   rel="noopener noreferrer"
                   target="_blank"
-                  to="https://github.com/khaledxyz/keepstash#readme"
+                  to="https://github.com/khaledxyz/okiba#readme"
                 >
                   Read Docs
                 </Link>
@@ -122,7 +122,7 @@ export default function HomePage() {
             className="flex items-center gap-1.5 hover:text-foreground"
             rel="noopener noreferrer"
             target="_blank"
-            to="https://status.khaledxyz.com/status/keepstash"
+            to="https://status.khaledxyz.com/status/okiba"
           >
             <span className="relative flex size-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
@@ -135,7 +135,7 @@ export default function HomePage() {
               className="flex items-center gap-1.5 hover:text-foreground"
               rel="noopener noreferrer"
               target="_blank"
-              to="https://github.com/khaledxyz/keepstash"
+              to="https://github.com/khaledxyz/okiba"
             >
               <GithubLogoIcon />
               GitHub

@@ -18,7 +18,7 @@ COPY apps/api/openapi.json ./apps/api/
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
-RUN pnpm --filter @keepstash/ts-sdk generate
+RUN pnpm --filter @okiba/ts-sdk generate
 
 # ===============================
 # Stage 2: Builder
@@ -42,7 +42,7 @@ COPY apps/web/index.html ./apps/web/
 COPY apps/web/src ./apps/web/src
 COPY apps/web/public ./apps/web/public
 
-RUN pnpm --filter @keepstash/web build
+RUN pnpm --filter @okiba/web build
 
 # ===============================
 # Stage 3: Production

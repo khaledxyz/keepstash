@@ -30,7 +30,7 @@ function isProd(): boolean {
  */
 export const env = {
   get appName() {
-    return getEnv("VITE_APP_NAME", "keepstash");
+    return getEnv("VITE_APP_NAME", "okiba");
   },
   get apiUrl() {
     return getEnv("VITE_API_URL", "");

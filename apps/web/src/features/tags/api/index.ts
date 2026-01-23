@@ -7,13 +7,13 @@ import type {
   RestoreTagResponse,
   UpdateTag,
   UpdateTagResponse,
-} from "@keepstash/ts-sdk";
+} from "@okiba/ts-sdk";
 import type {
   UseMutationOptions,
   UseQueryOptions,
 } from "@tanstack/react-query";
 
-import { tags } from "@keepstash/ts-sdk";
+import { tags } from "@okiba/ts-sdk";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { invalidateByPrefix } from "@/lib/query-client";

@@ -2,6 +2,8 @@ import { useState } from "react";
 
 import { DownloadIcon, XIcon } from "@phosphor-icons/react";
 
+import { env } from "@/lib/env";
+
 import { usePWAInstall } from "@/hooks/use-pwa-install";
 
 import { Button } from "@/components/ui/button";
@@ -20,7 +22,7 @@ export function PWAInstallPrompt() {
         <div className="flex items-center gap-3">
           <DownloadIcon className="h-5 w-5 shrink-0" />
           <div className="flex-1">
-            <p className="font-medium text-sm">Install KeepStash</p>
+            <p className="font-medium text-sm">Install {env.appName}</p>
             <p className="text-xs opacity-90">
               Install our app for a better experience
             </p>

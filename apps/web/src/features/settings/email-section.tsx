@@ -97,7 +97,7 @@ export const EmailSection = () => {
                       {...field}
                       aria-invalid={fieldState.invalid}
                       id="newEmail"
-                      placeholder="user@keepstash.com"
+                      placeholder="user@okiba.com"
                       type="email"
                     />
                     {fieldState.invalid && (

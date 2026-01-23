@@ -106,7 +106,7 @@ export default function RegisterPage() {
                   disabled={isLoading}
                   id="email"
                   inputMode="email"
-                  placeholder="user@keepstash.io"
+                  placeholder="user@okiba.io"
                   spellCheck="false"
                   type="email"
                 />

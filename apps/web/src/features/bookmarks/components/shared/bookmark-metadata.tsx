@@ -1,4 +1,4 @@
-import type { Folder, Tag } from "@keepstash/ts-sdk";
+import type { Folder, Tag } from "@okiba/ts-sdk";
 
 import { Link } from "react-router";
 

@@ -89,7 +89,7 @@ export function EmailStep({ onSubmit, initialEmail = "" }: EmailStepProps) {
                 disabled={isLoading}
                 id="email"
                 inputMode="email"
-                placeholder="user@keepstash.io"
+                placeholder="user@okiba.io"
                 spellCheck="false"
                 type="email"
               />
