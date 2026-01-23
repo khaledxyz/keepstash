@@ -1,21 +1,14 @@
+# Staging Pipeline
+# Triggers: Every push to master branch
+# Purpose: Build images, run tests, deploy to staging environment
+
 when:
   - event: push
     branch: master
 
 steps:
-  - name: api
+  - name: build-api
     image: docker:27-cli
-    when:
-      - event: push
-        branch: master
-        path:
-          include:
-            - '.woodpecker/staging.yml'
-            - 'apps/api/**'
-            - 'packages/**'
-            - 'package.json'
-            - 'pnpm-lock.yaml'
-            - 'pnpm-workspace.yaml'
     environment:
       DOCKER_USERNAME:
         from_secret: DOCKER_USERNAME
@@ -39,19 +32,8 @@ steps:
 
       - docker logout
 
-  - name: web
+  - name: build-web
     image: docker:27-cli
-    when:
-      - event: push
-        branch: master
-        path:
-          include:
-            - '.woodpecker/staging.yml'
-            - 'apps/web/**'
-            - 'packages/**'
-            - 'package.json'
-            - 'pnpm-lock.yaml'
-            - 'pnpm-workspace.yaml'
     environment:
       DOCKER_USERNAME:
         from_secret: DOCKER_USERNAME
@@ -75,20 +57,8 @@ steps:
 
       - docker logout
 
-  - name: deploy
+  - name: deploy-staging
     image: docker:27-cli
-    when:
-      - event: push
-        branch: master
-        path:
-          include:
-            - '.woodpecker/staging.yml'
-            - 'apps/**'
-            - 'packages/**'
-            - 'package.json'
-            - 'pnpm-lock.yaml'
-            - 'pnpm-workspace.yaml'
-            - 'docker-compose.yml'
     environment:
       DOCKER_USERNAME:
         from_secret: DOCKER_USERNAME
@@ -107,21 +77,14 @@ steps:
       - docker compose pull
       - docker compose up -d --force-recreate --remove-orphans
       - docker compose ps
-      - echo "Staging deployment completed successfully!"
+      - echo "✓ Staging deployment completed successfully!"
       - docker logout
     depends_on:
-      - api
-      - web
+      - build-api
+      - build-web
 
   - name: cleanup
     image: docker:27-cli
-    when:
-      - event: push
-        branch: master
-        path:
-          include:
-            - 'apps/**'
-            - 'packages/**'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
@@ -129,5 +92,5 @@ steps:
       - docker container prune -f --filter "until=24h"
       - docker network prune -f
     depends_on:
-      - deploy
+      - deploy-staging
     failure: ignore
