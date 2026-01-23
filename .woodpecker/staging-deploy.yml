@@ -3,8 +3,8 @@ when:
     branch: master
 
 depends_on:
-  - build-api
-  - build-web
+  - build-push-api
+  - build-push-web
 
 steps:
   - name: deploy
