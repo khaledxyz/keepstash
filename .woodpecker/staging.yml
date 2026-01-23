@@ -1,0 +1,138 @@
+when:
+  - event: push
+    branch: master
+
+steps:
+  - name: api
+    image: docker:27-cli
+    when:
+      - event: push
+        branch: master
+        path:
+          include:
+            - 'apps/api/**'
+            - 'packages/**'
+            - 'package.json'
+            - 'pnpm-lock.yaml'
+            - 'pnpm-workspace.yaml'
+    environment:
+      DOCKER_USERNAME:
+        from_secret: DOCKER_USERNAME
+      DOCKER_PASSWORD:
+        from_secret: DOCKER_PASSWORD
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - |
+        docker buildx build \
+          --file ./apps/api/Dockerfile \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
+          --cache-from "$DOCKER_USERNAME/api:staging" \
+          --cache-from "$DOCKER_USERNAME/api:cache" \
+          --tag "$DOCKER_USERNAME/api:staging" \
+          --tag "$DOCKER_USERNAME/api:${CI_COMMIT_SHA:0:8}" \
+          --push \
+          .
+
+      - docker logout
+
+  - name: web
+    image: docker:27-cli
+    when:
+      - event: push
+        branch: master
+        path:
+          include:
+            - 'apps/web/**'
+            - 'packages/**'
+            - 'package.json'
+            - 'pnpm-lock.yaml'
+            - 'pnpm-workspace.yaml'
+    environment:
+      DOCKER_USERNAME:
+        from_secret: DOCKER_USERNAME
+      DOCKER_PASSWORD:
+        from_secret: DOCKER_PASSWORD
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - |
+        docker buildx build \
+          --file ./apps/web/Dockerfile \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
+          --cache-from "$DOCKER_USERNAME/web:staging" \
+          --cache-from "$DOCKER_USERNAME/web:cache" \
+          --tag "$DOCKER_USERNAME/web:staging" \
+          --tag "$DOCKER_USERNAME/web:${CI_COMMIT_SHA:0:8}" \
+          --push \
+          .
+
+      - docker logout
+
+  - name: deploy
+    image: docker:27-cli
+    when:
+      - event: push
+        branch: master
+        path:
+          include:
+            - 'apps/**'
+            - 'packages/**'
+            - 'package.json'
+            - 'pnpm-lock.yaml'
+            - 'pnpm-workspace.yaml'
+            - 'docker-compose.yml'
+    environment:
+      DOCKER_USERNAME:
+        from_secret: DOCKER_USERNAME
+      DOCKER_PASSWORD:
+        from_secret: DOCKER_PASSWORD
+      STAGING_WORK_DIR:
+        from_secret: STAGING_WORK_DIR
+      STAGING_ENV_FILE:
+        from_secret: STAGING_ENV_FILE
+      IMAGE_TAG: staging
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - cd "$STAGING_WORK_DIR"
+
+      - echo "$STAGING_ENV_FILE" > .env
+
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - docker compose pull
+
+      - docker compose up -d --force-recreate --remove-orphans
+
+      - docker compose ps
+
+      - echo "Staging deployment completed successfully!"
+
+      - docker logout
+    depends_on:
+      - api
+      - web
+
+  - name: cleanup
+    image: docker:27-cli
+    when:
+      - event: push
+        branch: master
+        path:
+          include:
+            - 'apps/**'
+            - 'packages/**'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - docker image prune -af --filter "until=24h"
+      - docker container prune -f --filter "until=24h"
+      - docker network prune -f
+    depends_on:
+      - deploy
+    failure: ignore
