@@ -15,6 +15,7 @@ steps:
       - |
         docker buildx build \
           --file ./apps/api/Dockerfile \
+          --cache-from "$DOCKER_USERNAME/api:staging" \
           --tag "$DOCKER_USERNAME/api:staging" \
           --tag "$DOCKER_USERNAME/api:${CI_COMMIT_SHA:0:8}" \
           --push .
@@ -31,27 +32,25 @@ steps:
       - |
         docker buildx build \
           --file ./apps/web/Dockerfile \
+          --cache-from "$DOCKER_USERNAME/web:staging" \
           --tag "$DOCKER_USERNAME/web:staging" \
           --tag "$DOCKER_USERNAME/web:${CI_COMMIT_SHA:0:8}" \
           --push .
+      - docker logout
 
   - name: deploy-staging
     image: docker:27-cli
     environment:
-      DOCKER_USERNAME: { from_secret: DOCKER_USERNAME }
-      DOCKER_PASSWORD: { from_secret: DOCKER_PASSWORD }
       STAGING_ENV_FILE: { from_secret: STAGING_ENV_FILE }
-      IMAGE_TAG: staging
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /home/super/services/okiba/staging:/staging
     commands:
       - cd /staging
       - echo "$STAGING_ENV_FILE" > .env
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker compose pull
+      - echo "IMAGE_TAG=staging" >> .env
       - docker compose up -d --force-recreate --remove-orphans
-      - 'echo "✓ Staging deployment completed successfully!"'
+      - 'echo "✓ Staging environment updated with latest master code."'
     depends_on: [ build-api, build-web ]
 
   - name: cleanup
@@ -59,6 +58,7 @@ steps:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - docker image prune -af --filter "until=24h"
+      - docker image prune -f --filter "until=24h"
+      - 'echo "🧹 Temporary build artifacts cleaned up."'
     depends_on: [ deploy-staging ]
     failure: ignore
