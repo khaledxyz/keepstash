@@ -101,8 +101,9 @@ steps:
       IMAGE_TAG: staging
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /home/super/services/okiba/staging:/staging
     commands:
-      - cd "$STAGING_WORK_DIR"
+      - cd /staging
       - echo "$STAGING_ENV_FILE" > .env
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker compose pull
