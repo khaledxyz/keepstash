@@ -10,6 +10,7 @@ steps:
         branch: master
         path:
           include:
+            - '.woodpecker/staging.yml'
             - 'apps/api/**'
             - 'packages/**'
             - 'package.json'
@@ -45,6 +46,7 @@ steps:
         branch: master
         path:
           include:
+            - '.woodpecker/staging.yml'
             - 'apps/web/**'
             - 'packages/**'
             - 'package.json'
@@ -80,6 +82,7 @@ steps:
         branch: master
         path:
           include:
+            - '.woodpecker/staging.yml'
             - 'apps/**'
             - 'packages/**'
             - 'package.json'
@@ -100,19 +103,12 @@ steps:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
       - cd "$STAGING_WORK_DIR"
-
       - echo "$STAGING_ENV_FILE" > .env
-
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
       - docker compose pull
-
       - docker compose up -d --force-recreate --remove-orphans
-
       - docker compose ps
-
       - echo "Staging deployment completed successfully!"
-
       - docker logout
     depends_on:
       - api
