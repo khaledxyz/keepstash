@@ -1,4 +1,4 @@
-# KeepStash
+# Okiba
 
 ![Project Thumbnail](.github/assets/thumbnail.jpg)
 

@@ -1,122 +1,88 @@
 services:
   api:
-    image: keepstash/api:latest
-    container_name: keepstash-api
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+    image: okiba/api:staging
+    container_name: okiba-api
     restart: unless-stopped
-    environment:
-      NODE_ENV: production
-      PORT: 5000
-      DATABASE_URL: postgresql://postgres:password@postgres:5432/keepstash
     env_file:
       - .env
-    ports:
-      - "5000:5000"
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          "CMD",
-          "node",
-          "-e",
-          "require('http').get('http://localhost:5000/health', r => process.exit(r.statusCode === 200 ? 0 : 1))",
-        ]
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/health', r => process.exit(r.statusCode === 200 ? 0 : 1))"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 10s
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 1G
-        reservations:
-          cpus: "0.5"
-          memory: 512M
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.okiba-api-http.entrypoints=http"
+      - "traefik.http.routers.okiba-api-http.rule=Host(`${HOST}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.okiba-api-secure.priority=100"
+      - "traefik.http.routers.okiba-api-http.middlewares=https-redirect@file"
+      - "traefik.http.routers.okiba-api-secure.entrypoints=https"
+      - "traefik.http.routers.okiba-api-secure.rule=Host(`${HOST}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.okiba-api-secure.priority=100"
+      - "traefik.http.routers.okiba-api-secure.tls=true"
+      - "traefik.http.routers.okiba-api-secure.tls.certresolver=le"
+      - "traefik.http.routers.okiba-api-secure.tls.options=modern-tls@file"
+      - "traefik.http.services.okiba-api.loadbalancer.server.port=5000"
+    networks:
+      - proxy-network
+      - backend
 
   web:
-    image: keepstash/web:latest
-    container_name: keepstash-web
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+    image: okiba/web:staging
+    container_name: okiba-web
     restart: unless-stopped
-    environment:
-      VITE_API_URL: http://api:5000
     env_file:
       - .env
-    ports:
-      - "80:80"
     depends_on:
       api:
         condition: service_healthy
     healthcheck:
-      test:
-        [
-          "CMD",
-          "wget",
-          "--no-verbose",
-          "--tries=1",
-          "--spider",
-          "http://localhost",
-        ]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: 512M
-        reservations:
-          cpus: "0.25"
-          memory: 256M
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.okiba-web-http.entrypoints=http"
+      - "traefik.http.routers.okiba-web-http.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.okiba-web-http.middlewares=https-redirect@file"
+      - "traefik.http.routers.okiba-web-secure.entrypoints=https"
+      - "traefik.http.routers.okiba-web-secure.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.okiba-web-secure.tls=true"
+      - "traefik.http.routers.okiba-web-secure.tls.certresolver=le"
+      - "traefik.http.routers.okiba-web-secure.tls.options=modern-tls@file"
+      - "traefik.http.services.okiba-web.loadbalancer.server.port=80"
+    networks:
+      - proxy-network
+      - backend
 
   postgres:
     image: postgres:16-alpine
-    container_name: keepstash-postgres
+    container_name: okiba-postgres
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: keepstash
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_INITDB_ARGS: "-E UTF8"
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 1G
-        reservations:
-          cpus: "0.5"
-          memory: 512M
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    networks:
+      - backend
 
 volumes:
   postgres_data:
-    driver: local
+
+networks:
+  proxy-network:
+    external: true
+    name: ${PROXY_NETWORK}
+  backend:
+    internal: true

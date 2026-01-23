@@ -150,7 +150,7 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.70.0(react@19.2.3))
-      '@keepstash/ts-sdk':
+      '@okiba/ts-sdk':
         specifier: workspace:*
         version: link:../../packages/ts-sdk
       '@phosphor-icons/react':
