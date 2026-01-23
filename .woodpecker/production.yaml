@@ -1,7 +1,3 @@
-# Production Pipeline
-# Triggers: Git tag push (e.g., v1.0.0, v2.1.3)
-# Purpose: Promote tested staging images to production with semantic versioning
-
 when:
   - event: tag
 
@@ -10,10 +6,8 @@ steps:
     image: alpine:3.19
     commands:
       - |
-        # Ensure tag follows semantic versioning (vX.Y.Z)
         if ! echo "$CI_COMMIT_TAG" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'; then
           echo "❌ Error: Tag must follow semantic versioning format (e.g., v1.0.0)"
-          echo "   Received: $CI_COMMIT_TAG"
           exit 1
         fi
         echo "✓ Tag validation passed: $CI_COMMIT_TAG"
@@ -22,135 +16,73 @@ steps:
     image: alpine:3.19
     commands:
       - |
-        # Extract version components from tag (v1.2.3 → 1.2.3, 1.2, 1)
         VERSION="${CI_COMMIT_TAG#v}"
         MAJOR=$(echo "$VERSION" | cut -d. -f1)
         MINOR=$(echo "$VERSION" | cut -d. -f1-2)
-        
-        echo "Full version: $VERSION"
-        echo "Major version: $MAJOR"
-        echo "Minor version: $MINOR"
-        
-        # Export for use in next steps
-        echo "export VERSION=$VERSION" > /woodpecker/src/version.env
-        echo "export MAJOR=$MAJOR" >> /woodpecker/src/version.env
-        echo "export MINOR=$MINOR" >> /woodpecker/src/version.env
-    depends_on:
-      - validate-tag
+        echo "export VERSION=$VERSION" > version.env
+        echo "export MAJOR=$MAJOR" >> version.env
+        echo "export MINOR=$MINOR" >> version.env
 
   - name: promote-api-image
     image: docker:27-cli
     environment:
-      DOCKER_USERNAME:
-        from_secret: DOCKER_USERNAME
-      DOCKER_PASSWORD:
-        from_secret: DOCKER_PASSWORD
+      DOCKER_USERNAME: { from_secret: DOCKER_USERNAME }
+      DOCKER_PASSWORD: { from_secret: DOCKER_PASSWORD }
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - source /woodpecker/src/version.env
+      - . ./version.env
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-      # Pull the staging image that was tested
       - docker pull "$DOCKER_USERNAME/api:staging"
-
-      # Re-tag with production version tags (immutable artifact promotion)
       - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:$VERSION"
       - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:$MINOR"
       - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:$MAJOR"
       - docker tag "$DOCKER_USERNAME/api:staging" "$DOCKER_USERNAME/api:latest"
-
-      # Push all version tags
       - docker push "$DOCKER_USERNAME/api:$VERSION"
       - docker push "$DOCKER_USERNAME/api:$MINOR"
       - docker push "$DOCKER_USERNAME/api:$MAJOR"
       - docker push "$DOCKER_USERNAME/api:latest"
-
-      - echo "✓ API image promoted to production with tags: $VERSION, $MINOR, $MAJOR, latest"
-      - docker logout
-    depends_on:
-      - extract-version
+      - 'echo "✓ API image promoted to production with tags: $VERSION, $MINOR, $MAJOR, latest"'
+    depends_on: [ extract-version ]
 
   - name: promote-web-image
     image: docker:27-cli
     environment:
-      DOCKER_USERNAME:
-        from_secret: DOCKER_USERNAME
-      DOCKER_PASSWORD:
-        from_secret: DOCKER_PASSWORD
+      DOCKER_USERNAME: { from_secret: DOCKER_USERNAME }
+      DOCKER_PASSWORD: { from_secret: DOCKER_PASSWORD }
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     commands:
-      - source /woodpecker/src/version.env
+      - . ./version.env
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-      # Pull the staging image that was tested
       - docker pull "$DOCKER_USERNAME/web:staging"
-
-      # Re-tag with production version tags (immutable artifact promotion)
       - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:$VERSION"
       - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:$MINOR"
       - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:$MAJOR"
       - docker tag "$DOCKER_USERNAME/web:staging" "$DOCKER_USERNAME/web:latest"
-
-      # Push all version tags
       - docker push "$DOCKER_USERNAME/web:$VERSION"
       - docker push "$DOCKER_USERNAME/web:$MINOR"
       - docker push "$DOCKER_USERNAME/web:$MAJOR"
       - docker push "$DOCKER_USERNAME/web:latest"
-
-      - echo "✓ Web image promoted to production with tags: $VERSION, $MINOR, $MAJOR, latest"
-      - docker logout
-    depends_on:
-      - extract-version
+      - 'echo "✓ Web image promoted to production with tags: $VERSION, $MINOR, $MAJOR, latest"'
+    depends_on: [ extract-version ]
 
   - name: deploy-production
     image: docker:27-cli
     environment:
-      DOCKER_USERNAME:
-        from_secret: DOCKER_USERNAME
-      DOCKER_PASSWORD:
-        from_secret: DOCKER_PASSWORD
-      PRODUCTION_ENV_FILE:
-        from_secret: PRODUCTION_ENV_FILE
+      DOCKER_USERNAME: { from_secret: DOCKER_USERNAME }
+      DOCKER_PASSWORD: { from_secret: DOCKER_PASSWORD }
+      PRODUCTION_ENV_FILE: { from_secret: PRODUCTION_ENV_FILE }
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /home/super/services/okiba/production:/production
     commands:
-      - source /woodpecker/src/version.env
+      - . ./version.env
       - cd /production
       - echo "$PRODUCTION_ENV_FILE" > .env
-      
-      # Set image tag to use the specific version (not latest)
       - echo "IMAGE_TAG=$VERSION" >> .env
-      
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker compose pull
       - docker compose up -d --force-recreate --remove-orphans
-      - docker compose ps
-      - echo "✓ Production deployment completed successfully with version $VERSION!"
-      - docker logout
-    depends_on:
-      - promote-api-image
-      - promote-web-image
-
-  - name: create-release-summary
-    image: alpine:3.19
-    commands:
-      - source /woodpecker/src/version.env
-      - |
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "🚀 Production Release Summary"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "Version: $VERSION"
-        echo "Git Tag: $CI_COMMIT_TAG"
-        echo "Commit: ${CI_COMMIT_SHA:0:8}"
-        echo ""
-        echo "Images promoted:"
-        echo "  • $DOCKER_USERNAME/api:$VERSION"
-        echo "  • $DOCKER_USERNAME/web:$VERSION"
-        echo ""
-        echo "Deployment: Production environment updated"
-        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    depends_on:
-      - deploy-production
+      - 'echo "✓ Production deployment completed successfully with version $VERSION!"'
+    depends_on: [ promote-api-image, promote-web-image ]
