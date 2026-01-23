@@ -1,0 +1,29 @@
+when:
+  - event: push
+    branch: master
+
+steps:
+  - name: build-push-api
+    image: docker:27-cli
+    environment:
+      DOCKER_USERNAME:
+        from_secret: DOCKER_USERNAME
+      DOCKER_PASSWORD:
+        from_secret: DOCKER_PASSWORD
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+      - |
+        docker buildx build \
+          --file ./apps/api/Dockerfile \
+          --build-arg BUILDKIT_INLINE_CACHE=1 \
+          --cache-from "$DOCKER_USERNAME/api:staging" \
+          --cache-from "$DOCKER_USERNAME/api:cache" \
+          --tag "$DOCKER_USERNAME/api:staging" \
+          --tag "$DOCKER_USERNAME/api:${CI_COMMIT_SHA:0:8}" \
+          --push \
+          .
+
+      - docker logout
