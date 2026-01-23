@@ -94,8 +94,6 @@ steps:
         from_secret: DOCKER_USERNAME
       DOCKER_PASSWORD:
         from_secret: DOCKER_PASSWORD
-      STAGING_WORK_DIR:
-        from_secret: STAGING_WORK_DIR
       STAGING_ENV_FILE:
         from_secret: STAGING_ENV_FILE
       IMAGE_TAG: staging
