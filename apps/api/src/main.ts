@@ -35,9 +35,7 @@ async function bootstrap() {
   });
 
   // Global configuration
-  app.setGlobalPrefix(configService.get<string>("APP_PREFIX"), {
-    exclude: ["/health"],
-  });
+  app.setGlobalPrefix(configService.get<string>("APP_PREFIX"));
 
   app.useGlobalPipes(
     new ValidationPipe({
