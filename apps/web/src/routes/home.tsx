@@ -122,7 +122,7 @@ export default function HomePage() {
             className="flex items-center gap-1.5 hover:text-foreground"
             rel="noopener noreferrer"
             target="_blank"
-            to="https://status.khaledxyz.com/status/okiba"
+            to="https://status.okiba.tech"
           >
             <span className="relative flex size-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
